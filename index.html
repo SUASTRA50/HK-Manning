@@ -141,9 +141,9 @@
             width: 90px;
         }
 
-        /* Style khusus untuk input teks (Plan by) */
+        /* Styling Khusus Input Teks Plan By */
         .input-group input[type="text"] {
-            width: 140px;
+            width: 150px;
             text-align: left;
         }
 
@@ -319,7 +319,7 @@
         <!-- LEFT PANEL: INPUT PARAMETERS -->
         <div class="left-panel">
             
-            <!-- PLANNER INFORMATION -->
+            <!-- PLANNER INFO -->
             <div class="pos-card">
                 <h3><i class="fa-solid fa-user-pen"></i> Planner Info</h3>
                 <div class="input-group">
@@ -332,15 +332,15 @@
             <div class="pos-card">
                 <h3><i class="fa-solid fa-chart-line"></i> Hotel Forecast</h3>
                 <div class="input-group">
-                    <label>Last Night Occupancy</label>
+                    <label for="tonightOcc">Last Night Occupancy</label>
                     <input type="number" id="tonightOcc" placeholder="0" min="0">
                 </div>
                 <div class="input-group">
-                    <label>Arrival</label>
+                    <label for="arrival">Arrival</label>
                     <input type="number" id="arrival" placeholder="0" min="0">
                 </div>
                 <div class="input-group">
-                    <label>Departure</label>
+                    <label for="departure">Departure</label>
                     <input type="number" id="departure" placeholder="0" min="0">
                 </div>
             </div>
@@ -349,11 +349,11 @@
             <div class="pos-card">
                 <h3><i class="fa-solid fa-bed"></i> Dropped Room</h3>
                 <div class="input-group">
-                    <label>Left Over / Dropped</label>
+                    <label for="backlog">Left Over / Dropped</label>
                     <input type="number" id="backlog" placeholder="0" min="0">
                 </div>
                 <div class="input-group">
-                    <label>Pick-up Room</label>
+                    <label for="pickup">Pick-up Room</label>
                     <input type="number" id="pickup" placeholder="0" min="0">
                 </div>
             </div>
@@ -362,7 +362,7 @@
             <div class="pos-card">
                 <h3><i class="fa-solid fa-star"></i> Special Service</h3>
                 <div class="input-group">
-                    <label>Turn Down</label>
+                    <label for="turndown">Turn Down</label>
                     <input type="number" id="turndown" placeholder="0" min="0">
                 </div>
             </div>
@@ -455,7 +455,7 @@
 </div>
 
 <script>
-    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzHcvo5d5WNKA0U4eUmNHCZtZ-dQq1HXIrjXFLMJ-7DI-ghx9KtIZ-tl1f6lLch7ANV/exec";
+    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyrCK5_5KoJ9PvdvtR0aXUaWtEH0sAwzclSKDlsiuaXb2W47z-BGQfcOWlVZw7XM2dj/exec";
 
     // Semua input yang mempengaruhi perhitungan
     const inputs = document.querySelectorAll(
@@ -469,28 +469,28 @@
     calculate();
 
     function calculate() {
-        let tonightOcc = Number(document.getElementById("tonightOcc").value) || 0;
-        let departure = Number(document.getElementById("departure").value) || 0;
-        let backlog = Number(document.getElementById("backlog").value) || 0;
-        let pickup = Number(document.getElementById("pickup").value) || 0;
-        let turndown = Number(document.getElementById("turndown").value) || 0;
+        let tonightOcc = Number(document.getElementById("tonightOcc")?.value) || 0;
+        let departure = Number(document.getElementById("departure")?.value) || 0;
+        let backlog = Number(document.getElementById("backlog")?.value) || 0;
+        let pickup = Number(document.getElementById("pickup")?.value) || 0;
+        let turndown = Number(document.getElementById("turndown")?.value) || 0;
 
-        let stayCredit = Number(document.getElementById("stayCredit").value) || 0;
-        let depCredit = Number(document.getElementById("depCredit").value) || 0;
-        let backCredit = Number(document.getElementById("backCredit").value) || 0;
-        let pickCredit = Number(document.getElementById("pickCredit").value) || 0;
-        let turnCredit = Number(document.getElementById("turnCredit").value) || 0;
+        let stayCredit = Number(document.getElementById("stayCredit")?.value) || 0;
+        let depCredit = Number(document.getElementById("depCredit")?.value) || 0;
+        let backCredit = Number(document.getElementById("backCredit")?.value) || 0;
+        let pickCredit = Number(document.getElementById("pickCredit")?.value) || 0;
+        let turnCredit = Number(document.getElementById("turnCredit")?.value) || 0;
 
-        let creditRA = Number(document.getElementById("creditRA").value) || 1;
+        let creditRA = Number(document.getElementById("creditRA")?.value) || 1;
 
         let stayover = tonightOcc - departure;
         if (stayover < 0) stayover = 0;
 
-        document.getElementById("stayQty").value = stayover;
-        document.getElementById("depQty").value = departure;
-        document.getElementById("backQty").value = backlog;
-        document.getElementById("pickQty").value = pickup;
-        document.getElementById("turnQty").value = turndown;
+        if (document.getElementById("stayQty")) document.getElementById("stayQty").value = stayover;
+        if (document.getElementById("depQty")) document.getElementById("depQty").value = departure;
+        if (document.getElementById("backQty")) document.getElementById("backQty").value = backlog;
+        if (document.getElementById("pickQty")) document.getElementById("pickQty").value = pickup;
+        if (document.getElementById("turnQty")) document.getElementById("turnQty").value = turndown;
 
         let stayTotal = stayover * stayCredit;
         let depTotal = departure * depCredit;
@@ -498,28 +498,28 @@
         let pickTotal = pickup * pickCredit;
         let turnTotal = turndown * turnCredit;
 
-        document.getElementById("stayTotal").innerText = stayTotal.toFixed(1);
-        document.getElementById("depTotal").innerText = depTotal.toFixed(1);
-        document.getElementById("backTotal").innerText = backTotal.toFixed(1);
-        document.getElementById("pickTotal").innerText = pickTotal.toFixed(1);
-        document.getElementById("turnTotal").innerText = turnTotal.toFixed(1);
+        if (document.getElementById("stayTotal")) document.getElementById("stayTotal").innerText = stayTotal.toFixed(1);
+        if (document.getElementById("depTotal")) document.getElementById("depTotal").innerText = depTotal.toFixed(1);
+        if (document.getElementById("backTotal")) document.getElementById("backTotal").innerText = backTotal.toFixed(1);
+        if (document.getElementById("pickTotal")) document.getElementById("pickTotal").innerText = pickTotal.toFixed(1);
+        if (document.getElementById("turnTotal")) document.getElementById("turnTotal").innerText = turnTotal.toFixed(1);
 
         let total = stayTotal + depTotal + backTotal + pickTotal + turnTotal;
-        document.getElementById("totalCleaning").innerText = total.toFixed(1);
+        if (document.getElementById("totalCleaning")) document.getElementById("totalCleaning").innerText = total.toFixed(1);
 
         let ra = Math.ceil(total / creditRA);
-        document.getElementById("requiredRA").innerText = ra;
+        if (document.getElementById("requiredRA")) document.getElementById("requiredRA").innerText = ra;
     }
 
     // FUNGSI RESET INPUT FORM
     function resetForm() {
-        document.getElementById("planBy").value = "";
-        document.getElementById("tonightOcc").value = "";
-        document.getElementById("arrival").value = "";
-        document.getElementById("departure").value = "";
-        document.getElementById("backlog").value = "";
-        document.getElementById("pickup").value = "";
-        document.getElementById("turndown").value = "";
+        if (document.getElementById("planBy")) document.getElementById("planBy").value = "";
+        if (document.getElementById("tonightOcc")) document.getElementById("tonightOcc").value = "";
+        if (document.getElementById("arrival")) document.getElementById("arrival").value = "";
+        if (document.getElementById("departure")) document.getElementById("departure").value = "";
+        if (document.getElementById("backlog")) document.getElementById("backlog").value = "";
+        if (document.getElementById("pickup")) document.getElementById("pickup").value = "";
+        if (document.getElementById("turndown")) document.getElementById("turndown").value = "";
 
         calculate();
     }
@@ -539,19 +539,30 @@
         btn.disabled = true;
         btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> SUBMITTING...`;
 
-        // Payload data (termasuk planBy di urutan paling bawah)
+        // Helper aman pembaca nilai elemen
+        const getValue = (id) => {
+            const el = document.getElementById(id);
+            return el ? el.value : "";
+        };
+
+        const getText = (id) => {
+            const el = document.getElementById(id);
+            return el ? el.innerText : "0";
+        };
+
+        // Payload data dikirim dalam bentuk JSON
         const payload = {
-            tonightOcc: document.getElementById("tonightOcc").value || 0,
-            arrival: document.getElementById("arrival").value || 0,
-            departure: document.getElementById("departure").value || 0,
-            backlog: document.getElementById("backlog").value || 0,
-            pickup: document.getElementById("pickup").value || 0,
-            turndown: document.getElementById("turndown").value || 0,
-            stayQty: document.getElementById("stayQty").value || 0,
-            totalCleaning: document.getElementById("totalCleaning").innerText,
-            creditRA: document.getElementById("creditRA").value || 0,
-            requiredRA: document.getElementById("requiredRA").innerText,
-            planBy: document.getElementById("planBy").value || "-"
+            tonightOcc: getValue("tonightOcc") || 0,
+            arrival: getValue("arrival") || 0,
+            departure: getValue("departure") || 0,
+            backlog: getValue("backlog") || 0,
+            pickup: getValue("pickup") || 0,
+            turndown: getValue("turndown") || 0,
+            stayQty: getValue("stayQty") || 0,
+            totalCleaning: getText("totalCleaning"),
+            creditRA: getValue("creditRA") || 0,
+            requiredRA: getText("requiredRA"),
+            planBy: getValue("planBy") || "-"
         };
 
         fetch(GOOGLE_SCRIPT_URL, {
