@@ -287,6 +287,7 @@
         }
     </style>
 </head>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>    
 <body>
 
 <div class="pos-container">
@@ -538,13 +539,13 @@
             body: JSON.stringify(payload)
         })
         .then(() => {
-            alert("Data berhasil dikirim ke Google Sheet!");
-            resetForm(); // Auto-reset setelah sukses
-        })
-        .catch(error => {
-            console.error("Error:", error);
-            alert("Gagal mengirim data.");
-        })
+    showToast("Data berhasil dikirim ke Google Sheet!"); // 👈 Baris 542
+    resetForm(); // Auto-reset setelah sukses
+})
+.catch(error => {
+    console.error("Error:", error);
+    showToast("Gagal mengirim data.", true); // 👈 Baris 547
+})
         .finally(() => {
             btn.disabled = false;
             btn.innerHTML = `<i class="fa-solid fa-cloud-arrow-up"></i> SUBMIT TO GOOGLE SHEET`;
