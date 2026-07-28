@@ -539,18 +539,19 @@
             body: JSON.stringify(payload)
         })
         .then(() => {
-    showToast("Data berhasil dikirim ke Google Sheet!"); // 👈 Baris 542
-    resetForm(); // Auto-reset setelah sukses
-})
-.catch(error => {
-    console.error("Error:", error);
-    showToast("Gagal mengirim data.", true); // 👈 Baris 547
-})
-        .finally(() => {
-            btn.disabled = false;
-            btn.innerHTML = `<i class="fa-solid fa-cloud-arrow-up"></i> SUBMIT TO GOOGLE SHEET`;
-        });
-    }
+        // 💡 PAKAI SHOWTOAST SEBAGAI GANTI ALERT
+        showToast("Data berhasil dikirim ke Google Sheet!");
+        resetForm();
+    })
+    .catch(error => {
+        console.error("Error:", error);
+        showToast("Gagal mengirim data.", true);
+    })
+    .finally(() => {
+        btn.disabled = false;
+        btn.innerHTML = `<i class="fa-solid fa-cloud-arrow-up"></i> SUBMIT TO GOOGLE SHEET`;
+    });
+}
 </script>
 
 </body>
