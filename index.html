@@ -537,6 +537,26 @@
             btn.innerHTML = `<i class="fa-solid fa-cloud-arrow-up"></i> SUBMIT TO GOOGLE SHEET`;
         });
     }
+    function resetForm() {
+    // Reset semua input angka utama kembali ke kosong/0
+    document.getElementById("tonightOcc").value = "";
+    document.getElementById("arrival").value = "";
+    document.getElementById("departure").value = "";
+    document.getElementById("backlog").value = "";
+    document.getElementById("pickup").value = "";
+    document.getElementById("turndown").value = "";
+
+    // Kembalikan bobot/weight ke nilai default (jika ingin di-reset juga)
+    document.getElementById("stayCredit").value = "0.70";
+    document.getElementById("depCredit").value = "1.00";
+    document.getElementById("backCredit").value = "1.00";
+    document.getElementById("pickCredit").value = "0.40";
+    document.getElementById("turnCredit").value = "0.20";
+    document.getElementById("creditRA").value = "14";
+
+    // Hitung ulang agar tampilan terminal kembali ke 0
+    calculate();
+}
 </script>
 
 </body>
