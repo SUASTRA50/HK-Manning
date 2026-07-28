@@ -532,11 +532,7 @@
             requiredRA: document.getElementById("requiredRA").innerText
         };
 
-        fetch(GOOGLE_SCRIPT_URL, {
-            method: "POST",
-            mode: "no-cors",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(payload)
+        
         })
        .then(() => {
             alert("Data berhasil dikirim ke Google Sheet!");
