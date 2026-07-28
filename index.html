@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HK MANNING CALCULATOR</title>
+    <!-- FontAwesome Icon -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f1f5f9;
+            color: #1e293b;
+            padding: 24px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .pos-container {
+            width: 100%;
+            max-width: 1100px;
+        }
+
+        /* POS HEADER */
+        .pos-header {
+            background: #ffffff;
+            padding: 16px 24px;
+            border-radius: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            margin-bottom: 20px;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .brand i {
+            font-size: 28px;
+            color: #0284c7;
+            background: #e0f2fe;
+            padding: 12px;
+            border-radius: 12px;
+        }
+
+        .brand h1 {
+            font-size: 18px;
+            font-weight: 700;
+            color: #0f172a;
+        }
+
+        .brand p {
+            font-size: 12px;
+            color: #64748b;
+        }
+
+        .pos-badge {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            padding: 8px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            color: #475569;
+        }
+
+        /* POS GRID LAYOUT */
+        .pos-grid {
+            display: grid;
+            grid-template-columns: 1fr 1.2fr;
+            gap: 20px;
+        }
+
+        @media (max-width: 860px) {
+            .pos-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* POS CARDS */
+        .pos-card {
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            margin-bottom: 16px;
+            border: 1px solid #f1f5f9;
+        }
+
+        .pos-card h3 {
+            font-size: 14px;
+            color: #0284c7;
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .input-group {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .input-group label {
+            font-size: 13px;
+            color: #475569;
+            font-weight: 500;
+        }
+
+        .input-group input,
+        .row input,
+        .summary input {
+            padding: 8px 10px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            outline: none;
+            font-size: 14px;
+            text-align: right;
+            background: #f8fafc;
+            transition: all 0.2s;
+        }
+
+        .input-group input {
+            width: 90px;
+        }
+
+        .input-group input:focus,
+        .row input:focus,
+        .summary input:focus {
+            border-color: #0284c7;
+            background: #fff;
+            box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15);
+        }
+
+        /* WORKLOAD TABLE */
+        .table-header {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            font-size: 11px;
+            font-weight: 700;
+            color: #94a3b8;
+            margin-bottom: 10px;
+            text-align: center;
+            text-transform: uppercase;
+        }
+
+        .table-header span:first-child {
+            text-align: left;
+        }
+
+        .row {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 8px;
+        }
+
+        .row .task-name {
+            font-size: 13px;
+            color: #334155;
+            font-weight: 500;
+        }
+
+        .row input {
+            width: 100%;
+        }
+
+        .row input[readonly] {
+            background-color: #f1f5f9;
+            color: #64748b;
+            border-color: #e2e8f0;
+        }
+
+        .subtotal {
+            font-size: 13px;
+            font-weight: 600;
+            text-align: right;
+            color: #0f172a;
+        }
+
+        .receipt-divider {
+            height: 1px;
+            background: #e2e8f0;
+            margin: 16px 0;
+        }
+
+        .summary {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .summary label {
+            font-size: 13px;
+            font-weight: 600;
+            color: #334155;
+        }
+
+        .total-badge {
+            font-size: 18px;
+            font-weight: bold;
+            color: #0284c7;
+        }
+
+        .credit-box {
+            width: 70px;
+            font-weight: bold;
+        }
+
+        /* RESULT TERMINAL CARD */
+        .staff-card {
+            margin-top: 20px;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: white;
+            border-radius: 14px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 10px 15px -3px rgba(15, 23, 42, 0.2);
+        }
+
+        .staff-title {
+            font-size: 12px;
+            opacity: 0.8;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 600;
+        }
+
+        .staff-value {
+            font-size: 48px;
+            font-weight: 800;
+            margin: 6px 0;
+            color: #38bdf8;
+            letter-spacing: -1px;
+        }
+
+        .staff-unit {
+            font-size: 12px;
+            opacity: 0.7;
+        }
+
+        /* BUTTON */
+        #submitBtn {
+            width: 100%;
+            margin-top: 16px;
+            padding: 14px;
+            background-color: #0284c7;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            box-shadow: 0 4px 6px -1px rgba(2, 132, 199, 0.2);
+        }
+
+        #submitBtn:hover {
+            background-color: #0369a1;
+            transform: translateY(-1px);
+        }
+
+        #submitBtn:disabled {
+            background-color: #94a3b8;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+
+<div class="pos-container">
+    
+    <!-- POS HEADER -->
+    <header class="pos-header">
+        <div class="brand">
+            <i class="fa-solid fa-cash-register"></i>
+            <div>
+                <h1>Laundry & Housekeeping POS</h1>
+                <p>Terminal Manning Station</p>
+            </div>
+        </div>
+        <div class="pos-badge">
+            <i class="fa-solid fa-hotel"></i> Capacity: <b>272 Rooms</b>
+        </div>
+    </header>
+
+    <div class="pos-grid">
+        
+        <!-- LEFT PANEL: INPUT PARAMETERS -->
+        <div class="left-panel">
+            
+            <!-- HOTEL FORECAST -->
+            <div class="pos-card">
+                <h3><i class="fa-solid fa-chart-line"></i> Hotel Forecast</h3>
+                <div class="input-group">
+                    <label>Tonight Occupancy</label>
+                    <input type="number" id="tonightOcc" placeholder="0" min="0">
+                </div>
+                <div class="input-group">
+                    <label>Arrival</label>
+                    <input type="number" id="arrival" placeholder="0" min="0">
+                </div>
+                <div class="input-group">
+                    <label>Departure</label>
+                    <input type="number" id="departure" placeholder="0" min="0">
+                </div>
+            </div>
+
+            <!-- ROOM STATUS -->
+            <div class="pos-card">
+                <h3><i class="fa-solid fa-bed"></i> Room Status</h3>
+                <div class="input-group">
+                    <label>Left Over / Dropped</label>
+                    <input type="number" id="backlog" placeholder="0" min="0">
+                </div>
+                <div class="input-group">
+                    <label>Pick-up Room</label>
+                    <input type="number" id="pickup" placeholder="0" min="0">
+                </div>
+            </div>
+
+            <!-- SPECIAL SERVICE -->
+            <div class="pos-card">
+                <h3><i class="fa-solid fa-sparkles"></i> Special Service</h3>
+                <div class="input-group">
+                    <label>Turn Down</label>
+                    <input type="number" id="turndown" placeholder="0" min="0">
+                </div>
+            </div>
+
+        </div>
+
+        <!-- RIGHT PANEL: WORKLOAD PREVIEW & RECEIPT SUMMARY -->
+        <div class="right-panel">
+            
+            <div class="pos-card receipt-card">
+                <h3><i class="fa-solid fa-receipt"></i> Workload & Credit Terminal</h3>
+                
+                <div class="table-header">
+                    <span>Task Item</span>
+                    <span>Qty</span>
+                    <span>Weight</span>
+                    <span>Total</span>
+                </div>
+
+                <!-- Stayover -->
+                <div class="row">
+                    <span class="task-name">Stayover</span>
+                    <input id="stayQty" type="number" readonly placeholder="0">
+                    <input id="stayCredit" type="number" value="0.70" step="0.01">
+                    <span id="stayTotal" class="subtotal">0.0</span>
+                </div>
+
+                <!-- Departure -->
+                <div class="row">
+                    <span class="task-name">Departure</span>
+                    <input id="depQty" type="number" readonly placeholder="0">
+                    <input id="depCredit" type="number" value="1.00" step="0.01">
+                    <span id="depTotal" class="subtotal">0.0</span>
+                </div>
+
+                <!-- Backlog -->
+                <div class="row">
+                    <span class="task-name">Backlog</span>
+                    <input id="backQty" type="number" readonly placeholder="0">
+                    <input id="backCredit" type="number" value="1.00" step="0.01">
+                    <span id="backTotal" class="subtotal">0.0</span>
+                </div>
+
+                <!-- Pick-up -->
+                <div class="row">
+                    <span class="task-name">Pick-up</span>
+                    <input id="pickQty" type="number" readonly placeholder="0">
+                    <input id="pickCredit" type="number" value="0.40" step="0.01">
+                    <span id="pickTotal" class="subtotal">0.0</span>
+                </div>
+
+                <!-- Turn Down -->
+                <div class="row">
+                    <span class="task-name">Turn Down</span>
+                    <input id="turnQty" type="number" readonly placeholder="0">
+                    <input id="turnCredit" type="number" value="0.20" step="0.01">
+                    <span id="turnTotal" class="subtotal">0.0</span>
+                </div>
+
+                <div class="receipt-divider"></div>
+
+                <!-- Summary Totals -->
+                <div class="summary">
+                    <label>Total Cleaning Credit</label>
+                    <span id="totalCleaning" class="total-badge">0.0</span>
+                </div>
+
+                <div class="summary">
+                    <label for="creditRA">Credit / RA Capacity</label>
+                    <input id="creditRA" type="number" value="14" class="credit-box">
+                </div>
+
+                <!-- POS Result Screen -->
+                <div class="staff-card">
+                    <div class="staff-title"><i class="fa-solid fa-users-gear"></i> Required Room Attendant</div>
+                    <div class="staff-value">
+                        <span id="requiredRA">0</span>
+                    </div>
+                    <div class="staff-unit">Active Staff Members Needed</div>
+                </div>
+
+                <button id="submitBtn" onclick="submitToGoogleSheet()">
+                    <i class="fa-solid fa-cloud-arrow-up"></i> SUBMIT TO GOOGLE SHEET
+                </button>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+<script>
+    // ⚠️ MASUKKAN URL GOOGLE APPS SCRIPT KAMU DI SINI
+    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyyaJHglY4VKKqW_lsCFtt87IPU8DiSFAr8hgQZSkjdRw0qhoNsacU-gUqh-1ZE3hrv/exec";
+
+    // Semua input yang mempengaruhi perhitungan
+    const inputs = document.querySelectorAll(
+        "#tonightOcc, #arrival, #departure, #backlog, #pickup, #turndown, #stayCredit, #depCredit, #backCredit, #pickCredit, #turnCredit, #creditRA"
+    );
+
+    inputs.forEach(input => {
+        input.addEventListener("input", calculate);
+    });
+
+    calculate();
+
+    function calculate() {
+        let tonightOcc = Number(document.getElementById("tonightOcc").value) || 0;
+        let departure = Number(document.getElementById("departure").value) || 0;
+        let backlog = Number(document.getElementById("backlog").value) || 0;
+        let pickup = Number(document.getElementById("pickup").value) || 0;
+        let turndown = Number(document.getElementById("turndown").value) || 0;
+
+        let stayCredit = Number(document.getElementById("stayCredit").value) || 0;
+        let depCredit = Number(document.getElementById("depCredit").value) || 0;
+        let backCredit = Number(document.getElementById("backCredit").value) || 0;
+        let pickCredit = Number(document.getElementById("pickCredit").value) || 0;
+        let turnCredit = Number(document.getElementById("turnCredit").value) || 0;
+
+        let creditRA = Number(document.getElementById("creditRA").value) || 1;
+
+        let stayover = tonightOcc - departure;
+        if (stayover < 0) stayover = 0;
+
+        document.getElementById("stayQty").value = stayover;
+        document.getElementById("depQty").value = departure;
+        document.getElementById("backQty").value = backlog;
+        document.getElementById("pickQty").value = pickup;
+        document.getElementById("turnQty").value = turndown;
+
+        let stayTotal = stayover * stayCredit;
+        let depTotal = departure * depCredit;
+        let backTotal = backlog * backCredit;
+        let pickTotal = pickup * pickCredit;
+        let turnTotal = turndown * turnCredit;
+
+        document.getElementById("stayTotal").innerText = stayTotal.toFixed(1);
+        document.getElementById("depTotal").innerText = depTotal.toFixed(1);
+        document.getElementById("backTotal").innerText = backTotal.toFixed(1);
+        document.getElementById("pickTotal").innerText = pickTotal.toFixed(1);
+        document.getElementById("turnTotal").innerText = turnTotal.toFixed(1);
+
+        let total = stayTotal + depTotal + backTotal + pickTotal + turnTotal;
+        document.getElementById("totalCleaning").innerText = total.toFixed(1);
+
+        let ra = Math.ceil(total / creditRA);
+        document.getElementById("requiredRA").innerText = ra;
+    }
+
+    // FUNGSI UNTUK MENGIRIM DATA KE GOOGLE SHEET
+    function submitToGoogleSheet() {
+        if (!GOOGLE_SCRIPT_URL || GOOGLE_SCRIPT_URL.includes("GANTI_DENGAN")) {
+            alert("Harap masukkan URL Web App Google Apps Script kamu pada variabel GOOGLE_SCRIPT_URL!");
+            return;
+        }
+
+        const btn = document.getElementById("submitBtn");
+        btn.disabled = true;
+        btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> SUBMITTING...`;
+
+        const payload = {
+            tonightOcc: document.getElementById("tonightOcc").value || 0,
+            arrival: document.getElementById("arrival").value || 0,
+            departure: document.getElementById("departure").value || 0,
+            backlog: document.getElementById("backlog").value || 0,
+            pickup: document.getElementById("pickup").value || 0,
+            turndown: document.getElementById("turndown").value || 0,
+            stayQty: document.getElementById("stayQty").value || 0,
+            totalCleaning: document.getElementById("totalCleaning").innerText,
+            creditRA: document.getElementById("creditRA").value || 0,
+            requiredRA: document.getElementById("requiredRA").innerText
+        };
+
+        // Mengirim HTTP POST via fetch
+        fetch(GOOGLE_SCRIPT_URL, {
+            method: "POST",
+            mode: "no-cors", // Mengatasi CORS issue dari Apps Script
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload)
+        })
+        .then(() => {
+            alert("Data berhasil dikirim ke Google Sheet!");
+        })
+        .catch(error => {
+            console.error("Error:", error);
+            alert("Gagal mengirim data.");
+        })
+        .finally(() => {
+            btn.disabled = false;
+            btn.innerHTML = `<i class="fa-solid fa-cloud-arrow-up"></i> SUBMIT TO GOOGLE SHEET`;
+        });
+    }
+</script>
+
+</body>
+</html>
