@@ -6,6 +6,8 @@
     <title>HK MANNING</title>
     <!-- FontAwesome Icon -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- SweetAlert2 CSS & JS (Pengganti Alert Bawaan Browser) -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     
     <style>
         * {
@@ -438,7 +440,6 @@
 </div>
 
 <script>
-    // ⚠️ GANTI TEKS DI DALAM TANDA PETIK DENGAN WEB URL APPS SCRIPT KAMU
     const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyrCK5_5KoJ9PvdvtR0aXUaWtEH0sAwzclSKDlsiuaXb2W47z-BGQfcOWlVZw7XM2dj/exec";
 
     // Semua input yang mempengaruhi perhitungan
@@ -504,14 +505,17 @@
         document.getElementById("pickup").value = "";
         document.getElementById("turndown").value = "";
 
-        // Hitung ulang kalkulator agar angka tampilan kembali 0
         calculate();
     }
 
     // FUNGSI SUBMIT DATA KE GOOGLE SHEETS
     function submitToGoogleSheet() {
         if (!GOOGLE_SCRIPT_URL || GOOGLE_SCRIPT_URL.includes("GANTI_DENGAN")) {
-            alert("https://script.google.com/macros/s/AKfycbyrCK5_5KoJ9PvdvtR0aXUaWtEH0sAwzclSKDlsiuaXb2W47z-BGQfcOWlVZw7XM2dj/exec");
+            Swal.fire({
+                icon: 'warning',
+                title: 'URL Apps Script Belum Diisi',
+                text: 'Harap periksa kembali variabel GOOGLE_SCRIPT_URL.'
+            });
             return;
         }
 
@@ -531,20 +535,32 @@
             creditRA: document.getElementById("creditRA").value || 0,
             requiredRA: document.getElementById("requiredRA").innerText
         };
-          fetch(GOOGLE_SCRIPT_URL, {
+
+        fetch(GOOGLE_SCRIPT_URL, {
             method: "POST",
             mode: "no-cors",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(payload)  
-        
+            body: JSON.stringify(payload)
         })
-       .then(() => {
-            alert("Data berhasil dikirim ke Google Sheet!");
-            resetForm(); // Auto-reset setelah sukses
+        .then(() => {
+            // Notifikasi sukses tanpa bawaan nama domain
+            Swal.fire({
+                icon: 'success',
+                title: 'Berhasil!',
+                text: 'Data berhasil dikirim ke Google Sheet!',
+                confirmButtonColor: '#0284c7'
+            });
+            resetForm();
         })
         .catch(error => {
             console.error("Error:", error);
-            alert("Gagal mengirim data.");
+            // Notifikasi error tanpa bawaan nama domain
+            Swal.fire({
+                icon: 'error',
+                title: 'Gagal!',
+                text: 'Gagal mengirim data. Silakan coba lagi.',
+                confirmButtonColor: '#ef4444'
+            });
         })
         .finally(() => {
             btn.disabled = false;
