@@ -6,7 +6,7 @@
     <title>HK MANNING</title>
     <!-- FontAwesome Icon -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- SweetAlert2 CSS & JS (Pengganti Alert Bawaan Browser) -->
+    <!-- SweetAlert2 CSS & JS -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     
     <style>
@@ -139,6 +139,12 @@
 
         .input-group input {
             width: 90px;
+        }
+
+        /* Style khusus untuk input teks (Plan by) */
+        .input-group input[type="text"] {
+            width: 140px;
+            text-align: left;
         }
 
         .input-group input:focus,
@@ -313,11 +319,20 @@
         <!-- LEFT PANEL: INPUT PARAMETERS -->
         <div class="left-panel">
             
+            <!-- PLANNER INFORMATION -->
+            <div class="pos-card">
+                <h3><i class="fa-solid fa-user-pen"></i> Planner Info</h3>
+                <div class="input-group">
+                    <label for="Plan by">Plan by</label>
+                    <input type="text" id="Plan by" placeholder="Nama Planner">
+                </div>
+            </div>
+
             <!-- HOTEL FORECAST -->
             <div class="pos-card">
                 <h3><i class="fa-solid fa-chart-line"></i> Hotel Forecast</h3>
                 <div class="input-group">
-                    <label>Room Sold</label>
+                    <label>Last Night Occupancy</label>
                     <input type="number" id="tonightOcc" placeholder="0" min="0">
                 </div>
                 <div class="input-group">
@@ -498,6 +513,7 @@
 
     // FUNGSI RESET INPUT FORM
     function resetForm() {
+        document.getElementById("planBy").value = "";
         document.getElementById("tonightOcc").value = "";
         document.getElementById("arrival").value = "";
         document.getElementById("departure").value = "";
@@ -523,6 +539,7 @@
         btn.disabled = true;
         btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> SUBMITTING...`;
 
+        // Payload data (termasuk planBy di urutan paling bawah)
         const payload = {
             tonightOcc: document.getElementById("tonightOcc").value || 0,
             arrival: document.getElementById("arrival").value || 0,
@@ -533,7 +550,8 @@
             stayQty: document.getElementById("stayQty").value || 0,
             totalCleaning: document.getElementById("totalCleaning").innerText,
             creditRA: document.getElementById("creditRA").value || 0,
-            requiredRA: document.getElementById("requiredRA").innerText
+            requiredRA: document.getElementById("requiredRA").innerText,
+            planBy: document.getElementById("planBy").value || "-"
         };
 
         fetch(GOOGLE_SCRIPT_URL, {
@@ -543,7 +561,6 @@
             body: JSON.stringify(payload)
         })
         .then(() => {
-            // Notifikasi sukses tanpa bawaan nama domain
             Swal.fire({
                 icon: 'success',
                 title: 'Berhasil!',
@@ -554,7 +571,6 @@
         })
         .catch(error => {
             console.error("Error:", error);
-            // Notifikasi error tanpa bawaan nama domain
             Swal.fire({
                 icon: 'error',
                 title: 'Gagal!',
