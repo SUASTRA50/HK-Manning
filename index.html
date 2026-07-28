@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HK MANNING CALCULATOR</title>
+    <title>Laundry POS - Housekeeping Manning</title>
     <!-- FontAwesome Icon -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
@@ -296,7 +296,7 @@
         <div class="brand">
             <i class="fa-solid fa-cash-register"></i>
             <div>
-                <h1>HK MANNING CALCULATOR</h1>
+                <h1>Laundry & Housekeeping POS</h1>
                 <p>Terminal Manning Station</p>
             </div>
         </div>
@@ -437,7 +437,7 @@
 </div>
 
 <script>
-    // ⚠️ MASUKKAN URL GOOGLE APPS SCRIPT KAMU DI SINI
+    // ⚠️ GANTI TEKS DI DALAM TANDA PETIK DENGAN WEB URL APPS SCRIPT KAMU
     const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyyaJHglY4VKKqW_lsCFtt87IPU8DiSFAr8hgQZSkjdRw0qhoNsacU-gUqh-1ZE3hrv/exec";
 
     // Semua input yang mempengaruhi perhitungan
@@ -494,10 +494,23 @@
         document.getElementById("requiredRA").innerText = ra;
     }
 
-    // FUNGSI UNTUK MENGIRIM DATA KE GOOGLE SHEET
+    // FUNGSI RESET INPUT FORM
+    function resetForm() {
+        document.getElementById("tonightOcc").value = "";
+        document.getElementById("arrival").value = "";
+        document.getElementById("departure").value = "";
+        document.getElementById("backlog").value = "";
+        document.getElementById("pickup").value = "";
+        document.getElementById("turndown").value = "";
+
+        // Hitung ulang kalkulator agar angka tampilan kembali 0
+        calculate();
+    }
+
+    // FUNGSI SUBMIT DATA KE GOOGLE SHEETS
     function submitToGoogleSheet() {
         if (!GOOGLE_SCRIPT_URL || GOOGLE_SCRIPT_URL.includes("GANTI_DENGAN")) {
-            alert("Hhttps://script.google.com/macros/s/AKfycbyyaJHglY4VKKqW_lsCFtt87IPU8DiSFAr8hgQZSkjdRw0qhoNsacU-gUqh-1ZE3hrv/exec");
+            alert("https://script.google.com/macros/s/AKfycbyyaJHglY4VKKqW_lsCFtt87IPU8DiSFAr8hgQZSkjdRw0qhoNsacU-gUqh-1ZE3hrv/exec");
             return;
         }
 
@@ -518,15 +531,15 @@
             requiredRA: document.getElementById("requiredRA").innerText
         };
 
-        // Mengirim HTTP POST via fetch
         fetch(GOOGLE_SCRIPT_URL, {
             method: "POST",
-            mode: "no-cors", // Mengatasi CORS issue dari Apps Script
+            mode: "no-cors",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(payload)
         })
         .then(() => {
             alert("Data berhasil dikirim ke Google Sheet!");
+            resetForm(); // Auto-reset setelah sukses
         })
         .catch(error => {
             console.error("Error:", error);
@@ -537,26 +550,6 @@
             btn.innerHTML = `<i class="fa-solid fa-cloud-arrow-up"></i> SUBMIT TO GOOGLE SHEET`;
         });
     }
-    function resetForm() {
-    // Reset semua input angka utama kembali ke kosong/0
-    document.getElementById("tonightOcc").value = "";
-    document.getElementById("arrival").value = "";
-    document.getElementById("departure").value = "";
-    document.getElementById("backlog").value = "";
-    document.getElementById("pickup").value = "";
-    document.getElementById("turndown").value = "";
-
-    // Kembalikan bobot/weight ke nilai default (jika ingin di-reset juga)
-    document.getElementById("stayCredit").value = "0.70";
-    document.getElementById("depCredit").value = "1.00";
-    document.getElementById("backCredit").value = "1.00";
-    document.getElementById("pickCredit").value = "0.40";
-    document.getElementById("turnCredit").value = "0.20";
-    document.getElementById("creditRA").value = "14";
-
-    // Hitung ulang agar tampilan terminal kembali ke 0
-    calculate();
-}
 </script>
 
 </body>
