@@ -118,7 +118,7 @@
                 </div>
 
                 <div class="input-group">
-                    <label for="planBy">Planned by</label>
+                    <label for="planBy">Planner Name</label>
                     <input type="text" id="planBy" placeholder="Planner Name">
                 </div>
             </div>
@@ -218,8 +218,15 @@
                     <label for="creditRA">Credit / RA Capacity</label>
                     <input id="creditRA" type="number" class="credit-box">
                 </div>
+
+                <!-- SUPERVISOR GOAL (TAMBAHAN SAMA PERSIS) -->
+                <div class="summary">
+                    <label for="spvGoal">Supervisor Goal</label>
+                    <input id="spvGoal" type="number" class="credit-box">
+                </div>
             </div>
 
+            <!-- REQUIRED ROOM ATTENDANT CARD -->
             <div class="staff-summary-card">
                 <div class="staff-summary-info">
                     <i class="fa-solid fa-users-gear"></i>
@@ -229,6 +236,18 @@
                     </div>
                 </div>
                 <div class="staff-summary-value" id="requiredRA">0</div>
+            </div>
+
+            <!-- REQUIRED SUPERVISOR CARD (TAMBAHAN DENGAN KANAN SAMA PERSIS & IKON DASI/VEST) -->
+            <div class="staff-summary-card">
+                <div class="staff-summary-info">
+                    <i class="fa-solid fa-user-tie"></i>
+                    <div>
+                        <div class="staff-summary-title">Required Supervisor</div>
+                        <div class="staff-summary-sub">Active Staff Needed</div>
+                    </div>
+                </div>
+                <div class="staff-summary-value" id="requiredSpv">0</div>
             </div>
 
             <div class="pos-card">
@@ -244,7 +263,7 @@
 </div>
 
 <script>
-    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycby8LPzAoKOEB71yyrBXaLtUmo7tNS8kmGpwNeeXfUXRa4-3fdEgEHIqG7FnGPl9tMNj/exec";
+    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyrCK5_5KoJ9PvdvtR0aXUaWtEH0sAwzclSKDlsiuaXb2W47z-BGQfcOWlVZw7XM2dj/exec";
 
     function loadRulesToUI() {
         if (typeof MANNING_RULES !== "undefined") {
@@ -254,6 +273,11 @@
             document.getElementById("pickCredit").value = MANNING_RULES.credits.pickup;
             document.getElementById("turnCredit").value = MANNING_RULES.credits.turndown;
             document.getElementById("creditRA").value = MANNING_RULES.targetCreditPerRA;
+            
+            // Set Supervisor Goal dari rules jika ada, jika tidak fallback ke 17
+            document.getElementById("spvGoal").value = MANNING_RULES.targetArrivalPerSupervisor || 17;
+        } else {
+            document.getElementById("spvGoal").value = 17;
         }
     }
 
@@ -265,21 +289,27 @@
             .then(response => response.json())
             .then(data => {
                 if (data.status === "success") {
-                    if (document.getElementById("lastSubmitTime")) {
+                    if (data.lastSubmitTime && data.lastSubmitTime !== "-") {
                         document.getElementById("lastSubmitTime").innerText = data.lastSubmitTime;
+                        localStorage.setItem("lastSubmitTime", data.lastSubmitTime);
                     }
-                    if (document.getElementById("lastSubmitPlanner")) {
+                    if (data.lastSubmitPlanner) {
                         document.getElementById("lastSubmitPlanner").innerText = data.lastSubmitPlanner;
+                        localStorage.setItem("lastSubmitPlanner", data.lastSubmitPlanner);
                     }
                 }
             })
             .catch(err => {
-                console.log("Gagal memuat status Last Submitted dari sheet:", err);
+                console.log("Gagal memuat status dari Apps Script, menggunakan data lokal:", err);
+                const savedTime = localStorage.getItem("lastSubmitTime");
+                const savedPlanner = localStorage.getItem("lastSubmitPlanner");
+                if (savedTime) document.getElementById("lastSubmitTime").innerText = savedTime;
+                if (savedPlanner) document.getElementById("lastSubmitPlanner").innerText = savedPlanner;
             });
     }
 
     const inputs = document.querySelectorAll(
-        "#tonightOcc, #arrival, #departure, #backlog, #pickup, #turndown, #stayCredit, #depCredit, #backCredit, #pickCredit, #turnCredit, #creditRA"
+        "#tonightOcc, #arrival, #departure, #backlog, #pickup, #turndown, #stayCredit, #depCredit, #backCredit, #pickCredit, #turnCredit, #creditRA, #spvGoal"
     );
 
     inputs.forEach(input => {
@@ -312,6 +342,7 @@
             tonightOccInput.value = 0;
         }
 
+        let arrival = Number(document.getElementById("arrival")?.value) || 0;
         let departure = Number(document.getElementById("departure")?.value) || 0;
         let backlog = Number(document.getElementById("backlog")?.value) || 0;
         let pickup = Number(document.getElementById("pickup")?.value) || 0;
@@ -324,6 +355,7 @@
         let turnCredit = Number(document.getElementById("turnCredit")?.value) || 0;
 
         let creditRA = Number(document.getElementById("creditRA")?.value) || 14;
+        let spvGoal = Number(document.getElementById("spvGoal")?.value) || 17;
 
         let stayover = tonightOcc - departure;
         if (stayover < 0) stayover = 0;
@@ -349,8 +381,13 @@
         let total = stayTotal + depTotal + backTotal + pickTotal + turnTotal;
         document.getElementById("totalCleaning").innerText = total.toFixed(1);
 
+        // Perhitungan Required RA
         let raNeeded = Math.ceil(total / creditRA);
         document.getElementById("requiredRA").innerText = raNeeded;
+
+        // Perhitungan Required Supervisor = Arrival / Supervisor Goal
+        let spvNeeded = arrival > 0 ? Math.ceil(arrival / spvGoal) : 0;
+        document.getElementById("requiredSpv").innerText = spvNeeded;
 
         generateRADistribution(raNeeded, total, creditRA, {
             stayover, departure, backlog, pickup, turndown
@@ -483,7 +520,7 @@
     function submitToGoogleSheet() {
         const tonightOcc = Number(document.getElementById("tonightOcc")?.value) || 0;
 
-        // VALiDASI SEBELUM SUBMIT
+        // VALIDASI SEBELUM SUBMIT
         if (tonightOcc <= 0 || tonightOcc > 272) {
             Swal.fire({
                 icon: 'error',
@@ -522,6 +559,7 @@
             totalCleaning: getText("totalCleaning"),
             creditRA: getValue("creditRA"),
             requiredRA: getText("requiredRA"),
+            requiredSpv: getText("requiredSpv"),
             planBy: plannerInput
         };
 
@@ -532,6 +570,16 @@
             body: JSON.stringify(payload)
         })
         .then(() => {
+            const now = new Date();
+            const timeString = now.toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' }) + ' ' + 
+                               now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+            
+            document.getElementById("lastSubmitTime").innerText = timeString;
+            document.getElementById("lastSubmitPlanner").innerText = plannerInput;
+
+            localStorage.setItem("lastSubmitTime", timeString);
+            localStorage.setItem("lastSubmitPlanner", plannerInput);
+
             Swal.fire({
                 icon: 'success',
                 title: 'Berhasil!',
@@ -540,7 +588,7 @@
             });
 
             resetForm();
-            setTimeout(fetchLastSubmittedFromSheet, 1500);
+            setTimeout(fetchLastSubmittedFromSheet, 2000);
         })
         .catch(error => {
             console.error("Error:", error);
