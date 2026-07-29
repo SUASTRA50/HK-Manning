@@ -248,7 +248,7 @@
 </div>
 
 <script>
-    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyrCK5_5KoJ9PvdvtR0aXUaWtEH0sAwzclSKDlsiuaXb2W47z-BGQfcOWlVZw7XM2dj/exec";
+    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwQFQpixr5B0VHBaBGX3mJVJy83nPCbLY3jbkndj0WO4mKBQjJS4LlMEiKyfXRfHuy2/exec";
 
     function loadRulesToUI() {
         if (typeof MANNING_RULES !== "undefined") {
@@ -523,20 +523,23 @@
         const getValue = (id) => document.getElementById(id)?.value || "0";
         const getText = (id) => document.getElementById(id)?.innerText || "0";
 
-        const payload = {
-            tonightOcc: getValue("tonightOcc"),
-            arrival: getValue("arrival"),
-            departure: getValue("departure"),
-            backlog: getValue("backlog"),
-            pickup: getValue("pickup"),
-            turndown: getValue("turndown"),
-            stayQty: getValue("stayQty"),
-            totalCleaning: getText("totalCleaning"),
-            creditRA: getValue("creditRA"),
-            requiredRA: getText("requiredRA"),
-            requiredSpv: getText("requiredSpv"),
-            planBy: plannerInput
-        };
+        // Di dalam fungsi submitToGoogleSheet() pada index.html
+const plannerInput = document.getElementById("planBy")?.value.trim() || "-";
+
+const payload = {
+    tonightOcc: getValue("tonightOcc"),
+    arrival: getValue("arrival"),
+    departure: getValue("departure"),
+    backlog: getValue("backlog"),
+    pickup: getValue("pickup"),
+    turndown: getValue("turndown"),
+    stayQty: getValue("stayQty"),
+    totalCleaning: getText("totalCleaning"),
+    creditRA: getValue("creditRA"),
+    requiredRA: getText("requiredRA"),
+    requiredSpv: getText("requiredSpv"),
+    planBy: plannerInput // Merekam nama planner
+};
 
         fetch(GOOGLE_SCRIPT_URL, {
             method: "POST",
