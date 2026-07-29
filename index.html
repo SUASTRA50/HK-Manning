@@ -27,28 +27,23 @@
         .pos-card { background: #ffffff; border-radius: 16px; padding: 20px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); margin-bottom: 16px; border: 1px solid #f1f5f9; }
         .pos-card h3 { font-size: 14px; color: #0284c7; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
         
-        /* Styling khusus Last Submitted Box */
+        /* Styling Last Submitted Box (Neutral Slate Theme) */
         .last-submit-info {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    font-size: 11px;
-    color: #64748b;
-    background: #f8fafc;
-    border: 1px solid #e2e8f0;
-    padding: 8px 12px;
-    border-radius: 8px;
-    margin-bottom: 14px;
-}
-.last-submit-value {
-    font-weight: 700;
-    margin-top: 2px;
-    color: #1e293b; /* Warna teks nilai lebih tegas */
-}
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            font-size: 11px;
+            color: #64748b;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            padding: 8px 12px;
+            border-radius: 8px;
+            margin-bottom: 14px;
+        }
         .last-submit-left, .last-submit-right { display: flex; flex-direction: column; }
         .last-submit-right { text-align: right; }
         .last-submit-label { font-weight: 600; text-transform: uppercase; font-size: 9px; letter-spacing: 0.5px; opacity: 0.85; }
-        .last-submit-value { font-weight: 700; margin-top: 2px; }
+        .last-submit-value { font-weight: 700; margin-top: 2px; color: #1e293b; }
 
         .input-group { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
         .input-group label { font-size: 13px; color: #475569; font-weight: 500; }
@@ -132,7 +127,7 @@
                 <h3><i class="fa-solid fa-chart-line"></i> Hotel Forecast</h3>
                 <div class="input-group">
                     <label for="tonightOcc">Room sold</label>
-                    <input type="number" id="tonightOcc" placeholder="0" min="0">
+                    <input type="number" id="tonightOcc" placeholder="0" min="0" max="272">
                 </div>
                 <div class="input-group">
                     <label for="arrival">Arrival</label>
@@ -249,298 +244,318 @@
 </div>
 
 <script>
-    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyuN5Y1pe3RTRjFz_9uFBetPAZdcErDZzD_8O7iN4q5pPd4m-N_8EhVAyPbrXelzhtG/exec";
+    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyrCK5_5KoJ9PvdvtR0aXUaWtEH0sAwzclSKDlsiuaXb2W47z-BGQfcOWlVZw7XM2dj/exec";
 
-function loadRulesToUI() {
-    if (typeof MANNING_RULES !== "undefined") {
-        document.getElementById("stayCredit").value = MANNING_RULES.credits.stayover;
-        document.getElementById("depCredit").value = MANNING_RULES.credits.departure;
-        document.getElementById("backCredit").value = MANNING_RULES.credits.dropped;
-        document.getElementById("pickCredit").value = MANNING_RULES.credits.pickup;
-        document.getElementById("turnCredit").value = MANNING_RULES.credits.turndown;
-        document.getElementById("creditRA").value = MANNING_RULES.targetCreditPerRA;
+    function loadRulesToUI() {
+        if (typeof MANNING_RULES !== "undefined") {
+            document.getElementById("stayCredit").value = MANNING_RULES.credits.stayover;
+            document.getElementById("depCredit").value = MANNING_RULES.credits.departure;
+            document.getElementById("backCredit").value = MANNING_RULES.credits.dropped;
+            document.getElementById("pickCredit").value = MANNING_RULES.credits.pickup;
+            document.getElementById("turnCredit").value = MANNING_RULES.credits.turndown;
+            document.getElementById("creditRA").value = MANNING_RULES.targetCreditPerRA;
+        }
     }
-}
 
-// FUNGSI AMBIL LAST SUBMIT DARI GOOGLE SHEET (GLOBAL)
-function fetchLastSubmittedFromSheet() {
-    if (!GOOGLE_SCRIPT_URL || GOOGLE_SCRIPT_URL.includes("GANTI_DENGAN")) return;
+    // FUNGSI MEMANGGIL STATUS SUBMISI TERAKHIR DARI GOOGLE SHEET (GLOBAL)
+    function fetchLastSubmittedFromSheet() {
+        if (!GOOGLE_SCRIPT_URL || GOOGLE_SCRIPT_URL.includes("GANTI_DENGAN")) return;
 
-    fetch(GOOGLE_SCRIPT_URL)
-        .then(response => response.json())
-        .then(data => {
-            if (data.status === "success") {
-                if (document.getElementById("lastSubmitTime")) {
-                    document.getElementById("lastSubmitTime").innerText = data.lastSubmitTime;
+        fetch(GOOGLE_SCRIPT_URL)
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === "success") {
+                    if (document.getElementById("lastSubmitTime")) {
+                        document.getElementById("lastSubmitTime").innerText = data.lastSubmitTime;
+                    }
+                    if (document.getElementById("lastSubmitPlanner")) {
+                        document.getElementById("lastSubmitPlanner").innerText = data.lastSubmitPlanner;
+                    }
                 }
-                if (document.getElementById("lastSubmitPlanner")) {
-                    document.getElementById("lastSubmitPlanner").innerText = data.lastSubmitPlanner;
+            })
+            .catch(err => {
+                console.log("Gagal memuat status Last Submitted dari sheet:", err);
+            });
+    }
+
+    const inputs = document.querySelectorAll(
+        "#tonightOcc, #arrival, #departure, #backlog, #pickup, #turndown, #stayCredit, #depCredit, #backCredit, #pickCredit, #turnCredit, #creditRA"
+    );
+
+    inputs.forEach(input => {
+        input.addEventListener("input", calculate);
+    });
+
+    document.addEventListener("DOMContentLoaded", function() {
+        loadRulesToUI();
+        calculate();
+        fetchLastSubmittedFromSheet();
+    });
+
+    function calculate() {
+        let tonightOccInput = document.getElementById("tonightOcc");
+        let tonightOcc = Number(tonightOccInput?.value) || 0;
+
+        // VALIDASI REAL-TIME MAX ROOM SOLD 272 & MIN 0
+        if (tonightOcc > 272) {
+            tonightOcc = 272;
+            tonightOccInput.value = 272;
+            Swal.fire({
+                icon: 'warning',
+                title: 'Kapasitas Maksimal',
+                text: 'Jumlah Room Sold tidak boleh melebihi kapasitas hotel (272 rooms).',
+                timer: 2000,
+                showConfirmButton: false
+            });
+        } else if (tonightOcc < 0) {
+            tonightOcc = 0;
+            tonightOccInput.value = 0;
+        }
+
+        let departure = Number(document.getElementById("departure")?.value) || 0;
+        let backlog = Number(document.getElementById("backlog")?.value) || 0;
+        let pickup = Number(document.getElementById("pickup")?.value) || 0;
+        let turndown = Number(document.getElementById("turndown")?.value) || 0;
+
+        let stayCredit = Number(document.getElementById("stayCredit")?.value) || 0;
+        let depCredit = Number(document.getElementById("depCredit")?.value) || 0;
+        let backCredit = Number(document.getElementById("backCredit")?.value) || 0;
+        let pickCredit = Number(document.getElementById("pickCredit")?.value) || 0;
+        let turnCredit = Number(document.getElementById("turnCredit")?.value) || 0;
+
+        let creditRA = Number(document.getElementById("creditRA")?.value) || 14;
+
+        let stayover = tonightOcc - departure;
+        if (stayover < 0) stayover = 0;
+
+        document.getElementById("stayQty").value = stayover;
+        document.getElementById("depQty").value = departure;
+        document.getElementById("backQty").value = backlog;
+        document.getElementById("pickQty").value = pickup;
+        document.getElementById("turnQty").value = turndown;
+
+        let stayTotal = stayover * stayCredit;
+        let depTotal = departure * depCredit;
+        let backTotal = backlog * backCredit;
+        let pickTotal = pickup * pickCredit;
+        let turnTotal = turndown * turnCredit;
+
+        document.getElementById("stayTotal").innerText = stayTotal.toFixed(1);
+        document.getElementById("depTotal").innerText = depTotal.toFixed(1);
+        document.getElementById("backTotal").innerText = backTotal.toFixed(1);
+        document.getElementById("pickTotal").innerText = pickTotal.toFixed(1);
+        document.getElementById("turnTotal").innerText = turnTotal.toFixed(1);
+
+        let total = stayTotal + depTotal + backTotal + pickTotal + turnTotal;
+        document.getElementById("totalCleaning").innerText = total.toFixed(1);
+
+        let raNeeded = Math.ceil(total / creditRA);
+        document.getElementById("requiredRA").innerText = raNeeded;
+
+        generateRADistribution(raNeeded, total, creditRA, {
+            stayover, departure, backlog, pickup, turndown
+        }, {
+            stayCredit, depCredit, backCredit, pickCredit, turnCredit
+        });
+    }
+
+    function generateRADistribution(raNeeded, totalCredit, targetCredit, qtyMap, weightMap) {
+        const listContainer = document.getElementById("raAllocationList");
+        if (!listContainer) return;
+        listContainer.innerHTML = "";
+
+        if (raNeeded <= 0 || totalCredit <= 0) {
+            listContainer.innerHTML = `<div style="text-align:center; font-size:12px; color:#94a3b8; padding:10px;">Belum ada alokasi tugas.</div>`;
+            return;
+        }
+
+        let raAllocations = [];
+        for (let i = 0; i < raNeeded; i++) {
+            raAllocations.push({ id: i + 1, credit: 0, tasks: {} });
+        }
+
+        function distributeEqually(taskName, totalQty, weight) {
+            if (totalQty > 0 && weight > 0) {
+                let perRA = Math.floor(totalQty / raNeeded);
+                let remainder = totalQty % raNeeded;
+
+                for (let i = 0; i < raNeeded; i++) {
+                    let assigned = perRA + (i < remainder ? 1 : 0);
+                    if (assigned > 0) {
+                        raAllocations[i].tasks[taskName] = (raAllocations[i].tasks[taskName] || 0) + assigned;
+                        raAllocations[i].credit += assigned * weight;
+                    }
                 }
             }
+        }
+
+        if (typeof MANNING_RULES !== "undefined" && MANNING_RULES.distributionRules.splitStayoverEqually) {
+            distributeEqually("Stayover", qtyMap.stayover, weightMap.stayCredit);
+        }
+        if (typeof MANNING_RULES !== "undefined" && MANNING_RULES.distributionRules.splitTurndownEqually) {
+            distributeEqually("Turn Down", qtyMap.turndown, weightMap.turnCredit);
+        }
+
+        let rawTasks = {
+            dropped: { name: "Dropped", qty: qtyMap.backlog, weight: weightMap.backCredit },
+            departure: { name: "Departure", qty: qtyMap.departure, weight: weightMap.depCredit },
+            pickup: { name: "Pick-up", qty: qtyMap.pickup, weight: weightMap.pickCredit }
+        };
+
+        let priorityOrder = (typeof MANNING_RULES !== "undefined") 
+            ? MANNING_RULES.distributionRules.fillPriority 
+            : ["dropped", "departure", "pickup"];
+
+        let otherTasks = priorityOrder
+            .map(key => rawTasks[key])
+            .filter(t => t && t.qty > 0 && t.weight > 0);
+
+        let taskIndex = 0;
+
+        for (let i = 0; i < raNeeded; i++) {
+            let isLastRA = (i === raNeeded - 1);
+            let ra = raAllocations[i];
+
+            while (taskIndex < otherTasks.length) {
+                let currentTask = otherTasks[taskIndex];
+                let remainingCapacity = targetCredit - ra.credit;
+
+                if (!isLastRA && remainingCapacity < currentTask.weight) {
+                    break;
+                }
+
+                let maxRoomsByCredit = isLastRA ? currentTask.qty : Math.floor(remainingCapacity / currentTask.weight);
+                let roomsToAssign = Math.min(currentTask.qty, maxRoomsByCredit);
+
+                if (roomsToAssign > 0) {
+                    currentTask.qty -= roomsToAssign;
+                    ra.credit += (roomsToAssign * currentTask.weight);
+                    ra.tasks[currentTask.name] = (ra.tasks[currentTask.name] || 0) + roomsToAssign;
+                }
+
+                if (currentTask.qty <= 0) {
+                    taskIndex++;
+                }
+
+                if (!isLastRA && ra.credit >= targetCredit) {
+                    break;
+                }
+            }
+        }
+
+        raAllocations.forEach((ra, index) => {
+            let isLastRA = (index === raNeeded - 1);
+            let raItem = document.createElement("div");
+            raItem.className = "ra-item";
+
+            let taskTextArr = [];
+            for (let [tName, tQty] of Object.entries(ra.tasks)) {
+                taskTextArr.push(`${tQty} ${tName}`);
+            }
+
+            let taskText = taskTextArr.length > 0 ? taskTextArr.join(" + ") : "Persiapan & Bantuan Umum";
+            let specialBadge = isLastRA ? `<div class="special-project-badge"><i class="fa-solid fa-screwdriver-wrench"></i> RA Terakhir: Sisa Kredit + Special Project</div>` : "";
+
+            raItem.innerHTML = `
+                <div class="ra-header">
+                    <span class="ra-name"><i class="fa-solid fa-user-check" style="color:#0284c7;"></i> RA ${ra.id}</span>
+                    <span class="ra-credit-badge">${ra.credit.toFixed(1)} Credit</span>
+                </div>
+                <div class="ra-details">
+                    <b>Role/Tugas:</b> ${taskText}
+                    ${specialBadge}
+                </div>
+            `;
+
+            listContainer.appendChild(raItem);
+        });
+    }
+
+    function resetForm() {
+        const fieldsToReset = ["planBy", "tonightOcc", "arrival", "departure", "backlog", "pickup", "turndown"];
+        fieldsToReset.forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.value = "";
+        });
+        calculate();
+    }
+
+    function submitToGoogleSheet() {
+        const tonightOcc = Number(document.getElementById("tonightOcc")?.value) || 0;
+
+        // VALiDASI SEBELUM SUBMIT
+        if (tonightOcc <= 0 || tonightOcc > 272) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Input Tidak Valid',
+                text: 'Room Sold harus bernilai di atas 0 dan tidak boleh melebihi 272.',
+                confirmButtonColor: '#0284c7'
+            });
+            return;
+        }
+
+        if (!GOOGLE_SCRIPT_URL || GOOGLE_SCRIPT_URL.includes("GANTI_DENGAN")) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'URL Apps Script Belum Diisi',
+                text: 'Harap periksa kembali variabel GOOGLE_SCRIPT_URL.'
+            });
+            return;
+        }
+
+        const plannerInput = document.getElementById("planBy")?.value.trim() || "-";
+        const btn = document.getElementById("submitBtn");
+        btn.disabled = true;
+        btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> SUBMITTING...`;
+
+        const getValue = (id) => document.getElementById(id)?.value || "0";
+        const getText = (id) => document.getElementById(id)?.innerText || "0";
+
+        const payload = {
+            tonightOcc: getValue("tonightOcc"),
+            arrival: getValue("arrival"),
+            departure: getValue("departure"),
+            backlog: getValue("backlog"),
+            pickup: getValue("pickup"),
+            turndown: getValue("turndown"),
+            stayQty: getValue("stayQty"),
+            totalCleaning: getText("totalCleaning"),
+            creditRA: getValue("creditRA"),
+            requiredRA: getText("requiredRA"),
+            planBy: plannerInput
+        };
+
+        fetch(GOOGLE_SCRIPT_URL, {
+            method: "POST",
+            mode: "no-cors",
+            headers: { "Content-Type": "text/plain;charset=utf-8" },
+            body: JSON.stringify(payload)
         })
-        .catch(err => {
-            console.log("Gagal memuat status Last Submitted dari sheet, menggunakan cache lokal jika ada.", err);
-            // Fallback ke localStorage jika koneksi gagal/lambat
-            const savedTime = localStorage.getItem("lastSubmitTime");
-            const savedPlanner = localStorage.getItem("lastSubmitPlanner");
-            if (savedTime && document.getElementById("lastSubmitTime")) {
-                document.getElementById("lastSubmitTime").innerText = savedTime;
-            }
-            if (savedPlanner && document.getElementById("lastSubmitPlanner")) {
-                document.getElementById("lastSubmitPlanner").innerText = savedPlanner;
-            }
+        .then(() => {
+            Swal.fire({
+                icon: 'success',
+                title: 'Berhasil!',
+                text: 'Data berhasil dikirim ke Google Sheet!',
+                confirmButtonColor: '#0284c7'
+            });
+
+            resetForm();
+            setTimeout(fetchLastSubmittedFromSheet, 1500);
+        })
+        .catch(error => {
+            console.error("Error:", error);
+            Swal.fire({
+                icon: 'error',
+                title: 'Gagal!',
+                text: 'Gagal mengirim data. Silakan coba lagi.',
+                confirmButtonColor: '#ef4444'
+            });
+        })
+        .finally(() => {
+            btn.disabled = false;
+            btn.innerHTML = `<i class="fa-solid fa-cloud-arrow-up"></i> SUBMIT TO GOOGLE SHEET`;
         });
-}
-
-const inputs = document.querySelectorAll(
-    "#tonightOcc, #arrival, #departure, #backlog, #pickup, #turndown, #stayCredit, #depCredit, #backCredit, #pickCredit, #turnCredit, #creditRA"
-);
-
-inputs.forEach(input => {
-    input.addEventListener("input", calculate);
-});
-
-document.addEventListener("DOMContentLoaded", function() {
-    loadRulesToUI();
-    calculate();
-    // Panggil data submisi terakhir dari Google Sheet saat halaman direfresh/dibuka
-    fetchLastSubmittedFromSheet();
-});
-
-function calculate() {
-    let tonightOcc = Number(document.getElementById("tonightOcc")?.value) || 0;
-    let departure = Number(document.getElementById("departure")?.value) || 0;
-    let backlog = Number(document.getElementById("backlog")?.value) || 0;
-    let pickup = Number(document.getElementById("pickup")?.value) || 0;
-    let turndown = Number(document.getElementById("turndown")?.value) || 0;
-
-    let stayCredit = Number(document.getElementById("stayCredit")?.value) || 0;
-    let depCredit = Number(document.getElementById("depCredit")?.value) || 0;
-    let backCredit = Number(document.getElementById("backCredit")?.value) || 0;
-    let pickCredit = Number(document.getElementById("pickCredit")?.value) || 0;
-    let turnCredit = Number(document.getElementById("turnCredit")?.value) || 0;
-
-    let creditRA = Number(document.getElementById("creditRA")?.value) || 14;
-
-    let stayover = tonightOcc - departure;
-    if (stayover < 0) stayover = 0;
-
-    document.getElementById("stayQty").value = stayover;
-    document.getElementById("depQty").value = departure;
-    document.getElementById("backQty").value = backlog;
-    document.getElementById("pickQty").value = pickup;
-    document.getElementById("turnQty").value = turndown;
-
-    let stayTotal = stayover * stayCredit;
-    let depTotal = departure * depCredit;
-    let backTotal = backlog * backCredit;
-    let pickTotal = pickup * pickCredit;
-    let turnTotal = turndown * turnCredit;
-
-    document.getElementById("stayTotal").innerText = stayTotal.toFixed(1);
-    document.getElementById("depTotal").innerText = depTotal.toFixed(1);
-    document.getElementById("backTotal").innerText = backTotal.toFixed(1);
-    document.getElementById("pickTotal").innerText = pickTotal.toFixed(1);
-    document.getElementById("turnTotal").innerText = turnTotal.toFixed(1);
-
-    let total = stayTotal + depTotal + backTotal + pickTotal + turnTotal;
-    document.getElementById("totalCleaning").innerText = total.toFixed(1);
-
-    let raNeeded = Math.ceil(total / creditRA);
-    document.getElementById("requiredRA").innerText = raNeeded;
-
-    generateRADistribution(raNeeded, total, creditRA, {
-        stayover, departure, backlog, pickup, turndown
-    }, {
-        stayCredit, depCredit, backCredit, pickCredit, turnCredit
-    });
-}
-
-function generateRADistribution(raNeeded, totalCredit, targetCredit, qtyMap, weightMap) {
-    const listContainer = document.getElementById("raAllocationList");
-    if (!listContainer) return;
-    listContainer.innerHTML = "";
-
-    if (raNeeded <= 0 || totalCredit <= 0) {
-        listContainer.innerHTML = `<div style="text-align:center; font-size:12px; color:#94a3b8; padding:10px;">Belum ada alokasi tugas.</div>`;
-        return;
     }
-
-    let raAllocations = [];
-    for (let i = 0; i < raNeeded; i++) {
-        raAllocations.push({ id: i + 1, credit: 0, tasks: {} });
-    }
-
-    function distributeEqually(taskName, totalQty, weight) {
-        if (totalQty > 0 && weight > 0) {
-            let perRA = Math.floor(totalQty / raNeeded);
-            let remainder = totalQty % raNeeded;
-
-            for (let i = 0; i < raNeeded; i++) {
-                let assigned = perRA + (i < remainder ? 1 : 0);
-                if (assigned > 0) {
-                    raAllocations[i].tasks[taskName] = (raAllocations[i].tasks[taskName] || 0) + assigned;
-                    raAllocations[i].credit += assigned * weight;
-                }
-            }
-        }
-    }
-
-    if (typeof MANNING_RULES !== "undefined" && MANNING_RULES.distributionRules.splitStayoverEqually) {
-        distributeEqually("Stayover", qtyMap.stayover, weightMap.stayCredit);
-    }
-    if (typeof MANNING_RULES !== "undefined" && MANNING_RULES.distributionRules.splitTurndownEqually) {
-        distributeEqually("Turn Down", qtyMap.turndown, weightMap.turnCredit);
-    }
-
-    let rawTasks = {
-        dropped: { name: "Dropped", qty: qtyMap.backlog, weight: weightMap.backCredit },
-        departure: { name: "Departure", qty: qtyMap.departure, weight: weightMap.depCredit },
-        pickup: { name: "Pick-up", qty: qtyMap.pickup, weight: weightMap.pickCredit }
-    };
-
-    let priorityOrder = (typeof MANNING_RULES !== "undefined") 
-        ? MANNING_RULES.distributionRules.fillPriority 
-        : ["dropped", "departure", "pickup"];
-
-    let otherTasks = priorityOrder
-        .map(key => rawTasks[key])
-        .filter(t => t && t.qty > 0 && t.weight > 0);
-
-    let taskIndex = 0;
-
-    for (let i = 0; i < raNeeded; i++) {
-        let isLastRA = (i === raNeeded - 1);
-        let ra = raAllocations[i];
-
-        while (taskIndex < otherTasks.length) {
-            let currentTask = otherTasks[taskIndex];
-            let remainingCapacity = targetCredit - ra.credit;
-
-            if (!isLastRA && remainingCapacity < currentTask.weight) {
-                break;
-            }
-
-            let maxRoomsByCredit = isLastRA ? currentTask.qty : Math.floor(remainingCapacity / currentTask.weight);
-            let roomsToAssign = Math.min(currentTask.qty, maxRoomsByCredit);
-
-            if (roomsToAssign > 0) {
-                currentTask.qty -= roomsToAssign;
-                ra.credit += (roomsToAssign * currentTask.weight);
-                ra.tasks[currentTask.name] = (ra.tasks[currentTask.name] || 0) + roomsToAssign;
-            }
-
-            if (currentTask.qty <= 0) {
-                taskIndex++;
-            }
-
-            if (!isLastRA && ra.credit >= targetCredit) {
-                break;
-            }
-        }
-    }
-
-    raAllocations.forEach((ra, index) => {
-        let isLastRA = (index === raNeeded - 1);
-        let raItem = document.createElement("div");
-        raItem.className = "ra-item";
-
-        let taskTextArr = [];
-        for (let [tName, tQty] of Object.entries(ra.tasks)) {
-            taskTextArr.push(`${tQty} ${tName}`);
-        }
-
-        let taskText = taskTextArr.length > 0 ? taskTextArr.join(" + ") : "Persiapan & Bantuan Umum";
-        let specialBadge = isLastRA ? `<div class="special-project-badge"><i class="fa-solid fa-screwdriver-wrench"></i> RA Terakhir: Sisa Kredit + Special Project</div>` : "";
-
-        raItem.innerHTML = `
-            <div class="ra-header">
-                <span class="ra-name"><i class="fa-solid fa-user-check" style="color:#0284c7;"></i> RA ${ra.id}</span>
-                <span class="ra-credit-badge">${ra.credit.toFixed(1)} Credit</span>
-            </div>
-            <div class="ra-details">
-                <b>Role/Tugas:</b> ${taskText}
-                ${specialBadge}
-            </div>
-        `;
-
-        listContainer.appendChild(raItem);
-    });
-}
-
-function resetForm() {
-    const fieldsToReset = ["planBy", "tonightOcc", "arrival", "departure", "backlog", "pickup", "turndown"];
-    fieldsToReset.forEach(id => {
-        const el = document.getElementById(id);
-        if (el) el.value = "";
-    });
-    calculate();
-}
-
-function submitToGoogleSheet() {
-    if (!GOOGLE_SCRIPT_URL || GOOGLE_SCRIPT_URL.includes("GANTI_DENGAN")) {
-        Swal.fire({
-            icon: 'warning',
-            title: 'URL Apps Script Belum Diisi',
-            text: 'Harap periksa kembali variabel GOOGLE_SCRIPT_URL.'
-        });
-        return;
-    }
-
-    const plannerInput = document.getElementById("planBy")?.value.trim() || "-";
-    const btn = document.getElementById("submitBtn");
-    btn.disabled = true;
-    btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> SUBMITTING...`;
-
-    const getValue = (id) => document.getElementById(id)?.value || "0";
-    const getText = (id) => document.getElementById(id)?.innerText || "0";
-
-    const payload = {
-        tonightOcc: getValue("tonightOcc"),
-        arrival: getValue("arrival"),
-        departure: getValue("departure"),
-        backlog: getValue("backlog"),
-        pickup: getValue("pickup"),
-        turndown: getValue("turndown"),
-        stayQty: getValue("stayQty"),
-        totalCleaning: getText("totalCleaning"),
-        creditRA: getValue("creditRA"),
-        requiredRA: getText("requiredRA"),
-        planBy: plannerInput
-    };
-
-    fetch(GOOGLE_SCRIPT_URL, {
-        method: "POST",
-        mode: "no-cors",
-        headers: { "Content-Type": "text/plain;charset=utf-8" },
-        body: JSON.stringify(payload)
-    })
-    .then(() => {
-        Swal.fire({
-            icon: 'success',
-            title: 'Berhasil!',
-            text: 'Data berhasil dikirim ke Google Sheet!',
-            confirmButtonColor: '#0284c7'
-        });
-
-        resetForm();
-        // Ambil data terbaru dari sheet setelah submit sukses
-        setTimeout(fetchLastSubmittedFromSheet, 1500);
-    })
-    .catch(error => {
-        console.error("Error:", error);
-        Swal.fire({
-            icon: 'error',
-            title: 'Gagal!',
-            text: 'Gagal mengirim data. Silakan coba lagi.',
-            confirmButtonColor: '#ef4444'
-        });
-    })
-    .finally(() => {
-        btn.disabled = false;
-        btn.innerHTML = `<i class="fa-solid fa-cloud-arrow-up"></i> SUBMIT TO GOOGLE SHEET`;
-    });
-}
 </script>
 
 </body>
