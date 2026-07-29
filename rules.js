@@ -1,7 +1,7 @@
 const MANNING_RULES = {
     targetCreditPerRA: 14,
     maxCreditPerRA: 14.1, // Maksimal credit per RA
-    targetArrivalPerSupervisor: 17,
+    targetArrivalPerSupervisor: 20,
     credits: {
         stayover: 0.8,
         departure: 1.0,
