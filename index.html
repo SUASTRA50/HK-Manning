@@ -27,19 +27,8 @@
         .pos-card { background: #ffffff; border-radius: 16px; padding: 20px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); margin-bottom: 16px; border: 1px solid #f1f5f9; }
         .pos-card h3 { font-size: 14px; color: #0284c7; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
         
-        /* Styling Last Submitted Box (Neutral Slate Theme) */
-        .last-submit-info {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            font-size: 11px;
-            color: #64748b;
-            background: #f8fafc;
-            border: 1px solid #e2e8f0;
-            padding: 8px 12px;
-            border-radius: 8px;
-            margin-bottom: 14px;
-        }
+        /* Last Submitted Box */
+        .last-submit-info { display: flex; justify-content: space-between; align-items: flex-start; font-size: 11px; color: #64748b; background: #f8fafc; border: 1px solid #e2e8f0; padding: 8px 12px; border-radius: 8px; margin-bottom: 14px; }
         .last-submit-left, .last-submit-right { display: flex; flex-direction: column; }
         .last-submit-right { text-align: right; }
         .last-submit-label { font-weight: 600; text-transform: uppercase; font-size: 9px; letter-spacing: 0.5px; opacity: 0.85; }
@@ -101,11 +90,9 @@
     <div class="pos-grid">
         <!-- LEFT PANEL -->
         <div class="left-panel">
-            <!-- PLANNER INFO CARD -->
             <div class="pos-card">
                 <h3><i class="fa-solid fa-user-pen"></i> Planner Info</h3>
                 
-                <!-- Last Submitted Status Display -->
                 <div class="last-submit-info" id="lastSubmitBox">
                     <div class="last-submit-left">
                         <span class="last-submit-label">Last Submitted</span>
@@ -172,38 +159,39 @@
                     <span>Total</span>
                 </div>
 
+                <!-- WEIGHT/CREDIT DISESUAIKAN DENGAN GAMBAR -->
                 <div class="row">
                     <span class="task-name">Stayover</span>
                     <input id="stayQty" type="number" readonly placeholder="0">
-                    <input id="stayCredit" type="number" step="0.01">
+                    <input id="stayCredit" type="number" step="0.01" value="0.8">
                     <span id="stayTotal" class="subtotal">0.0</span>
                 </div>
 
                 <div class="row">
                     <span class="task-name">Departure</span>
                     <input id="depQty" type="number" readonly placeholder="0">
-                    <input id="depCredit" type="number" step="0.01">
+                    <input id="depCredit" type="number" step="0.01" value="1">
                     <span id="depTotal" class="subtotal">0.0</span>
                 </div>
 
                 <div class="row">
                     <span class="task-name">Dropped Room</span>
                     <input id="backQty" type="number" readonly placeholder="0">
-                    <input id="backCredit" type="number" step="0.01">
+                    <input id="backCredit" type="number" step="0.01" value="1">
                     <span id="backTotal" class="subtotal">0.0</span>
                 </div>
 
                 <div class="row">
                     <span class="task-name">Pick-up</span>
                     <input id="pickQty" type="number" readonly placeholder="0">
-                    <input id="pickCredit" type="number" step="0.01">
+                    <input id="pickCredit" type="number" step="0.01" value="0.4">
                     <span id="pickTotal" class="subtotal">0.0</span>
                 </div>
 
                 <div class="row">
                     <span class="task-name">Turn Down</span>
                     <input id="turnQty" type="number" readonly placeholder="0">
-                    <input id="turnCredit" type="number" step="0.01">
+                    <input id="turnCredit" type="number" step="0.01" value="0.2">
                     <span id="turnTotal" class="subtotal">0.0</span>
                 </div>
 
@@ -219,14 +207,12 @@
                     <input id="creditRA" type="number" class="credit-box">
                 </div>
 
-                <!-- SUPERVISOR GOAL (TAMBAHAN SAMA PERSIS) -->
                 <div class="summary">
                     <label for="spvGoal">Supervisor Goal</label>
                     <input id="spvGoal" type="number" class="credit-box">
                 </div>
             </div>
 
-            <!-- REQUIRED ROOM ATTENDANT CARD -->
             <div class="staff-summary-card">
                 <div class="staff-summary-info">
                     <i class="fa-solid fa-users-gear"></i>
@@ -238,7 +224,6 @@
                 <div class="staff-summary-value" id="requiredRA">0</div>
             </div>
 
-            <!-- REQUIRED SUPERVISOR CARD (TAMBAHAN DENGAN KANAN SAMA PERSIS & IKON DASI/VEST) -->
             <div class="staff-summary-card">
                 <div class="staff-summary-info">
                     <i class="fa-solid fa-user-tie"></i>
@@ -273,15 +258,12 @@
             document.getElementById("pickCredit").value = MANNING_RULES.credits.pickup;
             document.getElementById("turnCredit").value = MANNING_RULES.credits.turndown;
             document.getElementById("creditRA").value = MANNING_RULES.targetCreditPerRA;
-            
-            // Set Supervisor Goal dari rules jika ada, jika tidak fallback ke 17
             document.getElementById("spvGoal").value = MANNING_RULES.targetArrivalPerSupervisor || 17;
         } else {
             document.getElementById("spvGoal").value = 17;
         }
     }
 
-    // FUNGSI MEMANGGIL STATUS SUBMISI TERAKHIR DARI GOOGLE SHEET (GLOBAL)
     function fetchLastSubmittedFromSheet() {
         if (!GOOGLE_SCRIPT_URL || GOOGLE_SCRIPT_URL.includes("GANTI_DENGAN")) return;
 
@@ -300,7 +282,6 @@
                 }
             })
             .catch(err => {
-                console.log("Gagal memuat status dari Apps Script, menggunakan data lokal:", err);
                 const savedTime = localStorage.getItem("lastSubmitTime");
                 const savedPlanner = localStorage.getItem("lastSubmitPlanner");
                 if (savedTime) document.getElementById("lastSubmitTime").innerText = savedTime;
@@ -326,7 +307,6 @@
         let tonightOccInput = document.getElementById("tonightOcc");
         let tonightOcc = Number(tonightOccInput?.value) || 0;
 
-        // VALIDASI REAL-TIME MAX ROOM SOLD 272 & MIN 0
         if (tonightOcc > 272) {
             tonightOcc = 272;
             tonightOccInput.value = 272;
@@ -355,6 +335,7 @@
         let turnCredit = Number(document.getElementById("turnCredit")?.value) || 0;
 
         let creditRA = Number(document.getElementById("creditRA")?.value) || 14;
+        let maxCreditCap = (typeof MANNING_RULES !== "undefined" && MANNING_RULES.maxCreditPerRA) ? MANNING_RULES.maxCreditPerRA : 14.1;
         let spvGoal = Number(document.getElementById("spvGoal")?.value) || 17;
 
         let stayover = tonightOcc - departure;
@@ -381,22 +362,21 @@
         let total = stayTotal + depTotal + backTotal + pickTotal + turnTotal;
         document.getElementById("totalCleaning").innerText = total.toFixed(1);
 
-        // Perhitungan Required RA
+        // Pembulatan ke atas untuk jumlah RA
         let raNeeded = Math.ceil(total / creditRA);
         document.getElementById("requiredRA").innerText = raNeeded;
 
-        // Perhitungan Required Supervisor = Arrival / Supervisor Goal
         let spvNeeded = arrival > 0 ? Math.ceil(arrival / spvGoal) : 0;
         document.getElementById("requiredSpv").innerText = spvNeeded;
 
-        generateRADistribution(raNeeded, total, creditRA, {
+        generateRADistribution(raNeeded, total, maxCreditCap, {
             stayover, departure, backlog, pickup, turndown
         }, {
             stayCredit, depCredit, backCredit, pickCredit, turnCredit
         });
     }
 
-    function generateRADistribution(raNeeded, totalCredit, targetCredit, qtyMap, weightMap) {
+    function generateRADistribution(raNeeded, totalCredit, maxCreditCap, qtyMap, weightMap) {
         const listContainer = document.getElementById("raAllocationList");
         if (!listContainer) return;
         listContainer.innerHTML = "";
@@ -450,18 +430,17 @@
         let taskIndex = 0;
 
         for (let i = 0; i < raNeeded; i++) {
-            let isLastRA = (i === raNeeded - 1);
             let ra = raAllocations[i];
 
             while (taskIndex < otherTasks.length) {
                 let currentTask = otherTasks[taskIndex];
-                let remainingCapacity = targetCredit - ra.credit;
+                let remainingCapacity = maxCreditCap - ra.credit;
 
-                if (!isLastRA && remainingCapacity < currentTask.weight) {
+                if (remainingCapacity < currentTask.weight) {
                     break;
                 }
 
-                let maxRoomsByCredit = isLastRA ? currentTask.qty : Math.floor(remainingCapacity / currentTask.weight);
+                let maxRoomsByCredit = Math.floor((remainingCapacity + 0.001) / currentTask.weight);
                 let roomsToAssign = Math.min(currentTask.qty, maxRoomsByCredit);
 
                 if (roomsToAssign > 0) {
@@ -474,14 +453,13 @@
                     taskIndex++;
                 }
 
-                if (!isLastRA && ra.credit >= targetCredit) {
+                if (ra.credit >= 14.0) {
                     break;
                 }
             }
         }
 
         raAllocations.forEach((ra, index) => {
-            let isLastRA = (index === raNeeded - 1);
             let raItem = document.createElement("div");
             raItem.className = "ra-item";
 
@@ -491,7 +469,12 @@
             }
 
             let taskText = taskTextArr.length > 0 ? taskTextArr.join(" + ") : "Persiapan & Bantuan Umum";
-            let specialBadge = isLastRA ? `<div class="special-project-badge"><i class="fa-solid fa-screwdriver-wrench"></i> RA Terakhir: Sisa Kredit + Special Project</div>` : "";
+            
+            let specialBadge = "";
+            if (ra.credit < 14.0) {
+                let deficit = (14.0 - ra.credit).toFixed(1);
+                specialBadge = `<div class="special-project-badge"><i class="fa-solid fa-screwdriver-wrench"></i> Kredit ${ra.credit.toFixed(1)} (Kurang ${deficit}) $\rightarrow$ Alokasi Special Project / Deep Cleaning</div>`;
+            }
 
             raItem.innerHTML = `
                 <div class="ra-header">
@@ -520,7 +503,6 @@
     function submitToGoogleSheet() {
         const tonightOcc = Number(document.getElementById("tonightOcc")?.value) || 0;
 
-        // VALIDASI SEBELUM SUBMIT
         if (tonightOcc <= 0 || tonightOcc > 272) {
             Swal.fire({
                 icon: 'error',
