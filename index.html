@@ -386,81 +386,73 @@
         return;
     }
 
-    // Ambil batas max stayover per RA dari rules.js (default: 13)
+    // Ambil batas max stayover per RA (Default: 13 kamar)
     const maxStayoverPerRA = (typeof MANNING_RULES !== "undefined" && MANNING_RULES.maxStayoverPerRA) 
                              ? MANNING_RULES.maxStayoverPerRA 
                              : 13;
 
+    // Inisialisasi wadah untuk setiap RA
     let raAllocations = [];
     for (let i = 0; i < raNeeded; i++) {
         raAllocations.push({ id: i + 1, credit: 0, tasks: {} });
     }
 
-    // Pool Stok Tugas berdasarkan Urutan Prioritas Baru
-    let taskPool = [
-        { name: "Stayover", qty: qtyMap.stayover, weight: weightMap.stayCredit, maxLimit: maxStayoverPerRA },
-        { name: "Dropped", qty: qtyMap.backlog, weight: weightMap.backCredit, maxLimit: null },
-        { name: "Pick-up", qty: qtyMap.pickup, weight: weightMap.pickCredit, maxLimit: null },
-        { name: "Departure", qty: qtyMap.departure, weight: weightMap.depCredit, maxLimit: null },
-        { name: "Turn Down", qty: qtyMap.turndown, weight: weightMap.turnCredit, maxLimit: null }
-    ].filter(t => t.qty > 0 && t.weight > 0);
+    // Pencatatan sisa stok tugas
+    let remainingTasks = {
+        stayover: qtyMap.stayover,
+        backlog: qtyMap.backlog,     // Dropped Room
+        departure: qtyMap.departure,
+        pickup: qtyMap.pickup,
+        turndown: qtyMap.turndown
+    };
 
-    let taskIndex = 0;
+    // Daftar Tugas Sesuai Urutan Prioritas
+    const taskPriorityList = [
+        { key: "stayover", name: "Stayover", weight: weightMap.stayCredit, maxQtyCap: maxStayoverPerRA },
+        { key: "backlog", name: "Dropped", weight: weightMap.backCredit, maxQtyCap: null },
+        { key: "departure", name: "Departure", weight: weightMap.depCredit, maxQtyCap: null },
+        { key: "pickup", name: "Pick-up", weight: weightMap.pickCredit, maxQtyCap: null },
+        { key: "turndown", name: "Turn Down", weight: weightMap.turnCredit, maxQtyCap: null }
+    ];
 
-    // Alokasi sekuensial dari RA 1 ke RA berikutnya
+    // Alokasi Sekuensial dari RA 1 hingga RA terakhir
     for (let i = 0; i < raNeeded; i++) {
         let ra = raAllocations[i];
 
-        while (taskIndex < taskPool.length) {
-            let currentTask = taskPool[taskIndex];
-            
-            // Hitung sisa kapasitas credit RA hingga batas 14.1
+        // Loop setiap jenis tugas berdasarkan urutan prioritas
+        for (let task of taskPriorityList) {
+            let availableQty = remainingTasks[task.key];
+            if (availableQty <= 0 || task.weight <= 0) continue;
+
+            // Hitung sisa kapasitas credit RA menuju maxCreditCap (14.1)
             let remainingCapacity = maxCreditCap - ra.credit;
+            if (remainingCapacity < task.weight - 0.0001) continue;
 
-            if (remainingCapacity < currentTask.weight - 0.0001) {
-                break;
-            }
-
-            // Hitung maksimal kamar berdasarkan sisa credit
-            let maxRoomsByCredit = Math.floor((remainingCapacity + 0.0001) / currentTask.weight);
+            // Hitung unit kamar yang bisa muat berdasarkan sisa credit
+            let maxRoomsByCredit = Math.floor((remainingCapacity + 0.0001) / task.weight);
             
-            // Batasi kuantitas jika ada batasan khusus (misal: Stayover max 13 kamar per RA)
-            let maxAllowedForThisRA = currentTask.maxLimit !== null 
-                ? Math.min(maxRoomsByCredit, currentTask.maxLimit - (ra.tasks[currentTask.name] || 0))
+            // Terapkan batasan khusus jika ada (misal Stayover max 13 kamar per RA)
+            let currentTaskAssigned = ra.tasks[task.name] || 0;
+            let maxRoomsAllowed = task.maxQtyCap !== null 
+                ? Math.min(maxRoomsByCredit, task.maxQtyCap - currentTaskAssigned)
                 : maxRoomsByCredit;
 
-            let roomsToAssign = Math.min(currentTask.qty, maxAllowedForThisRA);
+            let roomsToAssign = Math.min(availableQty, maxRoomsAllowed);
 
             if (roomsToAssign > 0) {
-                currentTask.qty -= roomsToAssign;
-                ra.credit += (roomsToAssign * currentTask.weight);
-                ra.tasks[currentTask.name] = (ra.tasks[currentTask.name] || 0) + roomsToAssign;
+                remainingTasks[task.key] -= roomsToAssign;
+                ra.credit += (roomsToAssign * task.weight);
+                ra.tasks[task.name] = (ra.tasks[task.name] || 0) + roomsToAssign;
             }
 
-            // Jika stok tugas jenis ini habis, pindah ke jenis tugas berikutnya
-            if (currentTask.qty <= 0) {
-                taskIndex++;
-            }
-
-            // Jika Stayover untuk RA ini sudah mencapai batas 13 kamar, lanjut cek tugas berikutnya di RA yang sama
-            if (currentTask.name === "Stayover" && (ra.tasks["Stayover"] || 0) >= maxStayoverPerRA) {
-                // Jangan break loop RA, tapi lanjut ke taskIndex berikutnya (Dropped, dst)
-                if (taskIndex === 0) taskIndex++;
-            }
-
-            // Jika total credit RA sudah mencapai 14.0 atau lebih, lanjut ke RA berikutnya
+            // Jika total credit RA sudah mencapai 14.0 atau lebih, stop untuk RA ini
             if (ra.credit >= 14.0) {
                 break;
-            }
-
-            // Jika tugas yang sedang diproses tidak bisa lagi ditambahkan ke RA ini, pindah ke jenis tugas selanjutnya
-            if (roomsToAssign === 0) {
-                taskIndex++;
             }
         }
     }
 
-    // Render ke UI
+    // Render Hasil ke UI
     raAllocations.forEach((ra) => {
         let raItem = document.createElement("div");
         raItem.className = "ra-item";
@@ -492,7 +484,6 @@
         listContainer.appendChild(raItem);
     });
 }
-
     function resetForm() {
         const fieldsToReset = ["planBy", "tonightOcc", "arrival", "departure", "backlog", "pickup", "turndown"];
         fieldsToReset.forEach(id => {
