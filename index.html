@@ -118,7 +118,7 @@
                 </div>
 
                 <div class="input-group">
-                    <label for="planBy">Planned by</label>
+                    <label for="planBy">Planner Name</label>
                     <input type="text" id="planBy" placeholder="Planner Name">
                 </div>
             </div>
@@ -244,10 +244,8 @@
 </div>
 
 <script>
-    // PASTI-KAN URL APPS SCRIPT ANDA SUDAH BENAR
     const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyrCK5_5KoJ9PvdvtR0aXUaWtEH0sAwzclSKDlsiuaXb2W47z-BGQfcOWlVZw7XM2dj/exec";
 
-    // MEMUAT SETTING DARI FILE rules.js KE INPUT DISPLAY
     function loadRulesToUI() {
         if (typeof MANNING_RULES !== "undefined") {
             document.getElementById("stayCredit").value = MANNING_RULES.credits.stayover;
@@ -267,7 +265,6 @@
         input.addEventListener("input", calculate);
     });
 
-    // MEMUAT DATA LAST SUBMITTED SAAT BROWSER DIBUKA
     document.addEventListener("DOMContentLoaded", function() {
         loadRulesToUI();
         calculate();
@@ -444,7 +441,17 @@
         });
     }
 
-    // FUNGSI SUBMIT KE GOOGLE SHEET
+    // FUNGSI MENGOSONGKAN INPUTAN FORM SETELAH SUBMIT
+    function resetForm() {
+        const fieldsToReset = ["planBy", "tonightOcc", "arrival", "departure", "backlog", "pickup", "turndown"];
+        fieldsToReset.forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.value = "";
+        });
+        // Recalculate untuk mengosongkan tabel dan alokasi RA
+        calculate();
+    }
+
     function submitToGoogleSheet() {
         if (!GOOGLE_SCRIPT_URL || GOOGLE_SCRIPT_URL.includes("GANTI_DENGAN")) {
             Swal.fire({
@@ -455,7 +462,6 @@
             return;
         }
 
-        // Ambil data Planner dan Waktu sebelum pengiriman
         const plannerInput = document.getElementById("planBy")?.value.trim() || "-";
         const now = new Date();
         const dateStr = now.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
@@ -469,7 +475,6 @@
         const getValue = (id) => document.getElementById(id)?.value || "0";
         const getText = (id) => document.getElementById(id)?.innerText || "0";
 
-        // Format data JSON
         const payload = {
             tonightOcc: getValue("tonightOcc"),
             arrival: getValue("arrival"),
@@ -491,7 +496,7 @@
             body: JSON.stringify(payload)
         })
         .then(() => {
-            // Update Tampilan Pos Card
+            // Update Tampilan Card
             if (document.getElementById("lastSubmitTime")) {
                 document.getElementById("lastSubmitTime").innerText = currentTimestamp;
             }
@@ -499,7 +504,7 @@
                 document.getElementById("lastSubmitPlanner").innerText = plannerInput;
             }
 
-            // Simpan Cache Lokal Browser
+            // Simpan ke Cache Browser
             localStorage.setItem("lastSubmitTime", currentTimestamp);
             localStorage.setItem("lastSubmitPlanner", plannerInput);
 
@@ -509,6 +514,9 @@
                 text: 'Data berhasil dikirim ke Google Sheet!',
                 confirmButtonColor: '#0284c7'
             });
+
+            // BERSIHKAN / RESET FORM SETELAH BERHASIL SUBMIT
+            resetForm();
         })
         .catch(error => {
             console.error("Error:", error);
