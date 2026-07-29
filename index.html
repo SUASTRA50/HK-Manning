@@ -141,7 +141,6 @@
             width: 90px;
         }
 
-        /* Styling Khusus Input Teks Plan By */
         .input-group input[type="text"] {
             width: 150px;
             text-align: left;
@@ -232,36 +231,118 @@
             font-weight: bold;
         }
 
-        /* RESULT TERMINAL CARD */
-        .staff-card {
-            margin-top: 20px;
-            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-            color: white;
-            border-radius: 14px;
-            padding: 20px;
-            text-align: center;
-            box-shadow: 0 10px 15px -3px rgba(15, 23, 42, 0.2);
+        /* REQUIRED ROOM ATTENDANT CARD */
+        .staff-summary-card {
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 16px 20px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            margin-bottom: 16px;
+            border: 1px solid #f1f5f9;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
-        .staff-title {
-            font-size: 12px;
-            opacity: 0.8;
-            text-transform: uppercase;
-            letter-spacing: 1px;
+        .staff-summary-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .staff-summary-info i {
+            font-size: 20px;
+            color: #0284c7;
+            background: #e0f2fe;
+            padding: 10px;
+            border-radius: 10px;
+        }
+
+        .staff-summary-title {
+            font-size: 13px;
             font-weight: 600;
+            color: #334155;
         }
 
-        .staff-value {
-            font-size: 48px;
+        .staff-summary-sub {
+            font-size: 11px;
+            color: #64748b;
+        }
+
+        .staff-summary-value {
+            font-size: 24px;
             font-weight: 800;
-            margin: 6px 0;
-            color: #38bdf8;
-            letter-spacing: -1px;
+            color: #0284c7;
+            background: #f0f9ff;
+            border: 1px solid #bae6fd;
+            padding: 4px 16px;
+            border-radius: 12px;
         }
 
-        .staff-unit {
-            font-size: 12px;
-            opacity: 0.7;
+        /* CARD RA DISTRIBUTION LIST */
+        .ra-card-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 10px;
+            max-height: 380px;
+            overflow-y: auto;
+            padding-right: 4px;
+        }
+
+        .ra-item {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 10px 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .ra-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .ra-name {
+            font-size: 13px;
+            font-weight: 700;
+            color: #0f172a;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .ra-credit-badge {
+            font-size: 11px;
+            font-weight: 700;
+            background: #e0f2fe;
+            color: #0369a1;
+            padding: 2px 8px;
+            border-radius: 12px;
+        }
+
+        .ra-details {
+            font-size: 11px;
+            color: #475569;
+            line-height: 1.4;
+            background: #ffffff;
+            padding: 8px;
+            border-radius: 6px;
+            border: 1px dashed #cbd5e1;
+        }
+
+        .special-project-badge {
+            margin-top: 4px;
+            font-size: 11px;
+            font-weight: 600;
+            color: #b45309;
+            background: #fef3c7;
+            padding: 4px 8px;
+            border-radius: 6px;
+            display: inline-block;
         }
 
         /* BUTTON */
@@ -332,7 +413,7 @@
             <div class="pos-card">
                 <h3><i class="fa-solid fa-chart-line"></i> Hotel Forecast</h3>
                 <div class="input-group">
-                    <label for="tonightOcc">Room Sold</label>
+                    <label for="tonightOcc">Room sold</label>
                     <input type="number" id="tonightOcc" placeholder="0" min="0">
                 </div>
                 <div class="input-group">
@@ -369,7 +450,7 @@
 
         </div>
 
-        <!-- RIGHT PANEL: WORKLOAD PREVIEW & RECEIPT SUMMARY -->
+        <!-- RIGHT PANEL: WORKLOAD PREVIEW & RA DISTRIBUTION -->
         <div class="right-panel">
             
             <div class="pos-card receipt-card">
@@ -434,14 +515,25 @@
                     <label for="creditRA">Credit / RA Capacity</label>
                     <input id="creditRA" type="number" value="14" class="credit-box">
                 </div>
+            </div>
 
-                <!-- POS Result Screen -->
-                <div class="staff-card">
-                    <div class="staff-title"><i class="fa-solid fa-users-gear"></i> Required Room Attendant</div>
-                    <div class="staff-value">
-                        <span id="requiredRA">0</span>
+            <!-- REQUIRED ROOM ATTENDANT -->
+            <div class="staff-summary-card">
+                <div class="staff-summary-info">
+                    <i class="fa-solid fa-users-gear"></i>
+                    <div>
+                        <div class="staff-summary-title">Required Room Attendant</div>
+                        <div class="staff-summary-sub">Active Staff Needed</div>
                     </div>
-                    <div class="staff-unit">Active Staff Members Needed</div>
+                </div>
+                <div class="staff-summary-value" id="requiredRA">0</div>
+            </div>
+
+            <!-- RA WORKLOAD ALLOCATION LIST -->
+            <div class="pos-card">
+                <h3><i class="fa-solid fa-clipboard-user"></i> Room Attendant Distribution</h3>
+                <div id="raAllocationList" class="ra-card-list">
+                    <!-- Item RA akan di-generate otomatis oleh JavaScript di sini -->
                 </div>
 
                 <button id="submitBtn" onclick="submitToGoogleSheet()">
@@ -455,9 +547,8 @@
 </div>
 
 <script>
-    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxvP2TuAXArk3gDQJzg6TH5ke_sNx2-KcOXCHCl3I8VGF8Dxyov-kGSAzdXSgfk0dpZ/exec";
+    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyrCK5_5KoJ9PvdvtR0aXUaWtEH0sAwzclSKDlsiuaXb2W47z-BGQfcOWlVZw7XM2dj/exec";
 
-    // Semua input yang mempengaruhi perhitungan
     const inputs = document.querySelectorAll(
         "#tonightOcc, #arrival, #departure, #backlog, #pickup, #turndown, #stayCredit, #depCredit, #backCredit, #pickCredit, #turnCredit, #creditRA"
     );
@@ -481,7 +572,7 @@
         let pickCredit = Number(document.getElementById("pickCredit")?.value) || 0;
         let turnCredit = Number(document.getElementById("turnCredit")?.value) || 0;
 
-        let creditRA = Number(document.getElementById("creditRA")?.value) || 1;
+        let creditRA = Number(document.getElementById("creditRA")?.value) || 14;
 
         let stayover = tonightOcc - departure;
         if (stayover < 0) stayover = 0;
@@ -507,11 +598,128 @@
         let total = stayTotal + depTotal + backTotal + pickTotal + turnTotal;
         if (document.getElementById("totalCleaning")) document.getElementById("totalCleaning").innerText = total.toFixed(1);
 
-        let ra = Math.ceil(total / creditRA);
-        if (document.getElementById("requiredRA")) document.getElementById("requiredRA").innerText = ra;
+        let raNeeded = Math.ceil(total / creditRA);
+        if (document.getElementById("requiredRA")) document.getElementById("requiredRA").innerText = raNeeded;
+
+        // Distribusi Kerja ke RA
+        generateRADistribution(raNeeded, total, creditRA, {
+            stayover, departure, backlog, pickup, turndown
+        }, {
+            stayCredit, depCredit, backCredit, pickCredit, turnCredit
+        });
     }
 
-    // FUNGSI RESET INPUT FORM
+    // ALGORITMA PEMBAGIAN TUGAS RA (STAYOVER & TURNDOWN DIBAGI RATA)
+    function generateRADistribution(raNeeded, totalCredit, targetCredit, qtyMap, weightMap) {
+        const listContainer = document.getElementById("raAllocationList");
+        if (!listContainer) return;
+        listContainer.innerHTML = "";
+
+        if (raNeeded <= 0 || totalCredit <= 0) {
+            listContainer.innerHTML = `<div style="text-align:center; font-size:12px; color:#94a3b8; padding:10px;">Belum ada alokasi tugas.</div>`;
+            return;
+        }
+
+        // Inisialisasi struktur data untuk setiap RA
+        let raAllocations = [];
+        for (let i = 0; i < raNeeded; i++) {
+            raAllocations.push({
+                id: i + 1,
+                credit: 0,
+                tasks: {}
+            });
+        }
+
+        // Helper Function: Membagi item secara merata ke seluruh RA
+        function distributeEqually(taskName, totalQty, weight) {
+            if (totalQty > 0 && weight > 0) {
+                let perRA = Math.floor(totalQty / raNeeded);
+                let remainder = totalQty % raNeeded;
+
+                for (let i = 0; i < raNeeded; i++) {
+                    let assigned = perRA + (i < remainder ? 1 : 0);
+                    if (assigned > 0) {
+                        raAllocations[i].tasks[taskName] = (raAllocations[i].tasks[taskName] || 0) + assigned;
+                        raAllocations[i].credit += assigned * weight;
+                    }
+                }
+            }
+        }
+
+        // 1. BAGI STAYOVER & TURN DOWN SECARA MERATA KE SEMUA RA
+        distributeEqually("Stayover", qtyMap.stayover, weightMap.stayCredit);
+        distributeEqually("Turn Down", qtyMap.turndown, weightMap.turnCredit);
+
+        // 2. SISA TUGAS LAINNYA (DROPPED -> DEPARTURE -> PICK-UP)
+        let otherTasks = [
+            { name: "Dropped", qty: qtyMap.backlog, weight: weightMap.backCredit },
+            { name: "Departure", qty: qtyMap.departure, weight: weightMap.depCredit },
+            { name: "Pick-up", qty: qtyMap.pickup, weight: weightMap.pickCredit }
+        ].filter(t => t.qty > 0 && t.weight > 0);
+
+        let taskIndex = 0;
+
+        for (let i = 0; i < raNeeded; i++) {
+            let isLastRA = (i === raNeeded - 1);
+            let ra = raAllocations[i];
+
+            while (taskIndex < otherTasks.length) {
+                let currentTask = otherTasks[taskIndex];
+                let remainingCapacity = targetCredit - ra.credit;
+
+                // Jika bukan RA terakhir dan sisa kapasitas kredit kurang dari bobot 1 kamar, pindah ke RA berikutnya
+                if (!isLastRA && remainingCapacity < currentTask.weight) {
+                    break;
+                }
+
+                let maxRoomsByCredit = isLastRA ? currentTask.qty : Math.floor(remainingCapacity / currentTask.weight);
+                let roomsToAssign = Math.min(currentTask.qty, maxRoomsByCredit);
+
+                if (roomsToAssign > 0) {
+                    currentTask.qty -= roomsToAssign;
+                    ra.credit += (roomsToAssign * currentTask.weight);
+                    ra.tasks[currentTask.name] = (ra.tasks[currentTask.name] || 0) + roomsToAssign;
+                }
+
+                if (currentTask.qty <= 0) {
+                    taskIndex++;
+                }
+
+                if (!isLastRA && ra.credit >= targetCredit) {
+                    break;
+                }
+            }
+        }
+
+        // 3. RENDER HASIL KE UI
+        raAllocations.forEach((ra, index) => {
+            let isLastRA = (index === raNeeded - 1);
+            let raItem = document.createElement("div");
+            raItem.className = "ra-item";
+
+            let taskTextArr = [];
+            for (let [tName, tQty] of Object.entries(ra.tasks)) {
+                taskTextArr.push(`${tQty} ${tName}`);
+            }
+
+            let taskText = taskTextArr.length > 0 ? taskTextArr.join(" + ") : "Persiapan & Bantuan Umum";
+            let specialBadge = isLastRA ? `<div class="special-project-badge"><i class="fa-solid fa-screwdriver-wrench"></i> RA Terakhir: Sisa Kredit + Special Project</div>` : "";
+
+            raItem.innerHTML = `
+                <div class="ra-header">
+                    <span class="ra-name"><i class="fa-solid fa-user-check" style="color:#0284c7;"></i> RA ${ra.id}</span>
+                    <span class="ra-credit-badge">${ra.credit.toFixed(1)} Credit</span>
+                </div>
+                <div class="ra-details">
+                    <b>Role/Tugas:</b> ${taskText}
+                    ${specialBadge}
+                </div>
+            `;
+
+            listContainer.appendChild(raItem);
+        });
+    }
+
     function resetForm() {
         if (document.getElementById("planBy")) document.getElementById("planBy").value = "";
         if (document.getElementById("tonightOcc")) document.getElementById("tonightOcc").value = "";
@@ -524,7 +732,6 @@
         calculate();
     }
 
-    // FUNGSI SUBMIT DATA KE GOOGLE SHEETS
     function submitToGoogleSheet() {
         if (!GOOGLE_SCRIPT_URL || GOOGLE_SCRIPT_URL.includes("GANTI_DENGAN")) {
             Swal.fire({
@@ -539,7 +746,6 @@
         btn.disabled = true;
         btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> SUBMITTING...`;
 
-        // Helper aman pembaca nilai elemen
         const getValue = (id) => {
             const el = document.getElementById(id);
             return el ? el.value : "";
@@ -550,26 +756,26 @@
             return el ? el.innerText : "0";
         };
 
-        // Payload data dikirim dalam bentuk JSON
-        const payload = {
-            tonightOcc: getValue("tonightOcc") || 0,
-            arrival: getValue("arrival") || 0,
-            departure: getValue("departure") || 0,
-            backlog: getValue("backlog") || 0,
-            pickup: getValue("pickup") || 0,
-            turndown: getValue("turndown") || 0,
-            stayQty: getValue("stayQty") || 0,
-            totalCleaning: getText("totalCleaning"),
-            creditRA: getValue("creditRA") || 0,
-            requiredRA: getText("requiredRA"),
-            planBy: getValue("planBy") || "-"
-        };
+        const formData = new URLSearchParams();
+        formData.append("tonightOcc", getValue("tonightOcc") || "0");
+        formData.append("arrival", getValue("arrival") || "0");
+        formData.append("departure", getValue("departure") || "0");
+        formData.append("backlog", getValue("backlog") || "0");
+        formData.append("pickup", getValue("pickup") || "0");
+        formData.append("turndown", getValue("turndown") || "0");
+        formData.append("stayQty", getValue("stayQty") || "0");
+        formData.append("totalCleaning", getText("totalCleaning"));
+        formData.append("creditRA", getValue("creditRA") || "0");
+        formData.append("requiredRA", getText("requiredRA"));
+        formData.append("planBy", getValue("planBy") || "-");
 
         fetch(GOOGLE_SCRIPT_URL, {
             method: "POST",
             mode: "no-cors",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(payload)
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded"
+            },
+            body: formData.toString()
         })
         .then(() => {
             Swal.fire({
@@ -598,3 +804,4 @@
 
 </body>
 </html>
+
