@@ -523,8 +523,6 @@
         const getValue = (id) => document.getElementById(id)?.value || "0";
         const getText = (id) => document.getElementById(id)?.innerText || "0";
 
-        // Di dalam fungsi submitToGoogleSheet() pada index.html
-const plannerInput = document.getElementById("planBy")?.value.trim() || "-";
 
 const payload = {
     tonightOcc: getValue("tonightOcc"),
