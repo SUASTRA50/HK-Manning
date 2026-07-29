@@ -159,7 +159,7 @@
                     <span>Total</span>
                 </div>
 
-                <!-- WEIGHT/CREDIT DISESUAIKAN DENGAN GAMBAR -->
+                <!-- WEIGHT/CREDIT PERSIS SEPERTI TAMPILAN GAMBAR -->
                 <div class="row">
                     <span class="task-name">Stayover</span>
                     <input id="stayQty" type="number" readonly placeholder="0">
@@ -258,9 +258,9 @@
             document.getElementById("pickCredit").value = MANNING_RULES.credits.pickup;
             document.getElementById("turnCredit").value = MANNING_RULES.credits.turndown;
             document.getElementById("creditRA").value = MANNING_RULES.targetCreditPerRA;
-            document.getElementById("spvGoal").value = MANNING_RULES.targetArrivalPerSupervisor || 20;
+            document.getElementById("spvGoal").value = MANNING_RULES.targetArrivalPerSupervisor || 17;
         } else {
-            document.getElementById("spvGoal").value = 20;
+            document.getElementById("spvGoal").value = 17;
         }
     }
 
@@ -391,56 +391,31 @@
             raAllocations.push({ id: i + 1, credit: 0, tasks: {} });
         }
 
-        function distributeEqually(taskName, totalQty, weight) {
-            if (totalQty > 0 && weight > 0) {
-                let perRA = Math.floor(totalQty / raNeeded);
-                let remainder = totalQty % raNeeded;
-
-                for (let i = 0; i < raNeeded; i++) {
-                    let assigned = perRA + (i < remainder ? 1 : 0);
-                    if (assigned > 0) {
-                        raAllocations[i].tasks[taskName] = (raAllocations[i].tasks[taskName] || 0) + assigned;
-                        raAllocations[i].credit += assigned * weight;
-                    }
-                }
-            }
-        }
-
-        if (typeof MANNING_RULES !== "undefined" && MANNING_RULES.distributionRules.splitStayoverEqually) {
-            distributeEqually("Stayover", qtyMap.stayover, weightMap.stayCredit);
-        }
-        if (typeof MANNING_RULES !== "undefined" && MANNING_RULES.distributionRules.splitTurndownEqually) {
-            distributeEqually("Turn Down", qtyMap.turndown, weightMap.turnCredit);
-        }
-
-        let rawTasks = {
-            dropped: { name: "Dropped", qty: qtyMap.backlog, weight: weightMap.backCredit },
-            departure: { name: "Departure", qty: qtyMap.departure, weight: weightMap.depCredit },
-            pickup: { name: "Pick-up", qty: qtyMap.pickup, weight: weightMap.pickCredit }
-        };
-
-        let priorityOrder = (typeof MANNING_RULES !== "undefined") 
-            ? MANNING_RULES.distributionRules.fillPriority 
-            : ["dropped", "departure", "pickup"];
-
-        let otherTasks = priorityOrder
-            .map(key => rawTasks[key])
-            .filter(t => t && t.qty > 0 && t.weight > 0);
+        // Daftar tugas secara berurutan
+        let taskPool = [
+            { name: "Stayover", qty: qtyMap.stayover, weight: weightMap.stayCredit },
+            { name: "Dropped", qty: qtyMap.backlog, weight: weightMap.backCredit },
+            { name: "Departure", qty: qtyMap.departure, weight: weightMap.depCredit },
+            { name: "Pick-up", qty: qtyMap.pickup, weight: weightMap.pickCredit },
+            { name: "Turn Down", qty: qtyMap.turndown, weight: weightMap.turnCredit }
+        ].filter(t => t.qty > 0 && t.weight > 0);
 
         let taskIndex = 0;
 
+        // Isi RA berurutan (RA 1, RA 2, dst) secara maksimal mendekati maxCreditCap (14.1)
         for (let i = 0; i < raNeeded; i++) {
             let ra = raAllocations[i];
 
-            while (taskIndex < otherTasks.length) {
-                let currentTask = otherTasks[taskIndex];
+            while (taskIndex < taskPool.length) {
+                let currentTask = taskPool[taskIndex];
+                
                 let remainingCapacity = maxCreditCap - ra.credit;
 
-                if (remainingCapacity < currentTask.weight) {
+                if (remainingCapacity < currentTask.weight - 0.0001) {
                     break;
                 }
 
-                let maxRoomsByCredit = Math.floor((remainingCapacity + 0.001) / currentTask.weight);
+                let maxRoomsByCredit = Math.floor((remainingCapacity + 0.0001) / currentTask.weight);
                 let roomsToAssign = Math.min(currentTask.qty, maxRoomsByCredit);
 
                 if (roomsToAssign > 0) {
@@ -459,6 +434,7 @@
             }
         }
 
+        // Render ke UI
         raAllocations.forEach((ra, index) => {
             let raItem = document.createElement("div");
             raItem.className = "ra-item";
@@ -473,7 +449,7 @@
             let specialBadge = "";
             if (ra.credit < 14.0) {
                 let deficit = (14.0 - ra.credit).toFixed(1);
-                specialBadge = `<div class="special-project-badge"><i class="fa-solid fa-screwdriver-wrench"></i> Kredit ${ra.credit.toFixed(1)} (Less ${deficit}) / Deep Cleaning</div>`;
+                specialBadge = `<div class="special-project-badge"><i class="fa-solid fa-screwdriver-wrench"></i> Kredit ${ra.credit.toFixed(1)} (Kurang ${deficit}) $\rightarrow$ Alokasi Special Project / Deep Cleaning</div>`;
             }
 
             raItem.innerHTML = `
