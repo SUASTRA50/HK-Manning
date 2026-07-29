@@ -1,18 +1,33 @@
+/* =========================================================
+   FILE KONFIGURASI RULES & BOBOT WORKLOAD
+   Anda bisa mengubah nilai angka di bawah ini sesuai kebutuhan.
+   ========================================================= */
+
 const MANNING_RULES = {
+    // Target kredit per Room Attendant (RA)
     targetCreditPerRA: 14,
-    maxCreditPerRA: 14.1, // Batas maksimal kredit per RA (ketat)
-    targetArrivalPerSupervisor: 17,
+
+    // Bobot Kredit per Jenis Pekerjaan
     credits: {
-        stayover: 0.8,  // Sesuai gambar UI
-        departure: 1.0,  // Sesuai gambar UI
-        dropped: 1.0,    // Sesuai gambar UI
-        pickup: 0.4,     // Sesuai gambar UI
-        turndown: 0.2    // Sesuai gambar UI
+        stayover: 0.80,
+        departure: 1.00,
+        dropped: 1.00,
+        pickup: 0.40,
+        turndown: 0.20
     },
+
+    // Aturan Pembagian Tugas
     distributionRules: {
-        // Urutan prioritas pengisian tugas secara berurutan
-        fillPriority: ["stayover", "dropped", "departure", "pickup", "turndown"],
-        splitStayoverEqually: false, // Dibuat false agar RA awal diisi penuh sampai 14.1
-        splitTurndownEqually: false  // Dibuat false agar RA awal diisi penuh sampai 14.1
+        splitStayoverEqually: true,  // Stayover dibagi rata ke semua RA?
+        splitTurndownEqually: true,  // Turn Down dibagi rata ke semua RA?
+        
+        // Prioritas pengisian sisa kredit RA
+        fillPriority: [
+            "dropped",
+            "departure",
+            "pickup"
+        ]
     }
 };
+
+
