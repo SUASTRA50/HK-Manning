@@ -376,96 +376,122 @@
         });
     }
 
-    function generateRADistribution(raNeeded, totalCredit, maxCreditCap, qtyMap, weightMap) {
-        const listContainer = document.getElementById("raAllocationList");
-        if (!listContainer) return;
-        listContainer.innerHTML = "";
+   function generateRADistribution(raNeeded, totalCredit, maxCreditCap, qtyMap, weightMap) {
+    const listContainer = document.getElementById("raAllocationList");
+    if (!listContainer) return;
+    listContainer.innerHTML = "";
 
-        if (raNeeded <= 0 || totalCredit <= 0) {
-            listContainer.innerHTML = `<div style="text-align:center; font-size:12px; color:#94a3b8; padding:10px;">Belum ada alokasi tugas.</div>`;
-            return;
-        }
-
-        let raAllocations = [];
-        for (let i = 0; i < raNeeded; i++) {
-            raAllocations.push({ id: i + 1, credit: 0, tasks: {} });
-        }
-
-        // Daftar tugas secara berurutan
-        let taskPool = [
-            { name: "Stayover", qty: qtyMap.stayover, weight: weightMap.stayCredit },
-            { name: "Dropped", qty: qtyMap.backlog, weight: weightMap.backCredit },
-            { name: "Departure", qty: qtyMap.departure, weight: weightMap.depCredit },
-            { name: "Pick-up", qty: qtyMap.pickup, weight: weightMap.pickCredit },
-            { name: "Turn Down", qty: qtyMap.turndown, weight: weightMap.turnCredit }
-        ].filter(t => t.qty > 0 && t.weight > 0);
-
-        let taskIndex = 0;
-
-        // Isi RA berurutan (RA 1, RA 2, dst) secara maksimal mendekati maxCreditCap (14.1)
-        for (let i = 0; i < raNeeded; i++) {
-            let ra = raAllocations[i];
-
-            while (taskIndex < taskPool.length) {
-                let currentTask = taskPool[taskIndex];
-                
-                let remainingCapacity = maxCreditCap - ra.credit;
-
-                if (remainingCapacity < currentTask.weight - 0.0001) {
-                    break;
-                }
-
-                let maxRoomsByCredit = Math.floor((remainingCapacity + 0.0001) / currentTask.weight);
-                let roomsToAssign = Math.min(currentTask.qty, maxRoomsByCredit);
-
-                if (roomsToAssign > 0) {
-                    currentTask.qty -= roomsToAssign;
-                    ra.credit += (roomsToAssign * currentTask.weight);
-                    ra.tasks[currentTask.name] = (ra.tasks[currentTask.name] || 0) + roomsToAssign;
-                }
-
-                if (currentTask.qty <= 0) {
-                    taskIndex++;
-                }
-
-                if (ra.credit >= 14.0) {
-                    break;
-                }
-            }
-        }
-
-        // Render ke UI
-        raAllocations.forEach((ra, index) => {
-            let raItem = document.createElement("div");
-            raItem.className = "ra-item";
-
-            let taskTextArr = [];
-            for (let [tName, tQty] of Object.entries(ra.tasks)) {
-                taskTextArr.push(`${tQty} ${tName}`);
-            }
-
-            let taskText = taskTextArr.length > 0 ? taskTextArr.join(" + ") : "Persiapan & Bantuan Umum";
-            
-            let specialBadge = "";
-            if (ra.credit < 14.0) {
-                let deficit = (14.0 - ra.credit).toFixed(1);
-                specialBadge = `<div class="special-project-badge"><i class="fa-solid fa-screwdriver-wrench"></i> Kredit ${ra.credit.toFixed(1)} (Kurang ${deficit}) $\rightarrow$ Alokasi Special Project / Deep Cleaning</div>`;
-            }
-
-            raItem.innerHTML = `
-                <div class="ra-header">
-                    <span class="ra-name"><i class="fa-solid fa-user-check" style="color:#0284c7;"></i> RA ${ra.id}</span>
-                    <span class="ra-credit-badge">${ra.credit.toFixed(1)} Credit</span>
-                </div>
-                <div class="ra-details">
-                    <b>Role/Tugas:</b> ${taskText}
-                    ${specialBadge}
-                </div>
-            `;
-
-            listContainer.appendChild(raItem);
-        });
+    if (raNeeded <= 0 || totalCredit <= 0) {
+        listContainer.innerHTML = `<div style="text-align:center; font-size:12px; color:#94a3b8; padding:10px;">Belum ada alokasi tugas.</div>`;
+        return;
     }
+
+    // Ambil batas max stayover per RA dari rules.js (default: 13)
+    const maxStayoverPerRA = (typeof MANNING_RULES !== "undefined" && MANNING_RULES.maxStayoverPerRA) 
+                             ? MANNING_RULES.maxStayoverPerRA 
+                             : 13;
+
+    let raAllocations = [];
+    for (let i = 0; i < raNeeded; i++) {
+        raAllocations.push({ id: i + 1, credit: 0, tasks: {} });
+    }
+
+    // Pool Stok Tugas berdasarkan Urutan Prioritas Baru
+    let taskPool = [
+        { name: "Stayover", qty: qtyMap.stayover, weight: weightMap.stayCredit, maxLimit: maxStayoverPerRA },
+        { name: "Dropped", qty: qtyMap.backlog, weight: weightMap.backCredit, maxLimit: null },
+        { name: "Pick-up", qty: qtyMap.pickup, weight: weightMap.pickCredit, maxLimit: null },
+        { name: "Departure", qty: qtyMap.departure, weight: weightMap.depCredit, maxLimit: null },
+        { name: "Turn Down", qty: qtyMap.turndown, weight: weightMap.turnCredit, maxLimit: null }
+    ].filter(t => t.qty > 0 && t.weight > 0);
+
+    let taskIndex = 0;
+
+    // Alokasi sekuensial dari RA 1 ke RA berikutnya
+    for (let i = 0; i < raNeeded; i++) {
+        let ra = raAllocations[i];
+
+        while (taskIndex < taskPool.length) {
+            let currentTask = taskPool[taskIndex];
+            
+            // Hitung sisa kapasitas credit RA hingga batas 14.1
+            let remainingCapacity = maxCreditCap - ra.credit;
+
+            if (remainingCapacity < currentTask.weight - 0.0001) {
+                break;
+            }
+
+            // Hitung maksimal kamar berdasarkan sisa credit
+            let maxRoomsByCredit = Math.floor((remainingCapacity + 0.0001) / currentTask.weight);
+            
+            // Batasi kuantitas jika ada batasan khusus (misal: Stayover max 13 kamar per RA)
+            let maxAllowedForThisRA = currentTask.maxLimit !== null 
+                ? Math.min(maxRoomsByCredit, currentTask.maxLimit - (ra.tasks[currentTask.name] || 0))
+                : maxRoomsByCredit;
+
+            let roomsToAssign = Math.min(currentTask.qty, maxAllowedForThisRA);
+
+            if (roomsToAssign > 0) {
+                currentTask.qty -= roomsToAssign;
+                ra.credit += (roomsToAssign * currentTask.weight);
+                ra.tasks[currentTask.name] = (ra.tasks[currentTask.name] || 0) + roomsToAssign;
+            }
+
+            // Jika stok tugas jenis ini habis, pindah ke jenis tugas berikutnya
+            if (currentTask.qty <= 0) {
+                taskIndex++;
+            }
+
+            // Jika Stayover untuk RA ini sudah mencapai batas 13 kamar, lanjut cek tugas berikutnya di RA yang sama
+            if (currentTask.name === "Stayover" && (ra.tasks["Stayover"] || 0) >= maxStayoverPerRA) {
+                // Jangan break loop RA, tapi lanjut ke taskIndex berikutnya (Dropped, dst)
+                if (taskIndex === 0) taskIndex++;
+            }
+
+            // Jika total credit RA sudah mencapai 14.0 atau lebih, lanjut ke RA berikutnya
+            if (ra.credit >= 14.0) {
+                break;
+            }
+
+            // Jika tugas yang sedang diproses tidak bisa lagi ditambahkan ke RA ini, pindah ke jenis tugas selanjutnya
+            if (roomsToAssign === 0) {
+                taskIndex++;
+            }
+        }
+    }
+
+    // Render ke UI
+    raAllocations.forEach((ra) => {
+        let raItem = document.createElement("div");
+        raItem.className = "ra-item";
+
+        let taskTextArr = [];
+        for (let [tName, tQty] of Object.entries(ra.tasks)) {
+            if (tQty > 0) taskTextArr.push(`${tQty} ${tName}`);
+        }
+
+        let taskText = taskTextArr.length > 0 ? taskTextArr.join(" + ") : "Persiapan & Bantuan Umum";
+        
+        let specialBadge = "";
+        if (ra.credit < 14.0) {
+            let deficit = (14.0 - ra.credit).toFixed(1);
+            specialBadge = `<div class="special-project-badge"><i class="fa-solid fa-screwdriver-wrench"></i> Kredit ${ra.credit.toFixed(1)} (Kurang ${deficit}) $\rightarrow$ Alokasi Special Project / Deep Cleaning</div>`;
+        }
+
+        raItem.innerHTML = `
+            <div class="ra-header">
+                <span class="ra-name"><i class="fa-solid fa-user-check" style="color:#0284c7;"></i> RA ${ra.id}</span>
+                <span class="ra-credit-badge">${ra.credit.toFixed(1)} Credit</span>
+            </div>
+            <div class="ra-details">
+                <b>Role/Tugas:</b> ${taskText}
+                ${specialBadge}
+            </div>
+        `;
+
+        listContainer.appendChild(raItem);
+    });
+}
 
     function resetForm() {
         const fieldsToReset = ["planBy", "tonightOcc", "arrival", "departure", "backlog", "pickup", "turndown"];
