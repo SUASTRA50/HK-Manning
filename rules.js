@@ -1,17 +1,18 @@
 const MANNING_RULES = {
     targetCreditPerRA: 14,
-    maxCreditPerRA: 14.1, // Maksimal credit per RA
-    targetArrivalPerSupervisor: 20,
+    maxCreditPerRA: 14.1, // Batas maksimal kredit per RA (ketat)
+    targetArrivalPerSupervisor: 17,
     credits: {
-        stayover: 0.8,
-        departure: 1.0,
-        dropped: 1.0,
-        pickup: 0.4,
-        turndown: 0.2
+        stayover: 0.8,  // Sesuai gambar UI
+        departure: 1.0,  // Sesuai gambar UI
+        dropped: 1.0,    // Sesuai gambar UI
+        pickup: 0.4,     // Sesuai gambar UI
+        turndown: 0.2    // Sesuai gambar UI
     },
     distributionRules: {
-        fillPriority: ["dropped", "departure", "pickup"],
-        splitStayoverEqually: true,
-        splitTurndownEqually: false
+        // Urutan prioritas pengisian tugas secara berurutan
+        fillPriority: ["stayover", "dropped", "departure", "pickup", "turndown"],
+        splitStayoverEqually: false, // Dibuat false agar RA awal diisi penuh sampai 14.1
+        splitTurndownEqually: false  // Dibuat false agar RA awal diisi penuh sampai 14.1
     }
 };
