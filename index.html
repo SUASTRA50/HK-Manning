@@ -374,6 +374,41 @@
             background-color: #94a3b8;
             cursor: not-allowed;
         }
+        /* Styling untuk info last submitted */
+.last-submit-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    font-size: 11px;
+    color: #ef4444; /* Warna merah */
+    background: #fef2f2; /* Background tipis merah muda */
+    border: 1px dashed #fca5a5;
+    padding: 8px 12px;
+    border-radius: 8px;
+    margin-bottom: 12px;
+}
+
+.last-submit-left, .last-submit-right {
+    display: flex;
+    flex-direction: column;
+}
+
+.last-submit-right {
+    text-align: right;
+}
+
+.last-submit-label {
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 9px;
+    letter-spacing: 0.5px;
+    opacity: 0.8;
+}
+
+.last-submit-value {
+    font-weight: 700;
+    margin-top: 2px;
+}
     </style>
 </head>
  
@@ -400,14 +435,27 @@
         <!-- LEFT PANEL: INPUT PARAMETERS -->
         <div class="left-panel">
             
-            <!-- PLANNER INFO -->
-            <div class="pos-card">
-                <h3><i class="fa-solid fa-user-pen"></i> Planner Info</h3>
-                <div class="input-group">
-                    <label for="planBy">Planned by</label>
-                    <input type="text" id="planBy" placeholder="Nama Planner">
-                </div>
-            </div>
+                   <!-- PLANNER INFO -->
+<div class="pos-card">
+    <h3><i class="fa-solid fa-user-pen"></i> Planner Info</h3>
+    
+    <!-- Teks Info Last Submitted (Kiri & Kanan) -->
+    <div class="last-submit-info" id="lastSubmitBox">
+        <div class="last-submit-left">
+            <span class="last-submit-label">Last Submitted</span>
+            <span class="last-submit-value" id="lastSubmitTime">28 Jul 2026 15:42</span>
+        </div>
+        <div class="last-submit-right">
+            <span class="last-submit-label">Planner</span>
+            <span class="last-submit-value" id="lastSubmitPlanner">Made Suastra</span>
+        </div>
+    </div>
+
+    <div class="input-group">
+        <label for="planBy">Planned by</label>
+        <input type="text" id="planBy" placeholder="Nama Planner">
+    </div>
+</div>
 
             <!-- HOTEL FORECAST -->
             <div class="pos-card">
