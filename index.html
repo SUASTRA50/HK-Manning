@@ -465,9 +465,9 @@
         let taskText = taskTextArr.length > 0 ? taskTextArr.join(" + ") : "Persiapan & Bantuan Umum";
         
         let specialBadge = "";
-        if (ra.credit < 14.0) {
+        if (ra.credit < 13.0) {
             let deficit = (14.0 - ra.credit).toFixed(1);
-            specialBadge = `<div class="special-project-badge"><i class="fa-solid fa-screwdriver-wrench"></i> Kredit ${ra.credit.toFixed(1)} (Kurang ${deficit}) $\rightarrow$ Alokasi Special Project / Deep Cleaning</div>`;
+            specialBadge = `<div class="special-project-badge"><i class="fa-solid fa-screwdriver-wrench"></i> Credit ${ra.credit.toFixed(1)} (Less ${deficit}) Alokasi Special Project / Deep Cleaning</div>`;
         }
 
         raItem.innerHTML = `
