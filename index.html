@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HK MANNING CALCULATOR</title>
+    <title>MANNING BREAKDOWN</title>
     <!-- FontAwesome Icon -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- SweetAlert2 CSS & JS -->
@@ -16,48 +16,62 @@
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         body { background-color: #f1f5f9; color: #1e293b; padding: 24px; display: flex; justify-content: center; }
         .pos-container { width: 100%; max-width: 1100px; }
+        
+        /* HEADER & BRANDING */
         .pos-header { background: #ffffff; padding: 16px 24px; border-radius: 16px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); margin-bottom: 20px; }
-        .brand { display: flex; align-items: center; gap: 14px; }
-        .brand i { font-size: 18px; color: #0284c7; background: #e0f2fe; padding: 8px 12px; border-radius: 8px; display: inline-flex; align-items: center; justify-content: center; }
-        .brand h1 { font-size: 18px; font-weight: 700; color: #0f172a; }
-        .brand p { font-size: 12px; color: #64748b; }
-        .pos-badge { background: #f8fafc; border: 1px solid #e2e8f0; padding: 8px 14px; border-radius: 20px; font-size: 13px; color: #475569; }
+        .brand { display: flex; align-items: center; gap: 12px; }
+        .brand h1 { font-size: 15px; font-weight: 700; color: #0f172a; letter-spacing: 0.3px; }
+        .brand p { font-size: 11px; color: #64748b; }
+        
+        .btn-settings { background: #e0f2fe; color: #0284c7; border: none; padding: 8px 12px; border-radius: 8px; cursor: pointer; font-size: 14px; transition: all 0.2s; display: inline-flex; align-items: center; justify-content: center; }
+        .btn-settings:hover { background: #bae6fd; transform: rotate(30deg); }
+
+        .capacity-display { text-align: right; font-size: 12px; color: #64748b; line-height: 1.3; }
+        .capacity-display b { display: block; font-size: 14px; color: #0f172a; font-weight: 700; }
+
+        /* GRID LAYOUT */
         .pos-grid { display: grid; grid-template-columns: 1fr 1.2fr; gap: 20px; }
         @media (max-width: 860px) { .pos-grid { grid-template-columns: 1fr; } }
         .pos-card { background: #ffffff; border-radius: 16px; padding: 20px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); margin-bottom: 16px; border: 1px solid #f1f5f9; }
-        .pos-card h3 { font-size: 14px; color: #0284c7; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+        .pos-card h3 { font-size: 13px; color: #0284c7; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
         
-        /* Last Submitted Box */
+        /* LAST SUBMITTED BOX */
         .last-submit-info { display: flex; justify-content: space-between; align-items: flex-start; font-size: 11px; color: #64748b; background: #f8fafc; border: 1px solid #e2e8f0; padding: 8px 12px; border-radius: 8px; margin-bottom: 14px; }
         .last-submit-left, .last-submit-right { display: flex; flex-direction: column; }
         .last-submit-right { text-align: right; }
         .last-submit-label { font-weight: 600; text-transform: uppercase; font-size: 9px; letter-spacing: 0.5px; opacity: 0.85; }
         .last-submit-value { font-weight: 700; margin-top: 2px; color: #1e293b; }
 
+        /* INPUT & TABLES */
         .input-group { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
         .input-group label { font-size: 13px; color: #475569; font-weight: 500; }
         .input-group input, .row input, .summary input { padding: 8px 10px; border: 1px solid #cbd5e1; border-radius: 8px; outline: none; font-size: 14px; text-align: right; background: #f8fafc; transition: all 0.2s; }
         .input-group input { width: 90px; }
         .input-group input[type="text"] { width: 160px; text-align: left; }
         .input-group input:focus, .row input:focus, .summary input:focus { border-color: #0284c7; background: #fff; box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15); }
+        
         .table-header { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; font-size: 11px; font-weight: 700; color: #94a3b8; margin-bottom: 10px; text-align: center; text-transform: uppercase; }
         .table-header span:first-child { text-align: left; }
         .row { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; align-items: center; gap: 6px; margin-bottom: 8px; }
         .row .task-name { font-size: 13px; color: #334155; font-weight: 500; }
         .row input { width: 100%; }
         .row input[readonly] { background-color: #f1f5f9; color: #64748b; border-color: #e2e8f0; }
+        
         .subtotal { font-size: 13px; font-weight: 600; text-align: right; color: #0f172a; }
         .receipt-divider { height: 1px; background: #e2e8f0; margin: 16px 0; }
         .summary { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
         .summary label { font-size: 13px; font-weight: 600; color: #334155; }
         .total-badge { font-size: 18px; font-weight: bold; color: #0284c7; }
         .credit-box { width: 70px; font-weight: bold; }
+
+        /* CARDS & DISTRIBUTION */
         .staff-summary-card { background: #ffffff; border-radius: 16px; padding: 16px 20px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); margin-bottom: 16px; border: 1px solid #f1f5f9; display: flex; justify-content: space-between; align-items: center; }
         .staff-summary-info { display: flex; align-items: center; gap: 12px; }
         .staff-summary-info i { font-size: 20px; color: #0284c7; background: #e0f2fe; padding: 10px; border-radius: 10px; }
         .staff-summary-title { font-size: 13px; font-weight: 600; color: #334155; }
         .staff-summary-sub { font-size: 11px; color: #64748b; }
         .staff-summary-value { font-size: 24px; font-weight: 800; color: #0284c7; background: #f0f9ff; border: 1px solid #bae6fd; padding: 4px 16px; border-radius: 12px; }
+        
         .ra-card-list { display: flex; flex-direction: column; gap: 10px; margin-top: 10px; max-height: 380px; overflow-y: auto; padding-right: 4px; }
         .ra-item { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 10px 14px; display: flex; flex-direction: column; gap: 6px; }
         .ra-header { display: flex; justify-content: space-between; align-items: center; }
@@ -65,25 +79,29 @@
         .ra-credit-badge { font-size: 11px; font-weight: 700; background: #e0f2fe; color: #0369a1; padding: 2px 8px; border-radius: 12px; }
         .ra-details { font-size: 11px; color: #475569; line-height: 1.4; background: #ffffff; padding: 8px; border-radius: 6px; border: 1px dashed #cbd5e1; }
         .special-project-badge { margin-top: 4px; font-size: 11px; font-weight: 600; color: #b45309; background: #fef3c7; padding: 4px 8px; border-radius: 6px; display: inline-block; }
+        
         #submitBtn { width: 100%; margin-top: 16px; padding: 14px; background-color: #0284c7; color: white; border: none; border-radius: 10px; font-size: 14px; font-weight: bold; cursor: pointer; transition: all 0.2s ease; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 6px -1px rgba(2, 132, 199, 0.2); }
         #submitBtn:hover { background-color: #0369a1; transform: translateY(-1px); }
         #submitBtn:disabled { background-color: #94a3b8; cursor: not-allowed; }
     </style>
 </head>
- 
+
 <body>
 
 <div class="pos-container">
     <header class="pos-header">
         <div class="brand">
-            <i class="fa-solid fa-cash-register"></i>
+            <button class="btn-settings" onclick="openSettingsModal()" title="Buka Pengaturan Weight & Target">
+                <i class="fa-solid fa-gear"></i>
+            </button>
             <div>
                 <h1>MANNING CALCULATOR</h1>
                 <p>Daily Staffing Planner</p>
             </div>
         </div>
-        <div class="pos-badge">
-            <i class="fa-solid fa-hotel"></i> Capacity: <b>272 Rooms</b>
+        <div class="capacity-display">
+            Capacity
+            <b>272 Rooms</b>
         </div>
     </header>
 
@@ -106,23 +124,23 @@
 
                 <div class="input-group">
                     <label for="planBy">Planner Name</label>
-                    <input type="text" id="planBy" placeholder="Planner Name">
+                    <input type="text" id="planBy" placeholder="Isi Nama..." required>
                 </div>
             </div>
 
             <div class="pos-card">
                 <h3><i class="fa-solid fa-chart-line"></i> Hotel Forecast</h3>
                 <div class="input-group">
-                    <label for="tonightOcc">Room sold</label>
-                    <input type="number" id="tonightOcc" placeholder="0" min="0" max="272">
+                    <label for="tonightOcc">Room Sold (1-272)</label>
+                    <input type="number" id="tonightOcc" placeholder="1-272" min="1" max="272" required>
                 </div>
                 <div class="input-group">
                     <label for="arrival">Arrival</label>
-                    <input type="number" id="arrival" placeholder="0" min="0">
+                    <input type="number" id="arrival" placeholder="0" min="0" required>
                 </div>
                 <div class="input-group">
                     <label for="departure">Departure</label>
-                    <input type="number" id="departure" placeholder="0" min="0">
+                    <input type="number" id="departure" placeholder="0" min="0" required>
                 </div>
             </div>
 
@@ -159,7 +177,6 @@
                     <span>Total</span>
                 </div>
 
-                <!-- WEIGHT/CREDIT PERSIS SEPERTI TAMPILAN GAMBAR -->
                 <div class="row">
                     <span class="task-name">Stayover</span>
                     <input id="stayQty" type="number" readonly placeholder="0">
@@ -204,12 +221,12 @@
 
                 <div class="summary">
                     <label for="creditRA">Credit / RA Capacity</label>
-                    <input id="creditRA" type="number" class="credit-box">
+                    <input id="creditRA" type="number" class="credit-box" value="14">
                 </div>
 
                 <div class="summary">
                     <label for="spvGoal">Supervisor Goal</label>
-                    <input id="spvGoal" type="number" class="credit-box">
+                    <input id="spvGoal" type="number" class="credit-box" value="17">
                 </div>
             </div>
 
@@ -248,7 +265,7 @@
 </div>
 
 <script>
-    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzTNP0B2MDQv4SWKbXAJYmtXsnSjTYOebzK6irnSzgrtAsDXZ9GnZrXvP2ZJepsCZva/exec";
+    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzpWUXNQBmGM_jtxdqEj79l4mdN2pwi7KeO4oBEEzogq1Kq9IRCAKzLK-XgivWgLwRK/exec";
 
     function loadRulesToUI() {
         if (typeof MANNING_RULES !== "undefined") {
@@ -262,6 +279,59 @@
         } else {
             document.getElementById("spvGoal").value = 17;
         }
+    }
+
+    function openSettingsModal() {
+        Swal.fire({
+            title: 'Pengaturan Manning Rules',
+            html: `
+                <div style="display:flex; flex-direction:column; gap:10px; text-align:left; font-size:13px;">
+                    <label><b>Stayover Weight:</b></label>
+                    <input id="sw_stay" type="number" class="swal2-input" value="${document.getElementById('stayCredit').value}" step="0.01">
+                    <label><b>Departure Weight:</b></label>
+                    <input id="sw_dep" type="number" class="swal2-input" value="${document.getElementById('depCredit').value}" step="0.01">
+                    <label><b>Dropped Room Weight:</b></label>
+                    <input id="sw_back" type="number" class="swal2-input" value="${document.getElementById('backCredit').value}" step="0.01">
+                    <label><b>Pick-up Weight:</b></label>
+                    <input id="sw_pick" type="number" class="swal2-input" value="${document.getElementById('pickCredit').value}" step="0.01">
+                    <label><b>Turn Down Weight:</b></label>
+                    <input id="sw_turn" type="number" class="swal2-input" value="${document.getElementById('turnCredit').value}" step="0.01">
+                    <hr style="margin:6px 0;">
+                    <label><b>Credit / RA Capacity:</b></label>
+                    <input id="sw_creditRA" type="number" class="swal2-input" value="${document.getElementById('creditRA').value}" step="0.1">
+                    <label><b>Supervisor Goal:</b></label>
+                    <input id="sw_spv" type="number" class="swal2-input" value="${document.getElementById('spvGoal').value}">
+                </div>
+            `,
+            showCancelButton: true,
+            confirmButtonText: 'Simpan',
+            cancelButtonText: 'Batal',
+            confirmButtonColor: '#0284c7',
+            preConfirm: () => {
+                return {
+                    stay: document.getElementById('sw_stay').value,
+                    dep: document.getElementById('sw_dep').value,
+                    back: document.getElementById('sw_back').value,
+                    pick: document.getElementById('sw_pick').value,
+                    turn: document.getElementById('sw_turn').value,
+                    creditRA: document.getElementById('sw_creditRA').value,
+                    spv: document.getElementById('sw_spv').value
+                }
+            }
+        }).then((result) => {
+            if (result.isConfirmed && result.value) {
+                document.getElementById('stayCredit').value = result.value.stay;
+                document.getElementById('depCredit').value = result.value.dep;
+                document.getElementById('backCredit').value = result.value.back;
+                document.getElementById('pickCredit').value = result.value.pick;
+                document.getElementById('turnCredit').value = result.value.turn;
+                document.getElementById('creditRA').value = result.value.creditRA;
+                document.getElementById('spvGoal').value = result.value.spv;
+                
+                calculate();
+                Swal.fire({ icon: 'success', title: 'Tersimpan!', text: 'Pengaturan nilai berhasil diperbarui.', timer: 1500, showConfirmButton: false });
+            }
+        });
     }
 
     function fetchLastSubmittedFromSheet() {
@@ -281,7 +351,7 @@
                     }
                 }
             })
-            .catch(err => {
+            .catch(() => {
                 const savedTime = localStorage.getItem("lastSubmitTime");
                 const savedPlanner = localStorage.getItem("lastSubmitPlanner");
                 if (savedTime) document.getElementById("lastSubmitTime").innerText = savedTime;
@@ -305,21 +375,19 @@
 
     function calculate() {
         let tonightOccInput = document.getElementById("tonightOcc");
-        let tonightOcc = Number(tonightOccInput?.value) || 0;
+        let rawOcc = tonightOccInput?.value;
+        let tonightOcc = Number(rawOcc) || 0;
 
-        if (tonightOcc > 272) {
-            tonightOcc = 272;
-            tonightOccInput.value = 272;
+        // Validasi real-time untuk input Room Sold
+        if (rawOcc !== "" && (tonightOcc < 1 || tonightOcc > 272)) {
             Swal.fire({
                 icon: 'warning',
-                title: 'Kapasitas Maksimal',
-                text: 'Jumlah Room Sold tidak boleh melebihi kapasitas hotel (272 rooms).',
-                timer: 2000,
-                showConfirmButton: false
+                title: 'Nilai Tidak Valid',
+                text: 'Jumlah Room Sold harus berada dalam rentang 1 - 272 rooms.',
+                confirmButtonColor: '#0284c7'
             });
-        } else if (tonightOcc < 0) {
+            tonightOccInput.value = "";
             tonightOcc = 0;
-            tonightOccInput.value = 0;
         }
 
         let arrival = Number(document.getElementById("arrival")?.value) || 0;
@@ -335,7 +403,6 @@
         let turnCredit = Number(document.getElementById("turnCredit")?.value) || 0;
 
         let creditRA = Number(document.getElementById("creditRA")?.value) || 14;
-        let maxCreditCap = (typeof MANNING_RULES !== "undefined" && MANNING_RULES.maxCreditPerRA) ? MANNING_RULES.maxCreditPerRA : 14.1;
         let spvGoal = Number(document.getElementById("spvGoal")?.value) || 17;
 
         let stayover = tonightOcc - departure;
@@ -362,128 +429,123 @@
         let total = stayTotal + depTotal + backTotal + pickTotal + turnTotal;
         document.getElementById("totalCleaning").innerText = total.toFixed(1);
 
-        // Pembulatan ke atas untuk jumlah RA
         let raNeeded = Math.ceil(total / creditRA);
         document.getElementById("requiredRA").innerText = raNeeded;
 
         let spvNeeded = arrival > 0 ? Math.ceil(arrival / spvGoal) : 0;
         document.getElementById("requiredSpv").innerText = spvNeeded;
 
-        generateRADistribution(raNeeded, total, maxCreditCap, {
+        generateRADistribution(raNeeded, total, creditRA, {
             stayover, departure, backlog, pickup, turndown
         }, {
             stayCredit, depCredit, backCredit, pickCredit, turnCredit
         });
     }
 
-   function generateRADistribution(raNeeded, totalCredit, maxCreditCap, qtyMap, weightMap) {
-    const listContainer = document.getElementById("raAllocationList");
-    if (!listContainer) return;
-    listContainer.innerHTML = "";
+    function generateRADistribution(raNeeded, totalCredit, creditRACapacity, qtyMap, weightMap) {
+        const listContainer = document.getElementById("raAllocationList");
+        if (!listContainer) return;
+        listContainer.innerHTML = "";
 
-    if (raNeeded <= 0 || totalCredit <= 0) {
-        listContainer.innerHTML = `<div style="text-align:center; font-size:12px; color:#94a3b8; padding:10px;">Belum ada alokasi tugas.</div>`;
-        return;
-    }
+        if (raNeeded <= 0 || totalCredit <= 0) {
+            listContainer.innerHTML = `<div style="text-align:center; font-size:12px; color:#94a3b8; padding:10px;">Belum ada alokasi tugas.</div>`;
+            return;
+        }
 
-    // Ambil batas max stayover per RA (Default: 13 kamar)
-    const maxStayoverPerRA = (typeof MANNING_RULES !== "undefined" && MANNING_RULES.maxStayoverPerRA) 
-                             ? MANNING_RULES.maxStayoverPerRA 
-                             : 13;
+        // Batas maksimal credit Stayover per RA adalah 75% dari total Capacity Credit/RA
+        const maxStayoverCreditPerRA = creditRACapacity * 0.75;
 
-    // Inisialisasi wadah untuk setiap RA
-    let raAllocations = [];
-    for (let i = 0; i < raNeeded; i++) {
-        raAllocations.push({ id: i + 1, credit: 0, tasks: {} });
-    }
+        let raAllocations = [];
+        for (let i = 0; i < raNeeded; i++) {
+            raAllocations.push({ id: i + 1, credit: 0, stayCredit: 0, tasks: {} });
+        }
 
-    // Pencatatan sisa stok tugas
-    let remainingTasks = {
-        stayover: qtyMap.stayover,
-        backlog: qtyMap.backlog,     // Dropped Room
-        departure: qtyMap.departure,
-        pickup: qtyMap.pickup,
-        turndown: qtyMap.turndown
-    };
+        let remainingTasks = {
+            stayover: qtyMap.stayover,
+            departure: qtyMap.departure,
+            backlog: qtyMap.backlog,
+            pickup: qtyMap.pickup,
+            turndown: qtyMap.turndown
+        };
 
-    // Daftar Tugas Sesuai Urutan Prioritas
-    const taskPriorityList = [
-        { key: "stayover", name: "Stayover", weight: weightMap.stayCredit, maxQtyCap: maxStayoverPerRA },
-        { key: "backlog", name: "Dropped", weight: weightMap.backCredit, maxQtyCap: null },
-        { key: "departure", name: "Departure", weight: weightMap.depCredit, maxQtyCap: null },
-        { key: "pickup", name: "Pick-up", weight: weightMap.pickCredit, maxQtyCap: null },
-        { key: "turndown", name: "Turn Down", weight: weightMap.turnCredit, maxQtyCap: null }
-    ];
+        // Urutan prioritas penugasan secara ketat: Stayover -> Departure -> Dropped -> Pick-up -> Turn Down
+        const taskPriorityList = [
+            { key: "stayover", name: "Stayover", weight: weightMap.stayCredit, isStayover: true },
+            { key: "departure", name: "Departure", weight: weightMap.depCredit, isStayover: false },
+            { key: "backlog", name: "Dropped", weight: weightMap.backCredit, isStayover: false },
+            { key: "pickup", name: "Pick-up", weight: weightMap.pickCredit, isStayover: false },
+            { key: "turndown", name: "Turn Down", weight: weightMap.turnCredit, isStayover: false }
+        ];
 
-    // Alokasi Sekuensial dari RA 1 hingga RA terakhir
-    for (let i = 0; i < raNeeded; i++) {
-        let ra = raAllocations[i];
+        for (let i = 0; i < raNeeded; i++) {
+            let ra = raAllocations[i];
 
-        // Loop setiap jenis tugas berdasarkan urutan prioritas
-        for (let task of taskPriorityList) {
-            let availableQty = remainingTasks[task.key];
-            if (availableQty <= 0 || task.weight <= 0) continue;
+            for (let task of taskPriorityList) {
+                let availableQty = remainingTasks[task.key];
+                if (availableQty <= 0 || task.weight <= 0) continue;
 
-            // Hitung sisa kapasitas credit RA menuju maxCreditCap (14.1)
-            let remainingCapacity = maxCreditCap - ra.credit;
-            if (remainingCapacity < task.weight - 0.0001) continue;
+                // Hitung sisa kapasitas RA secara umum
+                let remainingGeneralCap = creditRACapacity - ra.credit;
+                if (remainingGeneralCap < task.weight - 0.0001) continue;
 
-            // Hitung unit kamar yang bisa muat berdasarkan sisa credit
-            let maxRoomsByCredit = Math.floor((remainingCapacity + 0.0001) / task.weight);
+                let maxRoomsAllowed = Math.floor((remainingGeneralCap + 0.0001) / task.weight);
+
+                // Khusus Stayover: terapkan pembatasan maksimal 0.75 x Capacity
+                if (task.isStayover) {
+                    let remainingStayCap = maxStayoverCreditPerRA - ra.stayCredit;
+                    if (remainingStayCap < task.weight - 0.0001) continue;
+                    let maxStayRoomsAllowed = Math.floor((remainingStayCap + 0.0001) / task.weight);
+                    maxRoomsAllowed = Math.min(maxRoomsAllowed, maxStayRoomsAllowed);
+                }
+
+                let roomsToAssign = Math.min(availableQty, maxRoomsAllowed);
+
+                if (roomsToAssign > 0) {
+                    remainingTasks[task.key] -= roomsToAssign;
+                    let taskTotalCredit = roomsToAssign * task.weight;
+                    
+                    ra.credit += taskTotalCredit;
+                    if (task.isStayover) ra.stayCredit += taskTotalCredit;
+
+                    ra.tasks[task.name] = (ra.tasks[task.name] || 0) + roomsToAssign;
+                }
+
+                if (ra.credit >= creditRACapacity) break;
+            }
+        }
+
+        raAllocations.forEach((ra) => {
+            let raItem = document.createElement("div");
+            raItem.className = "ra-item";
+
+            let taskTextArr = [];
+            for (let [tName, tQty] of Object.entries(ra.tasks)) {
+                if (tQty > 0) taskTextArr.push(`${tQty} ${tName}`);
+            }
+
+            let taskText = taskTextArr.length > 0 ? taskTextArr.join(" + ") : "Persiapan & Bantuan Umum";
             
-            // Terapkan batasan khusus jika ada (misal Stayover max 13 kamar per RA)
-            let currentTaskAssigned = ra.tasks[task.name] || 0;
-            let maxRoomsAllowed = task.maxQtyCap !== null 
-                ? Math.min(maxRoomsByCredit, task.maxQtyCap - currentTaskAssigned)
-                : maxRoomsByCredit;
-
-            let roomsToAssign = Math.min(availableQty, maxRoomsAllowed);
-
-            if (roomsToAssign > 0) {
-                remainingTasks[task.key] -= roomsToAssign;
-                ra.credit += (roomsToAssign * task.weight);
-                ra.tasks[task.name] = (ra.tasks[task.name] || 0) + roomsToAssign;
+            let specialBadge = "";
+            if (ra.credit < (creditRACapacity - 1.0)) {
+                let deficit = (creditRACapacity - ra.credit).toFixed(1);
+                specialBadge = `<div class="special-project-badge"><i class="fa-solid fa-screwdriver-wrench"></i> Credit ${ra.credit.toFixed(1)} (Less ${deficit}) Alokasi Special Project / Deep Cleaning</div>`;
             }
 
-            // Jika total credit RA sudah mencapai 14.0 atau lebih, stop untuk RA ini
-            if (ra.credit >= 14.0) {
-                break;
-            }
-        }
+            raItem.innerHTML = `
+                <div class="ra-header">
+                    <span class="ra-name"><i class="fa-solid fa-user-check" style="color:#0284c7;"></i> RA ${ra.id}</span>
+                    <span class="ra-credit-badge">${ra.credit.toFixed(1)} / ${creditRACapacity} Credit</span>
+                </div>
+                <div class="ra-details">
+                    <b>Role/Tugas:</b> ${taskText}
+                    ${specialBadge}
+                </div>
+            `;
+
+            listContainer.appendChild(raItem);
+        });
     }
 
-    // Render Hasil ke UI
-    raAllocations.forEach((ra) => {
-        let raItem = document.createElement("div");
-        raItem.className = "ra-item";
-
-        let taskTextArr = [];
-        for (let [tName, tQty] of Object.entries(ra.tasks)) {
-            if (tQty > 0) taskTextArr.push(`${tQty} ${tName}`);
-        }
-
-        let taskText = taskTextArr.length > 0 ? taskTextArr.join(" + ") : "Persiapan & Bantuan Umum";
-        
-        let specialBadge = "";
-        if (ra.credit < 13.0) {
-            let deficit = (14.0 - ra.credit).toFixed(1);
-            specialBadge = `<div class="special-project-badge"><i class="fa-solid fa-screwdriver-wrench"></i> Credit ${ra.credit.toFixed(1)} (Less ${deficit}) Alokasi Special Project / Deep Cleaning</div>`;
-        }
-
-        raItem.innerHTML = `
-            <div class="ra-header">
-                <span class="ra-name"><i class="fa-solid fa-user-check" style="color:#0284c7;"></i> RA ${ra.id}</span>
-                <span class="ra-credit-badge">${ra.credit.toFixed(1)} Credit</span>
-            </div>
-            <div class="ra-details">
-                <b>Role/Tugas:</b> ${taskText}
-                ${specialBadge}
-            </div>
-        `;
-
-        listContainer.appendChild(raItem);
-    });
-}
     function resetForm() {
         const fieldsToReset = ["planBy", "tonightOcc", "arrival", "departure", "backlog", "pickup", "turndown"];
         fieldsToReset.forEach(id => {
@@ -493,14 +555,36 @@
         calculate();
     }
 
-    function submitToGoogleSheet() {
-        const tonightOcc = Number(document.getElementById("tonightOcc")?.value) || 0;
+    function validateInputs() {
+        // Hanya Planner Name, Room Sold, Arrival, dan Departure yang wajib diisi
+        const requiredIds = ["planBy", "tonightOcc", "arrival", "departure"];
+        for (let id of requiredIds) {
+            const el = document.getElementById(id);
+            if (!el || el.value.trim() === "") {
+                return { valid: false, field: id };
+            }
+        }
+        return { valid: true };
+    }
 
-        if (tonightOcc <= 0 || tonightOcc > 272) {
+    function submitToGoogleSheet() {
+        const checkValidation = validateInputs();
+        if (!checkValidation.valid) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Input Belum Lengkap',
+                text: 'Harap isi Planner Name, Room Sold, Arrival, dan Departure terlebih dahulu.',
+                confirmButtonColor: '#0284c7'
+            });
+            return;
+        }
+
+        const tonightOcc = Number(document.getElementById("tonightOcc")?.value) || 0;
+        if (tonightOcc < 1 || tonightOcc > 272) {
             Swal.fire({
                 icon: 'error',
                 title: 'Input Tidak Valid',
-                text: 'Room Sold harus bernilai di atas 0 dan tidak boleh melebihi 272.',
+                text: 'Room Sold harus bernilai antara 1 sampai 272.',
                 confirmButtonColor: '#0284c7'
             });
             return;
@@ -523,21 +607,20 @@
         const getValue = (id) => document.getElementById(id)?.value || "0";
         const getText = (id) => document.getElementById(id)?.innerText || "0";
 
-
-const payload = {
-    tonightOcc: getValue("tonightOcc"),
-    arrival: getValue("arrival"),
-    departure: getValue("departure"),
-    backlog: getValue("backlog"),
-    pickup: getValue("pickup"),
-    turndown: getValue("turndown"),
-    stayQty: getValue("stayQty"),
-    totalCleaning: getText("totalCleaning"),
-    creditRA: getValue("creditRA"),
-    requiredRA: getText("requiredRA"),
-    requiredSpv: getText("requiredSpv"),
-    planBy: plannerInput// Merekam nama planner
-};
+        const payload = {
+            tonightOcc: getValue("tonightOcc"),
+            arrival: getValue("arrival"),
+            departure: getValue("departure"),
+            backlog: getValue("backlog"),
+            pickup: getValue("pickup"),
+            turndown: getValue("turndown"),
+            stayQty: getValue("stayQty"),
+            totalCleaning: getText("totalCleaning"),
+            creditRA: getValue("creditRA"),
+            requiredRA: getText("requiredRA"),
+            requiredSpv: getText("requiredSpv"),
+            planBy: plannerInput
+        };
 
         fetch(GOOGLE_SCRIPT_URL, {
             method: "POST",
