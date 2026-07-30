@@ -74,19 +74,25 @@
 <body>
 
 <div class="pos-container">
-    <header class="pos-header">
-        <div class="brand">
-            <i class="fa-solid fa-cash-register"></i>
-            <div>
-                <h1>MANNING CALCULATOR</h1>
-                <p>Daily Staffing Planner</p>
-            </div>
-        </div>
-        <div class="pos-badge">
-            <i class="fa-solid fa-hotel"></i> Capacity: <b>272 Rooms</b>
-        </div>
-    </header>
+    <header class="pos-header" style="display: flex; justify-content: space-between; align-items: center;">
+    <div class="brand" style="display: flex; align-items: center; gap: 10px;">
+        <!-- Tombol Roda Gigi paling kiri -->
+        <button id="settingBtn" onclick="openSettingModal()" title="Rules Setting" style="background: #f8fafc; border: 1px solid #e2e8f0; width: 36px; height: 36px; border-radius: 50%; font-size: 14px; color: #475569; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0;">
+            <i class="fa-solid fa-gear"></i>
+        </button>
 
+        <div>
+            <h1 style="font-size: 14px; margin: 0;">MANNING CALCULATOR</h1>
+            <p style="margin: 0; font-size: 11px; color: #64748b;">Daily Staffing Planner</p>
+        </div>
+    </div>
+
+    <!-- Capacity rata kanan (2 baris: Capacity atas, 272 Rooms bawah) -->
+    <div style="text-align: right; font-size: 12px; color: #475569; line-height: 1.2;">
+        <div><i class="fa-solid fa-hotel" style="color: #0284c7; margin-right: 3px;"></i> Capacity</div>
+        <div style="font-weight: 700; font-size: 13px; color: #0f172a;">272 Rooms</div>
+    </div>
+</header>
     <div class="pos-grid">
         <!-- LEFT PANEL -->
         <div class="left-panel">
@@ -581,6 +587,101 @@ const payload = {
         });
     }
 </script>
+function openSettingModal() {
+    // Ambil nilai nilai terkini dari UI
+    const currentStay = document.getElementById("stayCredit").value || 0.8;
+    const currentDep = document.getElementById("depCredit").value || 1.0;
+    const currentBack = document.getElementById("backCredit").value || 1.0;
+    const currentPick = document.getElementById("pickCredit").value || 0.4;
+    const currentTurn = document.getElementById("turnCredit").value || 0.2;
+    const currentCreditRA = document.getElementById("creditRA").value || 14;
+    const currentSpvGoal = document.getElementById("spvGoal").value || 17;
 
+    Swal.fire({
+        title: '<i class="fa-solid fa-sliders"></i> Adjust Rules & Weights',
+        html: `
+            <div style="text-align: left; font-size: 13px; display: flex; flex-direction: column; gap: 10px;">
+                <b style="color: #0284c7; border-bottom: 1px solid #e2e8f0; padding-bottom: 4px;">Task Weights (Credits)</b>
+                
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <label>Stayover Weight:</label>
+                    <input id="swalStay" type="number" step="0.01" class="swal2-input" style="width: 100px; margin: 0; height: 35px;" value="${currentStay}">
+                </div>
+                
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <label>Departure Weight:</label>
+                    <input id="swalDep" type="number" step="0.01" class="swal2-input" style="width: 100px; margin: 0; height: 35px;" value="${currentDep}">
+                </div>
+
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <label>Dropped Room Weight:</label>
+                    <input id="swalBack" type="number" step="0.01" class="swal2-input" style="width: 100px; margin: 0; height: 35px;" value="${currentBack}">
+                </div>
+
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <label>Pick-up Weight:</label>
+                    <input id="swalPick" type="number" step="0.01" class="swal2-input" style="width: 100px; margin: 0; height: 35px;" value="${currentPick}">
+                </div>
+
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <label>Turndown Weight:</label>
+                    <input id="swalTurn" type="number" step="0.01" class="swal2-input" style="width: 100px; margin: 0; height: 35px;" value="${currentTurn}">
+                </div>
+
+                <b style="color: #0284c7; border-bottom: 1px solid #e2e8f0; padding-bottom: 4px; margin-top: 10px;">Targets & Capacity</b>
+
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <label>RA Capacity / Target:</label>
+                    <input id="swalCreditRA" type="number" step="0.1" class="swal2-input" style="width: 100px; margin: 0; height: 35px;" value="${currentCreditRA}">
+                </div>
+
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <label>Supervisor Goal (Arrivals):</label>
+                    <input id="swalSpvGoal" type="number" step="1" class="swal2-input" style="width: 100px; margin: 0; height: 35px;" value="${currentSpvGoal}">
+                </div>
+            </div>
+        `,
+        focusConfirm: false,
+        showCancelButton: true,
+        confirmButtonText: 'Simpan & Terapkan',
+        cancelButtonText: 'Batal',
+        confirmButtonColor: '#0284c7',
+        preConfirm: () => {
+            return {
+                stay: document.getElementById('swalStay').value,
+                dep: document.getElementById('swalDep').value,
+                back: document.getElementById('swalBack').value,
+                pick: document.getElementById('swalPick').value,
+                turn: document.getElementById('swalTurn').value,
+                creditRA: document.getElementById('swalCreditRA').value,
+                spvGoal: document.getElementById('swalSpvGoal').value
+            }
+        }
+    }).then((result) => {
+        if (result.isConfirmed) {
+            const values = result.value;
+
+            // Update nilai di form utama
+            document.getElementById("stayCredit").value = values.stay;
+            document.getElementById("depCredit").value = values.dep;
+            document.getElementById("backCredit").value = values.back;
+            document.getElementById("pickCredit").value = values.pick;
+            document.getElementById("turnCredit").value = values.turn;
+            document.getElementById("creditRA").value = values.creditRA;
+            document.getElementById("spvGoal").value = values.spvGoal;
+
+            // Hitung ulang kalkulasi secara otomatis
+            calculate();
+
+            Swal.fire({
+                icon: 'success',
+                title: 'Aturan Diperbarui',
+                text: 'Kalkulasi telah disesuaikan dengan konfigurasi baru.',
+                timer: 1500,
+                showConfirmButton: false
+            });
+        }
+    });
+}
 </body>
 </html>
