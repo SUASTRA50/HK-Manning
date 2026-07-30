@@ -3,6 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Housekeeping Workload & Staff Distribution</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HK MANNING CALCULATOR</title>
     <!-- FontAwesome Icon -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -19,7 +22,7 @@
         .pos-header { background: #ffffff; padding: 16px 24px; border-radius: 16px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); margin-bottom: 20px; }
         .brand { display: flex; align-items: center; gap: 14px; }
         .brand i { font-size: 18px; color: #0284c7; background: #e0f2fe; padding: 8px 12px; border-radius: 8px; display: inline-flex; align-items: center; justify-content: center; }
-        .brand h1 { font-size: 18px; font-weight: 700; color: #0f172a; }
+        .brand h1 { font-size: 14px; font-weight: 700; color: #0f172a; }
         .brand p { font-size: 12px; color: #64748b; }
         .pos-badge { background: #f8fafc; border: 1px solid #e2e8f0; padding: 8px 14px; border-radius: 20px; font-size: 13px; color: #475569; }
         .pos-grid { display: grid; grid-template-columns: 1fr 1.2fr; gap: 20px; }
@@ -68,9 +71,10 @@
         #submitBtn { width: 100%; margin-top: 16px; padding: 14px; background-color: #0284c7; color: white; border: none; border-radius: 10px; font-size: 14px; font-weight: bold; cursor: pointer; transition: all 0.2s ease; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 6px -1px rgba(2, 132, 199, 0.2); }
         #submitBtn:hover { background-color: #0369a1; transform: translateY(-1px); }
         #submitBtn:disabled { background-color: #94a3b8; cursor: not-allowed; }
+       
+       
     </style>
 </head>
- 
 <body>
 
 <div class="pos-container">
@@ -93,6 +97,7 @@
         <div style="font-weight: 700; font-size: 13px; color: #0f172a;">272 Rooms</div>
     </div>
 </header>
+
     <div class="pos-grid">
         <!-- LEFT PANEL -->
         <div class="left-panel">
@@ -244,9 +249,11 @@
             <div class="pos-card">
                 <h3><i class="fa-solid fa-clipboard-user"></i> Room Attendant Distribution</h3>
                 <div id="raAllocationList" class="ra-card-list"></div>
-
-                <button id="submitBtn" onclick="submitToGoogleSheet()">
-                    <i class="fa-solid fa-cloud-arrow-up"></i> SUBMIT TO GOOGLE SHEET
+               
+<!-- Tombol SUBMIT TO GOOGLE SHEET milikmu ada di bawahnya -->
+<button type="button" id="submitBtn" onclick="submitData()">
+    <i class="fa-solid fa-paper-plane"></i> SUBMIT TO GOOGLE SHEET
+</button>
                 </button>
             </div>
         </div>
@@ -254,6 +261,102 @@
 </div>
 
 <script>
+    function openSettingModal() {
+    // Ambil nilai terkini dari UI
+    const currentStay = document.getElementById("stayCredit").value || 0.8;
+    const currentDep = document.getElementById("depCredit").value || 1.0;
+    const currentBack = document.getElementById("backCredit").value || 1.0;
+    const currentPick = document.getElementById("pickCredit").value || 0.4;
+    const currentTurn = document.getElementById("turnCredit").value || 0.2;
+    const currentCreditRA = document.getElementById("creditRA").value || 14;
+    const currentSpvGoal = document.getElementById("spvGoal").value || 17;
+
+    Swal.fire({
+        // Properti 'title' sudah dihapus dari sini
+        html: `
+            <div style="text-align: left; font-size: 13px; display: flex; flex-direction: column; gap: 10px; padding-top: 10px;">
+                <b style="color: #0284c7; border-bottom: 1px solid #e2e8f0; padding-bottom: 4px;">Task Weights (Credits)</b>
+                
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <label>Stayover Weight:</label>
+                    <input id="swalStay" type="number" step="0.01" class="swal2-input" style="width: 100px; margin: 0; height: 35px;" value="${currentStay}">
+                </div>
+                
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <label>Departure Weight:</label>
+                    <input id="swalDep" type="number" step="0.01" class="swal2-input" style="width: 100px; margin: 0; height: 35px;" value="${currentDep}">
+                </div>
+
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <label>Dropped Room Weight:</label>
+                    <input id="swalBack" type="number" step="0.01" class="swal2-input" style="width: 100px; margin: 0; height: 35px;" value="${currentBack}">
+                </div>
+
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <label>Pick-up Weight:</label>
+                    <input id="swalPick" type="number" step="0.01" class="swal2-input" style="width: 100px; margin: 0; height: 35px;" value="${currentPick}">
+                </div>
+
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <label>Turndown Weight:</label>
+                    <input id="swalTurn" type="number" step="0.01" class="swal2-input" style="width: 100px; margin: 0; height: 35px;" value="${currentTurn}">
+                </div>
+
+                <b style="color: #0284c7; border-bottom: 1px solid #e2e8f0; padding-bottom: 4px; margin-top: 10px;">Targets & Capacity</b>
+
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <label>RA Capacity / Target:</label>
+                    <input id="swalCreditRA" type="number" step="0.1" class="swal2-input" style="width: 100px; margin: 0; height: 35px;" value="${currentCreditRA}">
+                </div>
+
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <label>Supervisor Goal (Arrivals):</label>
+                    <input id="swalSpvGoal" type="number" step="1" class="swal2-input" style="width: 100px; margin: 0; height: 35px;" value="${currentSpvGoal}">
+                </div>
+            </div>
+        `,
+        focusConfirm: false,
+        showCancelButton: true,
+        confirmButtonText: 'Simpan & Terapkan',
+        cancelButtonText: 'Batal',
+        confirmButtonColor: '#0284c7',
+        preConfirm: () => {
+            return {
+                stay: document.getElementById('swalStay').value,
+                dep: document.getElementById('swalDep').value,
+                back: document.getElementById('swalBack').value,
+                pick: document.getElementById('swalPick').value,
+                turn: document.getElementById('swalTurn').value,
+                creditRA: document.getElementById('swalCreditRA').value,
+                spvGoal: document.getElementById('swalSpvGoal').value
+            }
+        }
+    }).then((result) => {
+        if (result.isConfirmed) {
+            const values = result.value;
+
+            // Update nilai di form utama
+            document.getElementById("stayCredit").value = values.stay;
+            document.getElementById("depCredit").value = values.dep;
+            document.getElementById("backCredit").value = values.back;
+            document.getElementById("pickCredit").value = values.pick;
+            document.getElementById("turnCredit").value = values.turn;
+            document.getElementById("creditRA").value = values.creditRA;
+            document.getElementById("spvGoal").value = values.spvGoal;
+
+            // Hitung ulang kalkulasi secara otomatis
+            calculate();
+
+            Swal.fire({
+                icon: 'success',
+                title: 'Aturan Diperbarui',
+                text: 'Kalkulasi telah disesuaikan dengan konfigurasi baru.',
+                timer: 1500,
+                showConfirmButton: false
+            });
+        }
+    });
+}
     const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzTNP0B2MDQv4SWKbXAJYmtXsnSjTYOebzK6irnSzgrtAsDXZ9GnZrXvP2ZJepsCZva/exec";
 
     function loadRulesToUI() {
@@ -586,6 +689,7 @@ const payload = {
             btn.innerHTML = `<i class="fa-solid fa-cloud-arrow-up"></i> SUBMIT TO GOOGLE SHEET`;
         });
     }
+   
 </script>
 
 </body>
