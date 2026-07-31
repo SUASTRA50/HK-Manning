@@ -1,8 +1,4 @@
-const MANNING_RULES = {
-    targetCreditPerRA: 14,
-    maxCreditPerRA: 14.1,
-    maxStayoverPerRA: 13, // Batas maksimal stayover per RA = 13 kamar
-    targetArrivalPerSupervisor: 17,
+cconst MANNING_RULES = {
     credits: {
         stayover: 0.8,
         departure: 1.0,
@@ -10,10 +6,8 @@ const MANNING_RULES = {
         pickup: 0.4,
         turndown: 0.2
     },
-    distributionRules: {
-        // Urutan prioritas sesuai instruksi baru
-        fillPriority: ["stayover", "dropped", "pickup", "departure", "turndown"],
-        splitStayoverEqually: false,
-        splitTurndownEqually: false
-    }
+    targetCreditPerRA: 14,
+    creditDW: 11,        // Target Credit untuk Daily Worker
+    creditTrainee: 5,   // Target Credit untuk Trainee
+    targetArrivalPerSupervisor: 17
 };
