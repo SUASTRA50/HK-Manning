@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WORKLOAD PLANNER</title>
+    <title>HK MANNING CALCULATOR</title>
     <!-- FontAwesome Icon -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- SweetAlert2 CSS & JS -->
@@ -167,8 +167,8 @@
                 <i class="fa-solid fa-gear"></i>
             </button>
             <div>
-                <h1>HK WORKLOAD PLANNER</h1>
-                <p>Daily Staffing</p>
+                <h1>MANNING CALCULATOR</h1>
+                <p>Daily Staffing Planner</p>
             </div>
         </div>
         <div class="capacity-display">
@@ -457,33 +457,44 @@
     }
 
     window.resetGeneralTabDefaults = function() {
+        // Direct DOM update untuk input di modal SweetAlert yang sedang aktif
+        let stayVal = 0.8, depVal = 1, backVal = 1, pickVal = 0.4, raVal = 14, dwVal = 11, traineeVal = 5, maxStayVal = 6, spvVal = 17;
+        
         if (typeof MANNING_RULES !== "undefined") {
-            document.getElementById('sw_stay').value = MANNING_RULES.credits.stayover;
-            document.getElementById('sw_dep').value = MANNING_RULES.credits.departure;
-            document.getElementById('sw_back').value = MANNING_RULES.credits.dropped;
-            document.getElementById('sw_pick').value = MANNING_RULES.credits.pickup;
-            document.getElementById('sw_creditRA').value = MANNING_RULES.targetCreditPerRA;
-            document.getElementById('sw_creditDW').value = 11;
-            document.getElementById('sw_creditTrainee').value = 5;
-            document.getElementById('sw_maxStayRooms').value = 6;
-            document.getElementById('sw_spv').value = MANNING_RULES.targetArrivalPerSupervisor || 17;
-        } else {
-            document.getElementById('sw_stay').value = 0.8;
-            document.getElementById('sw_dep').value = 1;
-            document.getElementById('sw_back').value = 1;
-            document.getElementById('sw_pick').value = 0.4;
-            document.getElementById('sw_creditRA').value = 14;
-            document.getElementById('sw_creditDW').value = 11;
-            document.getElementById('sw_creditTrainee').value = 5;
-            document.getElementById('sw_maxStayRooms').value = 6;
-            document.getElementById('sw_spv').value = 17;
+            stayVal = MANNING_RULES.credits.stayover;
+            depVal = MANNING_RULES.credits.departure;
+            backVal = MANNING_RULES.credits.dropped;
+            pickVal = MANNING_RULES.credits.pickup;
+            raVal = MANNING_RULES.targetCreditPerRA;
+            dwVal = MANNING_RULES.creditDW || 11;
+            traineeVal = MANNING_RULES.creditTrainee || 5;
+            spvVal = MANNING_RULES.targetArrivalPerSupervisor || 17;
+        }
+
+        if (document.getElementById('sw_stay')) document.getElementById('sw_stay').value = stayVal;
+        if (document.getElementById('sw_dep')) document.getElementById('sw_dep').value = depVal;
+        if (document.getElementById('sw_back')) document.getElementById('sw_back').value = backVal;
+        if (document.getElementById('sw_pick')) document.getElementById('sw_pick').value = pickVal;
+        if (document.getElementById('sw_creditRA')) document.getElementById('sw_creditRA').value = raVal;
+        if (document.getElementById('sw_creditDW')) document.getElementById('sw_creditDW').value = dwVal;
+        if (document.getElementById('sw_creditTrainee')) document.getElementById('sw_creditTrainee').value = traineeVal;
+        if (document.getElementById('sw_maxStayRooms')) document.getElementById('sw_maxStayRooms').value = maxStayVal;
+        if (document.getElementById('sw_spv')) document.getElementById('sw_spv').value = spvVal;
+
+        // Reset Staff Names
+        raCustomNames = {};
+        localStorage.removeItem("raCustomNames");
+        let raNeeded = Number(document.getElementById("requiredRA")?.innerText) || 10;
+        for (let i = 1; i <= raNeeded; i++) {
+            let el = document.getElementById(`sw_ra_name_${i}`);
+            if (el) el.value = "";
         }
     }
 
     window.clearDailyInfo = function() {
-        document.getElementById('sw_project').value = "";
-        document.getElementById('sw_reminder').value = "";
-        document.getElementById('sw_vip').value = "";
+        if (document.getElementById('sw_project')) document.getElementById('sw_project').value = "";
+        if (document.getElementById('sw_reminder')) document.getElementById('sw_reminder').value = "";
+        if (document.getElementById('sw_vip')) document.getElementById('sw_vip').value = "";
     }
 
     function openSettingsModal() {
@@ -624,8 +635,10 @@
             }
         }).then((result) => {
             if (result.isDenied) {
+                // Reset langsung nilai UI tanpa menutup modal
                 resetGeneralTabDefaults();
-                openSettingsModal();
+                // Buka kembali modal yang sudah diperbarui secara halus
+                setTimeout(openSettingsModal, 100);
                 return;
             }
 
