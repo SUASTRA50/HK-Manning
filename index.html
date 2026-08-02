@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WORKLOAD PLANNER</title>
+    <title>HK MANNING CALCULATOR</title>
     <!-- FontAwesome Icon -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- SweetAlert2 CSS & JS -->
@@ -14,113 +14,144 @@
     
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        body { background-color: #f1f5f9; color: #1e293b; padding: 24px; display: flex; justify-content: center; }
+        body { background-color: #f1f5f9; color: #1e293b; padding: 12px; display: flex; justify-content: center; }
         .pos-container { width: 100%; max-width: 1100px; }
         
         /* HEADER & BRANDING */
-        .pos-header { background: #ffffff; padding: 16px 24px; border-radius: 16px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); margin-bottom: 20px; }
-        .brand { display: flex; align-items: center; gap: 12px; }
-        .brand h1 { font-size: 15px; font-weight: 700; color: #0f172a; letter-spacing: 0.3px; }
-        .brand p { font-size: 11px; color: #64748b; }
+        .pos-header { background: #ffffff; padding: 12px 16px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); margin-bottom: 12px; }
+        .brand { display: flex; align-items: center; gap: 10px; }
+        .brand h1 { font-size: 14px; font-weight: 700; color: #0f172a; letter-spacing: 0.3px; }
+        .brand p { font-size: 10px; color: #64748b; }
         
-        .btn-settings { background: #e0f2fe; color: #0284c7; border: none; padding: 8px 12px; border-radius: 8px; cursor: pointer; font-size: 14px; transition: all 0.2s; display: inline-flex; align-items: center; justify-content: center; }
+        .btn-settings { background: #e0f2fe; color: #0284c7; border: none; padding: 6px 10px; border-radius: 8px; cursor: pointer; font-size: 13px; transition: all 0.2s; display: inline-flex; align-items: center; justify-content: center; }
         .btn-settings:hover { background: #bae6fd; transform: rotate(30deg); }
 
-        .capacity-display { text-align: right; font-size: 12px; color: #64748b; line-height: 1.3; }
-        .capacity-display b { display: block; font-size: 14px; color: #0f172a; font-weight: 700; }
+        .capacity-display { text-align: right; font-size: 11px; color: #64748b; line-height: 1.2; }
+        .capacity-display b { display: block; font-size: 13px; color: #0f172a; font-weight: 700; }
 
         /* GRID LAYOUT */
-        .pos-grid { display: grid; grid-template-columns: 1fr 1.2fr; gap: 20px; }
+        .pos-grid { display: grid; grid-template-columns: 1fr 1.1fr; gap: 12px; }
         @media (max-width: 860px) { .pos-grid { grid-template-columns: 1fr; } }
-        .pos-card { background: #ffffff; border-radius: 16px; padding: 20px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); margin-bottom: 16px; border: 1px solid #f1f5f9; }
-        .pos-card h3 { font-size: 13px; color: #0284c7; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+        .pos-card { background: #ffffff; border-radius: 0 12px 12px 12px; padding: 14px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); margin-bottom: 12px; border: 1px solid #cbd5e1; }
+        .pos-card h3 { font-size: 12px; color: #0284c7; margin-bottom: 10px; display: flex; align-items: center; gap: 6px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
         
+        /* BINDER FILE DIVIDER TABS STYLING */
+        .binder-tab-wrapper { display: flex; margin-bottom: -1px; position: relative; z-index: 2; padding-left: 4px; gap: 4px; }
+        .binder-tab {
+            padding: 6px 14px;
+            font-size: 11px;
+            font-weight: 700;
+            color: #64748b;
+            background: #e2e8f0;
+            border: 1px solid #cbd5e1;
+            border-bottom: none;
+            border-radius: 8px 8px 0 0;
+            cursor: pointer;
+            position: relative;
+            top: 1px;
+            transition: all 0.2s ease;
+            box-shadow: inset 0 -2px 3px rgba(0,0,0,0.05);
+        }
+        .binder-tab.active {
+            background: #ffffff;
+            color: #0284c7;
+            border-color: #cbd5e1;
+            border-bottom: 1px solid #ffffff;
+            top: 0px;
+            padding-top: 7px;
+            box-shadow: 0 -2px 4px rgba(0,0,0,0.03);
+        }
+        .binder-tab i { margin-right: 4px; }
+        .binder-content { display: none; }
+        .binder-content.active { display: block; }
+
         /* LAST SUBMITTED BOX */
-        .last-submit-info { display: flex; justify-content: space-between; align-items: flex-start; font-size: 11px; color: #64748b; background: #f8fafc; border: 1px solid #e2e8f0; padding: 8px 12px; border-radius: 8px; margin-bottom: 14px; }
+        .last-submit-info { display: flex; justify-content: space-between; align-items: flex-start; font-size: 10px; color: #64748b; background: #f8fafc; border: 1px solid #e2e8f0; padding: 6px 10px; border-radius: 8px; margin-bottom: 10px; }
         .last-submit-left, .last-submit-right { display: flex; flex-direction: column; }
         .last-submit-right { text-align: right; }
-        .last-submit-label { font-weight: 600; text-transform: uppercase; font-size: 9px; letter-spacing: 0.5px; opacity: 0.85; }
-        .last-submit-value { font-weight: 700; margin-top: 2px; color: #1e293b; }
+        .last-submit-label { font-weight: 600; text-transform: uppercase; font-size: 8px; letter-spacing: 0.5px; opacity: 0.85; }
+        .last-submit-value { font-weight: 700; margin-top: 1px; color: #1e293b; }
 
         /* INPUT & TABLES */
-        .input-group { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-        .input-group label { font-size: 13px; color: #475569; font-weight: 500; }
-        .input-group input, .row input, .summary input { padding: 8px 10px; border: 1px solid #cbd5e1; border-radius: 8px; outline: none; font-size: 14px; text-align: right; background: #f8fafc; transition: all 0.2s; }
-        .input-group input { width: 90px; }
-        .input-group input[type="text"] { width: 160px; text-align: left; }
-        .input-group input:focus, .row input:focus, .summary input:focus { border-color: #0284c7; background: #fff; box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15); }
+        .input-group { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+        .input-group label { font-size: 12px; color: #475569; font-weight: 500; }
+        .input-group input, .row input, .summary input { padding: 6px 8px; border: 1px solid #cbd5e1; border-radius: 6px; outline: none; font-size: 13px; text-align: right; background: #f8fafc; transition: all 0.2s; }
+        .input-group input { width: 85px; }
+        .input-group input[type="text"] { width: 140px; text-align: left; }
+        .input-group input[readonly] { background-color: #e2e8f0; color: #475569; font-weight: 600; }
+        .input-group input:focus, .row input:focus, .summary input:focus { border-color: #0284c7; background: #fff; box-shadow: 0 0 0 2px rgba(2, 132, 199, 0.15); }
         
-        .table-header { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; font-size: 11px; font-weight: 700; color: #94a3b8; margin-bottom: 10px; text-align: center; text-transform: uppercase; }
+        .table-header { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; font-size: 10px; font-weight: 700; color: #94a3b8; margin-bottom: 6px; text-align: center; text-transform: uppercase; }
         .table-header span:first-child { text-align: left; }
-        .row { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; align-items: center; gap: 6px; margin-bottom: 8px; }
-        .row .task-name { font-size: 13px; color: #334155; font-weight: 500; }
+        .row { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; align-items: center; gap: 4px; margin-bottom: 6px; }
+        .row .task-name { font-size: 12px; color: #334155; font-weight: 500; }
         .row input { width: 100%; }
         .row input[readonly] { background-color: #f1f5f9; color: #64748b; border-color: #e2e8f0; }
         
-        .subtotal { font-size: 13px; font-weight: 600; text-align: right; color: #0f172a; }
-        .receipt-divider { height: 1px; background: #e2e8f0; margin: 16px 0; }
-        .summary { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
-        .summary label { font-size: 13px; font-weight: 600; color: #334155; }
-        .total-badge { font-size: 18px; font-weight: bold; color: #0284c7; }
-        .credit-box { width: 70px; font-weight: bold; }
+        .subtotal { font-size: 12px; font-weight: 600; text-align: right; color: #0f172a; }
+        .receipt-divider { height: 1px; background: #e2e8f0; margin: 10px 0; }
+        .summary { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+        .summary label { font-size: 12px; font-weight: 600; color: #334155; }
+        .total-badge { font-size: 16px; font-weight: bold; color: #0284c7; }
+        .credit-box { width: 65px; font-weight: bold; }
 
         /* COMBINED STAFF SUMMARY CARD */
-        .staff-summary-combined { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; background: #ffffff; border-radius: 16px; padding: 16px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); margin-bottom: 16px; border: 1px solid #f1f5f9; }
-        .staff-item-box { display: flex; align-items: center; justify-content: space-between; background: #f8fafc; padding: 10px 12px; border-radius: 12px; border: 1px solid #e2e8f0; }
-        .staff-item-info { display: flex; align-items: center; gap: 10px; }
-        .staff-item-info i { font-size: 18px; color: #0284c7; background: #e0f2fe; padding: 8px; border-radius: 8px; }
-        .staff-item-title { font-size: 12px; font-weight: 600; color: #334155; }
-        .staff-item-sub { font-size: 10px; color: #64748b; }
-        .staff-item-value { font-size: 20px; font-weight: 800; color: #0284c7; background: #ffffff; border: 1px solid #bae6fd; padding: 2px 12px; border-radius: 8px; }
+        .staff-summary-combined { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; background: #ffffff; border-radius: 12px; padding: 10px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); margin-bottom: 12px; border: 1px solid #cbd5e1; }
+        .staff-item-box { display: flex; align-items: center; justify-content: space-between; background: #f8fafc; padding: 8px 10px; border-radius: 8px; border: 1px solid #e2e8f0; }
+        .staff-item-info { display: flex; align-items: center; gap: 8px; }
+        .staff-item-info i { font-size: 15px; color: #0284c7; background: #e0f2fe; padding: 6px; border-radius: 6px; }
+        .staff-item-title { font-size: 11px; font-weight: 600; color: #334155; }
+        .staff-item-sub { font-size: 9px; color: #64748b; }
+        .staff-item-value { font-size: 16px; font-weight: 800; color: #0284c7; background: #ffffff; border: 1px solid #bae6fd; padding: 1px 10px; border-radius: 6px; }
 
         /* CARDS & DISTRIBUTION */
-        .ra-card-list { display: flex; flex-direction: column; gap: 10px; margin-top: 10px; max-height: 380px; overflow-y: auto; padding-right: 4px; }
-        .ra-item { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 10px 14px; display: flex; flex-direction: column; gap: 6px; }
+        .ra-card-list { display: flex; flex-direction: column; gap: 8px; margin-top: 6px; max-height: 260px; overflow-y: auto; padding-right: 2px; }
+        .ra-item { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 8px 10px; display: flex; flex-direction: column; gap: 4px; }
         .ra-header { display: flex; justify-content: space-between; align-items: center; }
-        .ra-name { font-size: 13px; font-weight: 700; color: #0f172a; display: flex; align-items: center; gap: 6px; }
-        .ra-credit-badge { font-size: 11px; font-weight: 700; background: #e0f2fe; color: #0369a1; padding: 2px 8px; border-radius: 12px; }
-        .ra-details { font-size: 11px; color: #475569; line-height: 1.4; background: #ffffff; padding: 8px; border-radius: 6px; border: 1px dashed #cbd5e1; }
-        .special-project-badge { margin-top: 4px; font-size: 11px; font-weight: 600; color: #b45309; background: #fef3c7; padding: 4px 8px; border-radius: 6px; display: inline-block; }
+        .ra-name { font-size: 12px; font-weight: 700; color: #0f172a; display: flex; align-items: center; gap: 4px; }
+        .ra-credit-badge { font-size: 10px; font-weight: 700; background: #e0f2fe; color: #0369a1; padding: 2px 6px; border-radius: 10px; }
+        .ra-details { font-size: 10px; color: #475569; line-height: 1.3; background: #ffffff; padding: 6px; border-radius: 6px; border: 1px dashed #cbd5e1; }
+        .special-project-badge { margin-top: 2px; font-size: 10px; font-weight: 600; color: #b45309; background: #fef3c7; padding: 2px 6px; border-radius: 4px; display: inline-block; }
         
-        /* ACTION BUTTONS */
-        .btn-action-group { display: flex; flex-direction: column; gap: 10px; margin-top: 16px; }
+        /* ACTION BUTTONS (1 BARIS KANAN KIRI) */
+        .btn-action-group { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; }
         
-        #printBtn { width: 100%; padding: 12px; background-color: #059669; color: white; border: none; border-radius: 10px; font-size: 13px; font-weight: 700; cursor: pointer; transition: all 0.2s ease; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 6px -1px rgba(5, 150, 105, 0.2); }
-        #printBtn:hover { background-color: #047857; transform: translateY(-1px); }
+        #printBtn { width: 100%; padding: 10px; background-color: #059669; color: white; border: none; border-radius: 8px; font-size: 11px; font-weight: 700; cursor: pointer; transition: all 0.2s ease; display: flex; align-items: center; justify-content: center; gap: 6px; box-shadow: 0 2px 4px rgba(5, 150, 105, 0.2); }
+        #printBtn:hover { background-color: #047857; }
 
-        #submitBtn { width: 100%; padding: 14px; background-color: #0284c7; color: white; border: none; border-radius: 10px; font-size: 14px; font-weight: bold; cursor: pointer; transition: all 0.2s ease; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 6px -1px rgba(2, 132, 199, 0.2); }
-        #submitBtn:hover { background-color: #0369a1; transform: translateY(-1px); }
+        #submitBtn { width: 100%; padding: 10px; background-color: #0284c7; color: white; border: none; border-radius: 8px; font-size: 11px; font-weight: 700; cursor: pointer; transition: all 0.2s ease; display: flex; align-items: center; justify-content: center; gap: 6px; box-shadow: 0 2px 4px rgba(2, 132, 199, 0.2); }
+        #submitBtn:hover { background-color: #0369a1; }
         #submitBtn:disabled { background-color: #94a3b8; cursor: not-allowed; }
 
         /* MODAL CUSTOM & TABS STYLES */
-        .swal-tab-buttons { display: flex; border-bottom: 2px solid #e2e8f0; margin-bottom: 12px; gap: 4px; }
-        .swal-tab-btn { flex: 1; padding: 8px 12px; background: none; border: none; outline: none; font-weight: 600; font-size: 12px; color: #64748b; cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -2px; transition: all 0.2s; }
+        .swal-tab-buttons { display: flex; border-bottom: 2px solid #e2e8f0; margin-bottom: 10px; gap: 4px; }
+        .swal-tab-btn { flex: 1; padding: 6px 10px; background: none; border: none; outline: none; font-weight: 600; font-size: 11px; color: #64748b; cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -2px; transition: all 0.2s; }
         .swal-tab-btn.active { color: #0284c7; border-bottom: 2px solid #0284c7; }
-        .swal-tab-content { display: none; text-align: left; font-size: 13px; max-height: 60vh; overflow-y: auto; padding-right: 4px; }
+        .swal-tab-content { display: none; text-align: left; font-size: 12px; max-height: 55vh; overflow-y: auto; padding-right: 4px; }
         .swal-tab-content.active { display: block; }
 
         .swal-ra-grid { 
             display: grid; 
             grid-template-columns: 1fr 1fr; 
-            gap: 8px; 
-            max-height: 150px; 
+            gap: 6px; 
+            max-height: 130px; 
             overflow-y: auto; 
             -webkit-overflow-scrolling: touch; 
             touch-action: pan-y;
             padding: 6px; 
             border: 1px solid #e2e8f0; 
-            border-radius: 8px; 
+            border-radius: 6px; 
             background: #f8fafc; 
         }
-        .swal-ra-input { font-size: 12px !important; padding: 6px 8px !important; margin: 0 !important; height: 32px !important; width: 100% !important; }
-        .swal-textarea { width: 100%; height: 55px; font-size: 12px; padding: 8px; border: 1px solid #cbd5e1; border-radius: 8px; outline: none; resize: vertical; background: #f8fafc; }
+        .swal-ra-input { font-size: 11px !important; padding: 4px 6px !important; margin: 0 !important; height: 28px !important; width: 100% !important; }
+        .swal-textarea { width: 100%; height: 50px; font-size: 11px; padding: 6px; border: 1px solid #cbd5e1; border-radius: 6px; outline: none; resize: vertical; background: #f8fafc; }
         
-        .btn-tab-reset { background-color: #ef4444; color: white; border: none; padding: 6px 12px; border-radius: 6px; font-size: 11px; font-weight: 600; cursor: pointer; float: right; margin-top: 8px; transition: background 0.2s; }
+        .btn-tab-reset { background-color: #ef4444; color: white; border: none; padding: 5px 10px; border-radius: 6px; font-size: 10px; font-weight: 600; cursor: pointer; float: right; margin-top: 6px; transition: background 0.2s; }
         .btn-tab-reset:hover { background-color: #dc2626; }
 
         @media (max-width: 600px) {
-            .swal-ra-grid { grid-template-columns: 1fr; max-height: 140px; }
-            .staff-summary-combined { grid-template-columns: 1fr; }
+            .swal-ra-grid { grid-template-columns: 1fr; max-height: 120px; }
+            .staff-summary-combined { grid-template-columns: 1fr 1fr; }
         }
 
         /* PRINT STYLING */
@@ -131,29 +162,29 @@
 
         @media print {
             body { background: white !important; color: black !important; padding: 0 !important; }
-            .pos-header, .left-panel, .receipt-card, .staff-summary-combined, .btn-action-group, .btn-settings, .pos-card h3 { display: none !important; }
+            .pos-header, .left-panel, .receipt-card, .staff-summary-combined, .btn-action-group, .btn-settings, .pos-card h3, .binder-tab-wrapper { display: none !important; }
             .pos-container, .pos-grid, .right-panel, .pos-card { width: 100% !important; max-width: 100% !important; padding: 0 !important; margin: 0 !important; box-shadow: none !important; border: none !important; background: transparent !important; }
             
-            .print-only-header { display: block !important; text-align: center; margin-bottom: 12px; }
-            .print-only-header h2 { font-size: 18px; font-weight: 800; text-transform: uppercase; color: #000; letter-spacing: 0.5px; margin-bottom: 4px; }
-            .print-only-header p { font-size: 12px; color: #444; margin: 0; }
+            .print-only-header { display: block !important; text-align: center; margin-bottom: 10px; }
+            .print-only-header h2 { font-size: 16px; font-weight: 800; text-transform: uppercase; color: #000; letter-spacing: 0.5px; margin-bottom: 2px; }
+            .print-only-header p { font-size: 11px; color: #444; margin: 0; }
 
-            .print-summary-info { display: block !important; margin-bottom: 14px; border: 1px solid #000; padding: 8px 12px; font-size: 11px; }
-            .print-summary-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px; text-align: center; }
-            .print-summary-item span { display: block; font-size: 9px; font-weight: bold; text-transform: uppercase; color: #333; }
-            .print-summary-item b { font-size: 13px; color: #000; }
+            .print-summary-info { display: block !important; margin-bottom: 10px; border: 1px solid #000; padding: 6px 10px; font-size: 10px; }
+            .print-summary-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 4px; text-align: center; }
+            .print-summary-item span { display: block; font-size: 8px; font-weight: bold; text-transform: uppercase; color: #333; }
+            .print-summary-item b { font-size: 12px; color: #000; }
 
             .ra-card-list { display: none !important; }
-            .print-table { display: table !important; width: 100%; border-collapse: collapse; margin-top: 6px; font-size: 11px; }
-            .print-table th, .print-table td { border: 1px solid #000 !important; padding: 6px 8px; text-align: left; vertical-align: middle; }
-            .print-table th { background-color: #f2f2f2 !important; font-weight: bold; text-align: center; text-transform: uppercase; font-size: 10px; }
+            .print-table { display: table !important; width: 100%; border-collapse: collapse; margin-top: 4px; font-size: 10px; }
+            .print-table th, .print-table td { border: 1px solid #000 !important; padding: 4px 6px; text-align: left; vertical-align: middle; }
+            .print-table th { background-color: #f2f2f2 !important; font-weight: bold; text-align: center; text-transform: uppercase; font-size: 9px; }
             .print-table td.center { text-align: center; }
             .print-table td.bold { font-weight: bold; }
 
-            .print-daily-info { display: block !important; margin-top: 16px; border: 1px solid #000; padding: 10px; font-size: 11px; }
-            .print-daily-info h4 { font-size: 11px; font-weight: 800; border-bottom: 1px solid #000; padding-bottom: 4px; margin-bottom: 6px; text-transform: uppercase; }
-            .print-daily-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
-            .print-daily-item b { display: block; text-transform: uppercase; margin-bottom: 2px; font-size: 9px; }
+            .print-daily-info { display: block !important; margin-top: 12px; border: 1px solid #000; padding: 8px; font-size: 10px; }
+            .print-daily-info h4 { font-size: 10px; font-weight: 800; border-bottom: 1px solid #000; padding-bottom: 2px; margin-bottom: 4px; text-transform: uppercase; }
+            .print-daily-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+            .print-daily-item b { display: block; text-transform: uppercase; margin-bottom: 2px; font-size: 8px; }
         }
     </style>
 </head>
@@ -167,8 +198,8 @@
                 <i class="fa-solid fa-gear"></i>
             </button>
             <div>
-                <h1>HK WORKLOAD PLANNER</h1>
-                <p>Daily Staffing Tool</p>
+                <h1>MANNING CALCULATOR</h1>
+                <p>Daily Staffing Planner</p>
             </div>
         </div>
         <div class="capacity-display">
@@ -185,7 +216,7 @@
     <div class="pos-grid">
         <!-- LEFT PANEL -->
         <div class="left-panel">
-            <div class="pos-card">
+            <div class="pos-card" style="border-radius: 12px;">
                 <h3><i class="fa-solid fa-user-pen"></i> Planner Info</h3>
                 
                 <div class="last-submit-info" id="lastSubmitBox">
@@ -205,104 +236,140 @@
                 </div>
             </div>
 
-            <div class="pos-card">
-                <h3><i class="fa-solid fa-chart-line"></i> Hotel Forecast</h3>
-                <div class="input-group">
-                    <label for="tonightOcc">Room Sold</label>
-                    <input type="number" id="tonightOcc" placeholder="1-272" min="1" max="272" required>
-                </div>
-                <div class="input-group">
-                    <label for="arrival">Arrival</label>
-                    <input type="number" id="arrival" placeholder="0" min="0" required>
-                </div>
-                <div class="input-group">
-                    <label for="departure">Departure</label>
-                    <input type="number" id="departure" placeholder="0" min="0" required>
-                </div>
+            <!-- BINDER TABS FOR FORECAST & SPECIAL SERVICE -->
+            <div class="binder-tab-wrapper">
+                <button class="binder-tab active" id="tab_btn_forecast" onclick="switchBinderTab('leftGroup', 'forecast')">
+                    <i class="fa-solid fa-chart-line"></i> Forecast
+                </button>
+                <button class="binder-tab" id="tab_btn_special" onclick="switchBinderTab('leftGroup', 'special')">
+                    <i class="fa-solid fa-star"></i> Special Service
+                </button>
             </div>
 
             <div class="pos-card">
-                <h3><i class="fa-solid fa-star"></i> SPECIAL SERVICE</h3>
-                <div class="input-group">
-                    <label for="backlog">Left Over / Dropped</label>
-                    <input type="number" id="backlog" placeholder="0" min="0">
+                <!-- TAB 1: HOTEL FORECAST -->
+                <div id="tab_content_forecast" class="binder-content active">
+                    <h3><i class="fa-solid fa-chart-line"></i> Hotel Forecast</h3>
+                    <div class="input-group">
+                        <label for="tonightOcc">Room Sold</label>
+                        <input type="number" id="tonightOcc" placeholder="1-272" min="1" max="272" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="roomOccPerc">Room Occ (%)</label>
+                        <input type="text" id="roomOccPerc" placeholder="0%" readonly>
+                    </div>
+                    <div class="input-group">
+                        <label for="arrival">Arrival</label>
+                        <input type="number" id="arrival" placeholder="0" min="0" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="departure">Departure</label>
+                        <input type="number" id="departure" placeholder="0" min="0" required>
+                    </div>
                 </div>
-                <div class="input-group">
-                    <label for="pickup">Pick-up Room</label>
-                    <input type="number" id="pickup" placeholder="0" min="0">
-                </div>
-                <div class="input-group">
-                    <label for="turndown">Turn Down</label>
-                    <input type="number" id="turndown" placeholder="0" min="0">
+
+                <!-- TAB 2: SPECIAL SERVICE -->
+                <div id="tab_content_special" class="binder-content">
+                    <h3><i class="fa-solid fa-star"></i> SPECIAL SERVICE</h3>
+                    <div class="input-group">
+                        <label for="backlog">Left Over / Dropped</label>
+                        <input type="number" id="backlog" placeholder="0" min="0">
+                    </div>
+                    <div class="input-group">
+                        <label for="pickup">Pick-up Room</label>
+                        <input type="number" id="pickup" placeholder="0" min="0">
+                    </div>
+                    <div class="input-group">
+                        <label for="turndown">Turn Down</label>
+                        <input type="number" id="turndown" placeholder="0" min="0">
+                    </div>
                 </div>
             </div>
         </div>
 
         <!-- RIGHT PANEL -->
         <div class="right-panel">
+            <!-- BINDER TABS FOR WORKLOAD SUMMARY -->
+            <div class="binder-tab-wrapper">
+                <button class="binder-tab active" id="tab_btn_task" onclick="switchBinderTab('rightGroup', 'task')">
+                    <i class="fa-solid fa-list-check"></i> Tasks
+                </button>
+                <button class="binder-tab" id="tab_btn_role" onclick="switchBinderTab('rightGroup', 'role')">
+                    <i class="fa-solid fa-sliders"></i> Role Credits
+                </button>
+            </div>
+
             <div class="pos-card receipt-card">
-                <h3><i class="fa-solid fa-receipt"></i> Workload Summary</h3>
-                
-                <div class="table-header">
-                    <span>Task</span>
-                    <span>Qty</span>
-                    <span>Weight</span>
-                    <span>Total</span>
+                <!-- TAB 1: TASK SUMMARY -->
+                <div id="tab_content_task" class="binder-content active">
+                    <h3><i class="fa-solid fa-receipt"></i> Workload Summary</h3>
+                    
+                    <div class="table-header">
+                        <span>Task</span>
+                        <span>Qty</span>
+                        <span>Weight</span>
+                        <span>Total</span>
+                    </div>
+
+                    <div class="row">
+                        <span class="task-name">Stayover</span>
+                        <input id="stayQty" type="number" readonly placeholder="0">
+                        <input id="stayCredit" type="number" step="0.01" value="0.8">
+                        <span id="stayTotal" class="subtotal">0.0</span>
+                    </div>
+
+                    <div class="row">
+                        <span class="task-name">Departure</span>
+                        <input id="depQty" type="number" readonly placeholder="0">
+                        <input id="depCredit" type="number" step="0.01" value="1">
+                        <span id="depTotal" class="subtotal">0.0</span>
+                    </div>
+
+                    <div class="row">
+                        <span class="task-name">Dropped Room</span>
+                        <input id="backQty" type="number" readonly placeholder="0">
+                        <input id="backCredit" type="number" step="0.01" value="1">
+                        <span id="backTotal" class="subtotal">0.0</span>
+                    </div>
+
+                    <div class="row">
+                        <span class="task-name">Pick-up</span>
+                        <input id="pickQty" type="number" readonly placeholder="0">
+                        <input id="pickCredit" type="number" step="0.01" value="0.4">
+                        <span id="pickTotal" class="subtotal">0.0</span>
+                    </div>
+
+                    <div class="receipt-divider"></div>
+
+                    <div class="summary">
+                        <label>Total Cleaning Credit</label>
+                        <span id="totalCleaning" class="total-badge">0.0</span>
+                    </div>
                 </div>
 
-                <div class="row">
-                    <span class="task-name">Stayover</span>
-                    <input id="stayQty" type="number" readonly placeholder="0">
-                    <input id="stayCredit" type="number" step="0.01" value="0.8">
-                    <span id="stayTotal" class="subtotal">0.0</span>
-                </div>
+                <!-- TAB 2: ROLE CREDIT SETTINGS -->
+                <div id="tab_content_role" class="binder-content">
+                    <h3><i class="fa-solid fa-user-gear"></i> Role Credit Targets</h3>
+                    
+                    <div class="summary">
+                        <label for="creditRA">Credit / RA Capacity</label>
+                        <input id="creditRA" type="number" class="credit-box" value="14">
+                    </div>
 
-                <div class="row">
-                    <span class="task-name">Departure</span>
-                    <input id="depQty" type="number" readonly placeholder="0">
-                    <input id="depCredit" type="number" step="0.01" value="1">
-                    <span id="depTotal" class="subtotal">0.0</span>
-                </div>
+                    <div class="summary">
+                        <label for="creditDW">Credit DW</label>
+                        <input id="creditDW" type="number" class="credit-box" value="11">
+                    </div>
 
-                <div class="row">
-                    <span class="task-name">Dropped Room</span>
-                    <input id="backQty" type="number" readonly placeholder="0">
-                    <input id="backCredit" type="number" step="0.01" value="1">
-                    <span id="backTotal" class="subtotal">0.0</span>
-                </div>
+                    <div class="summary">
+                        <label for="creditTrainee">Credit Trainee</label>
+                        <input id="creditTrainee" type="number" class="credit-box" value="5">
+                    </div>
 
-                <div class="row">
-                    <span class="task-name">Pick-up</span>
-                    <input id="pickQty" type="number" readonly placeholder="0">
-                    <input id="pickCredit" type="number" step="0.01" value="0.4">
-                    <span id="pickTotal" class="subtotal">0.0</span>
-                </div>
-
-                <div class="receipt-divider"></div>
-
-                <div class="summary">
-                    <label>Total Cleaning Credit</label>
-                    <span id="totalCleaning" class="total-badge">0.0</span>
-                </div>
-
-                <div class="summary">
-                    <label for="creditRA">Credit / RA Capacity</label>
-                    <input id="creditRA" type="number" class="credit-box" value="14">
-                </div>
-
-                <div class="summary">
-                    <label for="creditDW">Credit DW</label>
-                    <input id="creditDW" type="number" class="credit-box" value="11">
-                </div>
-
-                <div class="summary">
-                    <label for="creditTrainee">Credit Trainee</label>
-                    <input id="creditTrainee" type="number" class="credit-box" value="5">
-                </div>
-
-                <div class="summary">
-                    <label for="spvGoal">Supervisor Goal</label>
-                    <input id="spvGoal" type="number" class="credit-box" value="17">
+                    <div class="summary">
+                        <label for="spvGoal">Supervisor Goal</label>
+                        <input id="spvGoal" type="number" class="credit-box" value="17">
+                    </div>
                 </div>
             </div>
 
@@ -330,7 +397,7 @@
                 </div>
             </div>
 
-            <div class="pos-card">
+            <div class="pos-card" style="border-radius: 12px;">
                 <h3><i class="fa-solid fa-clipboard-user"></i> Room Attendant Distribution</h3>
                 
                 <div class="print-summary-info">
@@ -420,6 +487,26 @@
         vip: ""
     };
 
+    function switchBinderTab(group, tabName) {
+        if (group === 'leftGroup') {
+            document.getElementById('tab_btn_forecast').classList.remove('active');
+            document.getElementById('tab_btn_special').classList.remove('active');
+            document.getElementById('tab_content_forecast').classList.remove('active');
+            document.getElementById('tab_content_special').classList.remove('active');
+
+            document.getElementById(`tab_btn_${tabName}`).classList.add('active');
+            document.getElementById(`tab_content_${tabName}`).classList.add('active');
+        } else if (group === 'rightGroup') {
+            document.getElementById('tab_btn_task').classList.remove('active');
+            document.getElementById('tab_btn_role').classList.remove('active');
+            document.getElementById('tab_content_task').classList.remove('active');
+            document.getElementById('tab_content_role').classList.remove('active');
+
+            document.getElementById(`tab_btn_${tabName}`).classList.add('active');
+            document.getElementById(`tab_content_${tabName}`).classList.add('active');
+        }
+    }
+
     function loadRulesToUI() {
         if (typeof MANNING_RULES !== "undefined") {
             document.getElementById("stayCredit").value = MANNING_RULES.credits.stayover;
@@ -449,7 +536,7 @@
     }
 
     window.switchSwalTab = function(tabName) {
-        document.querySelectorAll('.swal-tab-btn').forEach(btn => btn.classList.remove('active'));
+        document.querySelectorAll('.swal-tab-buttons .swal-tab-btn').forEach(btn => btn.classList.remove('active'));
         document.querySelectorAll('.swal-tab-content').forEach(content => content.classList.remove('active'));
 
         document.getElementById(`tab_btn_${tabName}`).classList.add('active');
@@ -457,7 +544,6 @@
     }
 
     window.resetGeneralTabDefaults = function() {
-        // Direct DOM update untuk input di modal SweetAlert yang sedang aktif
         let stayVal = 0.8, depVal = 1, backVal = 1, pickVal = 0.4, raVal = 14, dwVal = 11, traineeVal = 5, maxStayVal = 6, spvVal = 17;
         
         if (typeof MANNING_RULES !== "undefined") {
@@ -481,7 +567,6 @@
         if (document.getElementById('sw_maxStayRooms')) document.getElementById('sw_maxStayRooms').value = maxStayVal;
         if (document.getElementById('sw_spv')) document.getElementById('sw_spv').value = spvVal;
 
-        // Reset Staff Names
         raCustomNames = {};
         localStorage.removeItem("raCustomNames");
         let raNeeded = Number(document.getElementById("requiredRA")?.innerText) || 10;
@@ -635,9 +720,7 @@
             }
         }).then((result) => {
             if (result.isDenied) {
-                // Reset langsung nilai UI tanpa menutup modal
                 resetGeneralTabDefaults();
-                // Buka kembali modal yang sudah diperbarui secara halus
                 setTimeout(openSettingsModal, 100);
                 return;
             }
@@ -726,6 +809,10 @@
             tonightOcc = 0;
         }
 
+        // PERHITUNGAN ROOM OCCUPANCY PERCENTAGE
+        let occPerc = tonightOcc > 0 ? ((tonightOcc / DEFAULT_CAPACITY) * 100).toFixed(1) : 0;
+        document.getElementById("roomOccPerc").value = occPerc + "%";
+
         let arrival = Number(document.getElementById("arrival")?.value) || 0;
         let departure = Number(document.getElementById("departure")?.value) || 0;
         let backlog = Number(document.getElementById("backlog")?.value) || 0;
@@ -796,7 +883,7 @@
         printTableBody.innerHTML = "";
 
         if (raNeeded <= 0 || totalCredit <= 0) {
-            listContainer.innerHTML = `<div style="text-align:center; font-size:12px; color:#94a3b8; padding:10px;">No task allocation yet.</div>`;
+            listContainer.innerHTML = `<div style="text-align:center; font-size:11px; color:#94a3b8; padding:8px;">No task allocation yet.</div>`;
             printTableBody.innerHTML = `<tr><td colspan="4" class="center">No task allocation yet.</td></tr>`;
             return;
         }
@@ -930,7 +1017,7 @@
         });
 
         if (displayedIndex === 0) {
-            listContainer.innerHTML = `<div style="text-align:center; font-size:12px; color:#94a3b8; padding:10px;">No task allocation yet.</div>`;
+            listContainer.innerHTML = `<div style="text-align:center; font-size:11px; color:#94a3b8; padding:8px;">No task allocation yet.</div>`;
             printTableBody.innerHTML = `<tr><td colspan="4" class="center">No task allocation yet.</td></tr>`;
         }
     }
