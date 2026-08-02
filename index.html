@@ -76,8 +76,9 @@
         .input-group { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
         .input-group label { font-size: 12px; color: #475569; font-weight: 500; }
         .input-group input, .row input, .summary input { padding: 6px 8px; border: 1px solid #cbd5e1; border-radius: 6px; outline: none; font-size: 13px; text-align: right; background: #f8fafc; transition: all 0.2s; }
-        .input-group input { width: 85px; }
-        .input-group input[type="text"] { width: 140px; text-align: left; }
+        .input-group input { width: 85px; } /* Semua input di tab forecast kini konsisten 85px */
+        .input-group input[type="text"] { text-align: right; }
+        .input-group input#planBy { width: 140px; text-align: left; }
         .input-group input[readonly] { background-color: #e2e8f0; color: #475569; font-weight: 600; }
         .input-group input:focus, .row input:focus, .summary input:focus { border-color: #0284c7; background: #fff; box-shadow: 0 0 0 2px rgba(2, 132, 199, 0.15); }
         
@@ -123,10 +124,15 @@
         #submitBtn:hover { background-color: #0369a1; }
         #submitBtn:disabled { background-color: #94a3b8; cursor: not-allowed; }
 
-        /* MODAL CUSTOM & TABS STYLES */
-        .swal-tab-buttons { display: flex; border-bottom: 2px solid #e2e8f0; margin-bottom: 10px; gap: 4px; }
-        .swal-tab-btn { flex: 1; padding: 6px 10px; background: none; border: none; outline: none; font-weight: 600; font-size: 11px; color: #64748b; cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -2px; transition: all 0.2s; }
-        .swal-tab-btn.active { color: #0284c7; border-bottom: 2px solid #0284c7; }
+        /* MODAL CUSTOM STYLES */
+        .swal-tab-body {
+            background: #ffffff;
+            border: 1px solid #cbd5e1;
+            border-radius: 0 8px 8px 8px;
+            padding: 12px;
+            margin-bottom: 12px;
+        }
+
         .swal-tab-content { display: none; text-align: left; font-size: 12px; max-height: 55vh; overflow-y: auto; padding-right: 4px; }
         .swal-tab-content.active { display: block; }
 
@@ -144,10 +150,34 @@
             background: #f8fafc; 
         }
         .swal-ra-input { font-size: 11px !important; padding: 4px 6px !important; margin: 0 !important; height: 28px !important; width: 100% !important; }
-        .swal-textarea { width: 100%; height: 50px; font-size: 11px; padding: 6px; border: 1px solid #cbd5e1; border-radius: 6px; outline: none; resize: vertical; background: #f8fafc; }
-        
-        .btn-tab-reset { background-color: #ef4444; color: white; border: none; padding: 5px 10px; border-radius: 6px; font-size: 10px; font-weight: 600; cursor: pointer; float: right; margin-top: 6px; transition: background 0.2s; }
-        .btn-tab-reset:hover { background-color: #dc2626; }
+        .swal-textarea { width: 100%; height: 46px; font-size: 11px; padding: 6px; border: 1px solid #cbd5e1; border-radius: 6px; outline: none; resize: vertical; background: #f8fafc; }
+
+        /* CUSTOM MODAL ACTION BUTTONS (1 BARIS) */
+        .swal-action-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 6px;
+            margin-top: 8px;
+        }
+        .btn-swal-action {
+            padding: 8px;
+            border: none;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+        }
+        .btn-swal-save { background: #0284c7; color: white; }
+        .btn-swal-save:hover { background: #0369a1; }
+        .btn-swal-reset { background: #eab308; color: white; }
+        .btn-swal-reset:hover { background: #ca8a04; }
+        .btn-swal-cancel { background: #64748b; color: white; }
+        .btn-swal-cancel:hover { background: #475569; }
 
         @media (max-width: 600px) {
             .swal-ra-grid { grid-template-columns: 1fr; max-height: 120px; }
@@ -183,7 +213,7 @@
 
             .print-daily-info { display: block !important; margin-top: 12px; border: 1px solid #000; padding: 8px; font-size: 10px; }
             .print-daily-info h4 { font-size: 10px; font-weight: 800; border-bottom: 1px solid #000; padding-bottom: 2px; margin-bottom: 4px; text-transform: uppercase; }
-            .print-daily-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+            .print-daily-grid { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 6px; }
             .print-daily-item b { display: block; text-transform: uppercase; margin-bottom: 2px; font-size: 8px; }
         }
     </style>
@@ -250,13 +280,14 @@
                 <!-- TAB 1: HOTEL FORECAST -->
                 <div id="tab_content_forecast" class="binder-content active">
                     <h3><i class="fa-solid fa-chart-line"></i> Hotel Forecast</h3>
-                    <div class="input-group">
-                        <label for="tonightOcc">Room Sold</label>
-                        <input type="number" id="tonightOcc" placeholder="1-272" min="1" max="272" required>
-                    </div>
+                    <!-- Room Occ (%) ditaruh di paling atas dan ukurannya seragam 85px -->
                     <div class="input-group">
                         <label for="roomOccPerc">Room Occ (%)</label>
                         <input type="text" id="roomOccPerc" placeholder="0%" readonly>
+                    </div>
+                    <div class="input-group">
+                        <label for="tonightOcc">Room Sold</label>
+                        <input type="number" id="tonightOcc" placeholder="1-272" min="1" max="272" required>
                     </div>
                     <div class="input-group">
                         <label for="arrival">Arrival</label>
@@ -458,6 +489,10 @@
                             <b>VIP in House:</b>
                             <span id="printVipVal">-</span>
                         </div>
+                        <div class="print-daily-item">
+                            <b>Guest Preferences:</b>
+                            <span id="printPrefVal">-</span>
+                        </div>
                     </div>
                 </div>
 
@@ -484,7 +519,8 @@
     let dailyInfo = {
         project: "",
         reminder: "",
-        vip: ""
+        vip: "",
+        preference: ""
     };
 
     function switchBinderTab(group, tabName) {
@@ -536,11 +572,11 @@
     }
 
     window.switchSwalTab = function(tabName) {
-        document.querySelectorAll('.swal-tab-buttons .swal-tab-btn').forEach(btn => btn.classList.remove('active'));
+        document.querySelectorAll('.binder-tab-wrapper .binder-tab').forEach(btn => btn.classList.remove('active'));
         document.querySelectorAll('.swal-tab-content').forEach(content => content.classList.remove('active'));
 
-        document.getElementById(`tab_btn_${tabName}`).classList.add('active');
-        document.getElementById(`tab_content_${tabName}`).classList.add('active');
+        document.getElementById(`sw_tab_btn_${tabName}`).classList.add('active');
+        document.getElementById(`sw_tab_content_${tabName}`).classList.add('active');
     }
 
     window.resetGeneralTabDefaults = function() {
@@ -576,10 +612,40 @@
         }
     }
 
-    window.clearDailyInfo = function() {
-        if (document.getElementById('sw_project')) document.getElementById('sw_project').value = "";
-        if (document.getElementById('sw_reminder')) document.getElementById('sw_reminder').value = "";
-        if (document.getElementById('sw_vip')) document.getElementById('sw_vip').value = "";
+    window.saveSettingsModal = function() {
+        let raNeeded = Number(document.getElementById("requiredRA")?.innerText) || 10;
+        let tempNames = {};
+        for (let i = 1; i <= raNeeded; i++) {
+            let val = document.getElementById(`sw_ra_name_${i}`)?.value.trim();
+            if (val) tempNames[i] = val;
+        }
+
+        raCustomNames = tempNames;
+        localStorage.setItem("raCustomNames", JSON.stringify(raCustomNames));
+
+        maxStayoverRooms = Number(document.getElementById('sw_maxStayRooms')?.value) || 0;
+        localStorage.setItem("maxStayoverRooms", maxStayoverRooms);
+
+        dailyInfo = {
+            project: document.getElementById('sw_project')?.value || "",
+            reminder: document.getElementById('sw_reminder')?.value || "",
+            vip: document.getElementById('sw_vip')?.value || "",
+            preference: document.getElementById('sw_preference')?.value || ""
+        };
+        localStorage.setItem("dailyInfo", JSON.stringify(dailyInfo));
+
+        document.getElementById('stayCredit').value = document.getElementById('sw_stay')?.value || 0.8;
+        document.getElementById('depCredit').value = document.getElementById('sw_dep')?.value || 1;
+        document.getElementById('backCredit').value = document.getElementById('sw_back')?.value || 1;
+        document.getElementById('pickCredit').value = document.getElementById('sw_pick')?.value || 0.4;
+        document.getElementById('creditRA').value = document.getElementById('sw_creditRA')?.value || 14;
+        document.getElementById('creditDW').value = document.getElementById('sw_creditDW')?.value || 11;
+        document.getElementById('creditTrainee').value = document.getElementById('sw_creditTrainee')?.value || 5;
+        document.getElementById('spvGoal').value = document.getElementById('sw_spv')?.value || 17;
+
+        calculate();
+        Swal.close();
+        Swal.fire({ icon: 'success', title: 'Saved!', text: 'Settings updated successfully.', timer: 1500, showConfirmButton: false });
     }
 
     function openSettingsModal() {
@@ -600,93 +666,109 @@
         Swal.fire({
             width: '90%',
             maxWidth: '560px',
+            showConfirmButton: false,
+            showCancelButton: false,
             html: `
-                <div class="swal-tab-buttons">
-                    <button id="tab_btn_general" class="swal-tab-btn active" onclick="switchSwalTab('general')"><i class="fa-solid fa-sliders"></i> General & Weights</button>
-                    <button id="tab_btn_daily" class="swal-tab-btn" onclick="switchSwalTab('daily')"><i class="fa-solid fa-calendar-day"></i> Daily Information</button>
+                <!-- BINDER DIVIDER TABS STYLE FOR MODAL -->
+                <div class="binder-tab-wrapper">
+                    <button id="sw_tab_btn_general" class="binder-tab active" onclick="switchSwalTab('general')">
+                        <i class="fa-solid fa-sliders"></i> General & Weights
+                    </button>
+                    <button id="sw_tab_btn_daily" class="binder-tab" onclick="switchSwalTab('daily')">
+                        <i class="fa-solid fa-calendar-day"></i> Daily Information
+                    </button>
                 </div>
 
-                <div id="tab_content_general" class="swal-tab-content active">
-                    <h4 style="color:#0284c7; border-bottom:1px solid #e2e8f0; padding-bottom:4px; font-size:12px;"><i class="fa-solid fa-users"></i> STAFF NAME SETTINGS (RA)</h4>
-                    <p style="font-size:11px; color:#64748b; margin-bottom:6px;">Enter staff names to replace labels RA1, RA2, etc.:</p>
-                    <div class="swal-ra-grid" id="swalRaGrid">
-                        ${raInputsHTML}
+                <div class="swal-tab-body">
+                    <!-- TAB 1: GENERAL & WEIGHTS -->
+                    <div id="sw_tab_content_general" class="swal-tab-content active">
+                        <h4 style="color:#0284c7; border-bottom:1px solid #e2e8f0; padding-bottom:4px; font-size:12px;"><i class="fa-solid fa-users"></i> STAFF NAME SETTINGS (RA)</h4>
+                        <p style="font-size:11px; color:#64748b; margin-bottom:6px;">Enter staff names to replace labels RA1, RA2, etc.:</p>
+                        <div class="swal-ra-grid" id="swalRaGrid">
+                            ${raInputsHTML}
+                        </div>
+
+                        <h4 style="color:#0284c7; border-bottom:1px solid #e2e8f0; padding-bottom:4px; font-size:12px; margin-top:12px;"><i class="fa-solid fa-weight-hanging"></i> WEIGHT & TARGET SETTINGS</h4>
+                        <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+                            <div>
+                                <label><b>Stayover Weight:</b></label>
+                                <input id="sw_stay" type="number" class="swal2-input swal-ra-input" value="${document.getElementById('stayCredit').value}" step="0.01">
+                            </div>
+                            <div>
+                                <label><b>Departure Weight:</b></label>
+                                <input id="sw_dep" type="number" class="swal2-input swal-ra-input" value="${document.getElementById('depCredit').value}" step="0.01">
+                            </div>
+                            <div>
+                                <label><b>Dropped Room Weight:</b></label>
+                                <input id="sw_back" type="number" class="swal2-input swal-ra-input" value="${document.getElementById('backCredit').value}" step="0.01">
+                            </div>
+                            <div>
+                                <label><b>Pick-up Weight:</b></label>
+                                <input id="sw_pick" type="number" class="swal2-input swal-ra-input" value="${document.getElementById('pickCredit').value}" step="0.01">
+                            </div>
+                            <div>
+                                <label><b>Credit / RA Capacity:</b></label>
+                                <input id="sw_creditRA" type="number" class="swal2-input swal-ra-input" value="${document.getElementById('creditRA').value}" step="0.1">
+                            </div>
+                            <div>
+                                <label><b>Credit DW:</b></label>
+                                <input id="sw_creditDW" type="number" class="swal2-input swal-ra-input" value="${document.getElementById('creditDW').value}" step="0.1">
+                            </div>
+                            <div>
+                                <label><b>Credit Trainee:</b></label>
+                                <input id="sw_creditTrainee" type="number" class="swal2-input swal-ra-input" value="${document.getElementById('creditTrainee').value}" step="0.1">
+                            </div>
+                        </div>
+
+                        <h4 style="color:#0284c7; border-bottom:1px solid #e2e8f0; padding-bottom:4px; font-size:12px; margin-top:12px;"><i class="fa-solid fa-chart-pie"></i> ALLOCATION RULES</h4>
+                        <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+                            <div>
+                                <label><b>Max Stayover Room:</b></label>
+                                <input id="sw_maxStayRooms" type="number" class="swal2-input swal-ra-input" value="${maxStayoverRooms}" min="0" placeholder="e.g. 6">
+                            </div>
+                            <div>
+                                <label><b>Supervisor Goal:</b></label>
+                                <input id="sw_spv" type="number" class="swal2-input swal-ra-input" value="${document.getElementById('spvGoal').value}">
+                            </div>
+                        </div>
                     </div>
 
-                    <h4 style="color:#0284c7; border-bottom:1px solid #e2e8f0; padding-bottom:4px; font-size:12px; margin-top:12px;"><i class="fa-solid fa-weight-hanging"></i> WEIGHT & TARGET SETTINGS</h4>
-                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
-                        <div>
-                            <label><b>Stayover Weight:</b></label>
-                            <input id="sw_stay" type="number" class="swal2-input swal-ra-input" value="${document.getElementById('stayCredit').value}" step="0.01">
-                        </div>
-                        <div>
-                            <label><b>Departure Weight:</b></label>
-                            <input id="sw_dep" type="number" class="swal2-input swal-ra-input" value="${document.getElementById('depCredit').value}" step="0.01">
-                        </div>
-                        <div>
-                            <label><b>Dropped Room Weight:</b></label>
-                            <input id="sw_back" type="number" class="swal2-input swal-ra-input" value="${document.getElementById('backCredit').value}" step="0.01">
-                        </div>
-                        <div>
-                            <label><b>Pick-up Weight:</b></label>
-                            <input id="sw_pick" type="number" class="swal2-input swal-ra-input" value="${document.getElementById('pickCredit').value}" step="0.01">
-                        </div>
-                        <div>
-                            <label><b>Credit / RA Capacity:</b></label>
-                            <input id="sw_creditRA" type="number" class="swal2-input swal-ra-input" value="${document.getElementById('creditRA').value}" step="0.1">
-                        </div>
-                        <div>
-                            <label><b>Credit DW:</b></label>
-                            <input id="sw_creditDW" type="number" class="swal2-input swal-ra-input" value="${document.getElementById('creditDW').value}" step="0.1">
-                        </div>
-                        <div>
-                            <label><b>Credit Trainee:</b></label>
-                            <input id="sw_creditTrainee" type="number" class="swal2-input swal-ra-input" value="${document.getElementById('creditTrainee').value}" step="0.1">
-                        </div>
-                    </div>
-
-                    <h4 style="color:#0284c7; border-bottom:1px solid #e2e8f0; padding-bottom:4px; font-size:12px; margin-top:12px;"><i class="fa-solid fa-chart-pie"></i> ALLOCATION RULES</h4>
-                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
-                        <div>
-                            <label><b>Max Stayover Room:</b></label>
-                            <input id="sw_maxStayRooms" type="number" class="swal2-input swal-ra-input" value="${maxStayoverRooms}" min="0" placeholder="e.g. 6">
-                        </div>
-                        <div>
-                            <label><b>Supervisor Goal:</b></label>
-                            <input id="sw_spv" type="number" class="swal2-input swal-ra-input" value="${document.getElementById('spvGoal').value}">
+                    <!-- TAB 2: DAILY INFORMATION -->
+                    <div id="sw_tab_content_daily" class="swal-tab-content">
+                        <div style="display:flex; flex-direction:column; gap:8px;">
+                            <div>
+                                <label><b>Project of the Day:</b></label>
+                                <textarea id="sw_project" class="swal-textarea" placeholder="Input Project of the day...">${dailyInfo.project || ''}</textarea>
+                            </div>
+                            <div>
+                                <label><b>Reminder of the Day:</b></label>
+                                <textarea id="sw_reminder" class="swal-textarea" placeholder="Input Reminder of the day...">${dailyInfo.reminder || ''}</textarea>
+                            </div>
+                            <div>
+                                <label><b>VIP in House:</b></label>
+                                <textarea id="sw_vip" class="swal-textarea" placeholder="Input VIP in House...">${dailyInfo.vip || ''}</textarea>
+                            </div>
+                            <div>
+                                <label><b>Guest Preferences:</b></label>
+                                <textarea id="sw_preference" class="swal-textarea" placeholder="Input Guest Preferences...">${dailyInfo.preference || ''}</textarea>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <div id="tab_content_daily" class="swal-tab-content">
-                    <div style="display:flex; flex-direction:column; gap:10px;">
-                        <div>
-                            <label><b>Project of the Day:</b></label>
-                            <textarea id="sw_project" class="swal-textarea" placeholder="Input Project of the day...">${dailyInfo.project || ''}</textarea>
-                        </div>
-                        <div>
-                            <label><b>Reminder of the Day:</b></label>
-                            <textarea id="sw_reminder" class="swal-textarea" placeholder="Input Reminder of the day...">${dailyInfo.reminder || ''}</textarea>
-                        </div>
-                        <div>
-                            <label><b>VIP in House:</b></label>
-                            <textarea id="sw_vip" class="swal-textarea" placeholder="Input VIP in House...">${dailyInfo.vip || ''}</textarea>
-                        </div>
-                        <div>
-                            <button type="button" class="btn-tab-reset" onclick="clearDailyInfo()">
-                                <i class="fa-solid fa-eraser"></i> Clear Daily Info
-                            </button>
-                        </div>
-                    </div>
+                <!-- 1 BARIS TOMBOL: SAVE, RESET, CANCEL -->
+                <div class="swal-action-row">
+                    <button type="button" class="btn-swal-action btn-swal-save" onclick="saveSettingsModal()">
+                        <i class="fa-solid fa-check"></i> Save
+                    </button>
+                    <button type="button" class="btn-swal-action btn-swal-reset" onclick="resetGeneralTabDefaults()">
+                        Reset
+                    </button>
+                    <button type="button" class="btn-swal-action btn-swal-cancel" onclick="Swal.close()">
+                        <i class="fa-solid fa-xmark"></i> Cancel
+                    </button>
                 </div>
             `,
-            showCancelButton: true,
-            showDenyButton: true,
-            confirmButtonText: 'Save',
-            cancelButtonText: 'Cancel',
-            denyButtonText: '<i class="fa-solid fa-rotate-left"></i> Reset Defaults',
-            confirmButtonColor: '#0284c7',
-            denyButtonColor: '#eab308',
             didOpen: () => {
                 const raGrid = document.getElementById('swalRaGrid');
                 if (raGrid) {
@@ -694,62 +776,6 @@
                         e.stopPropagation();
                     }, { passive: true });
                 }
-            },
-            preConfirm: () => {
-                let tempNames = {};
-                for (let i = 1; i <= raNeeded; i++) {
-                    let val = document.getElementById(`sw_ra_name_${i}`)?.value.trim();
-                    if (val) tempNames[i] = val;
-                }
-
-                return {
-                    names: tempNames,
-                    stay: document.getElementById('sw_stay').value,
-                    dep: document.getElementById('sw_dep').value,
-                    back: document.getElementById('sw_back').value,
-                    pick: document.getElementById('sw_pick').value,
-                    creditRA: document.getElementById('sw_creditRA').value,
-                    creditDW: document.getElementById('sw_creditDW').value,
-                    creditTrainee: document.getElementById('sw_creditTrainee').value,
-                    maxStayRooms: document.getElementById('sw_maxStayRooms').value,
-                    spv: document.getElementById('sw_spv').value,
-                    project: document.getElementById('sw_project').value,
-                    reminder: document.getElementById('sw_reminder').value,
-                    vip: document.getElementById('sw_vip').value
-                }
-            }
-        }).then((result) => {
-            if (result.isDenied) {
-                resetGeneralTabDefaults();
-                setTimeout(openSettingsModal, 100);
-                return;
-            }
-
-            if (result.isConfirmed && result.value) {
-                raCustomNames = result.value.names;
-                localStorage.setItem("raCustomNames", JSON.stringify(raCustomNames));
-
-                maxStayoverRooms = Number(result.value.maxStayRooms) || 0;
-                localStorage.setItem("maxStayoverRooms", maxStayoverRooms);
-
-                dailyInfo = {
-                    project: result.value.project,
-                    reminder: result.value.reminder,
-                    vip: result.value.vip
-                };
-                localStorage.setItem("dailyInfo", JSON.stringify(dailyInfo));
-
-                document.getElementById('stayCredit').value = result.value.stay;
-                document.getElementById('depCredit').value = result.value.dep;
-                document.getElementById('backCredit').value = result.value.back;
-                document.getElementById('pickCredit').value = result.value.pick;
-                document.getElementById('creditRA').value = result.value.creditRA;
-                document.getElementById('creditDW').value = result.value.creditDW;
-                document.getElementById('creditTrainee').value = result.value.creditTrainee;
-                document.getElementById('spvGoal').value = result.value.spv;
-                
-                calculate();
-                Swal.fire({ icon: 'success', title: 'Saved!', text: 'Settings updated successfully.', timer: 1500, showConfirmButton: false });
             }
         });
     }
@@ -1039,6 +1065,7 @@
         document.getElementById("printProjectVal").innerText = dailyInfo.project?.trim() ? dailyInfo.project : "-";
         document.getElementById("printReminderVal").innerText = dailyInfo.reminder?.trim() ? dailyInfo.reminder : "-";
         document.getElementById("printVipVal").innerText = dailyInfo.vip?.trim() ? dailyInfo.vip : "-";
+        document.getElementById("printPrefVal").innerText = dailyInfo.preference?.trim() ? dailyInfo.preference : "-";
 
         window.print();
     }
@@ -1120,7 +1147,8 @@
             planBy: plannerInput,
             projectOfDay: dailyInfo.project || "",
             reminderOfDay: dailyInfo.reminder || "",
-            vipInHouse: dailyInfo.vip || ""
+            vipInHouse: dailyInfo.vip || "",
+            guestPreference: dailyInfo.preference || ""
         };
 
         fetch(GOOGLE_SCRIPT_URL, {
