@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HK MANNING CALCULATOR</title>
+    <title>WORKLOAD PLANNER</title>
     <!-- FontAwesome Icon -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- SweetAlert2 CSS & JS -->
@@ -19,12 +19,22 @@
         
         /* HEADER & BRANDING */
         .pos-header { background: #ffffff; padding: 12px 16px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); margin-bottom: 12px; }
-        .brand { display: flex; align-items: center; gap: 10px; }
-        .brand h1 { font-size: 14px; font-weight: 700; color: #0f172a; letter-spacing: 0.3px; }
-        .brand p { font-size: 10px; color: #64748b; }
+        .brand { display: flex; align-items: center; gap: 12px; }
         
-        .btn-settings { background: #e0f2fe; color: #0284c7; border: none; padding: 6px 10px; border-radius: 8px; cursor: pointer; font-size: 13px; transition: all 0.2s; display: inline-flex; align-items: center; justify-content: center; }
-        .btn-settings:hover { background: #bae6fd; transform: rotate(30deg); }
+        .brand-icon-box { 
+            background: #e0f2fe; 
+            color: #0284c7; 
+            width: 42px; 
+            height: 42px; 
+            border-radius: 10px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            font-size: 22px; 
+            box-shadow: 0 2px 4px rgba(2, 132, 199, 0.15);
+        }
+        .brand h1 { font-size: 15px; font-weight: 700; color: #0f172a; letter-spacing: 0.3px; }
+        .brand p { font-size: 10px; color: #64748b; }
 
         .capacity-display { text-align: right; font-size: 11px; color: #64748b; line-height: 1.2; }
         .capacity-display b { display: block; font-size: 13px; color: #0f172a; font-weight: 700; }
@@ -32,9 +42,21 @@
         /* GRID LAYOUT */
         .pos-grid { display: grid; grid-template-columns: 1fr 1.1fr; gap: 12px; }
         @media (max-width: 860px) { .pos-grid { grid-template-columns: 1fr; } }
-        .pos-card { background: #ffffff; border-radius: 0 12px 12px 12px; padding: 14px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); margin-bottom: 12px; border: 1px solid #cbd5e1; }
+        .pos-card { background: #ffffff; border-radius: 12px; padding: 14px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); margin-bottom: 12px; border: 1px solid #cbd5e1; }
         .pos-card h3 { font-size: 12px; color: #0284c7; margin-bottom: 10px; display: flex; align-items: center; gap: 6px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
-        
+        .pos-card h3 button.btn-card-settings {
+            margin-left: auto;
+            background: #e0f2fe;
+            color: #0284c7;
+            border: none;
+            padding: 4px 8px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 11px;
+            transition: all 0.2s;
+        }
+        .pos-card h3 button.btn-card-settings:hover { background: #bae6fd; }
+
         /* BINDER FILE DIVIDER TABS STYLING */
         .binder-tab-wrapper { display: flex; margin-bottom: -1px; position: relative; z-index: 2; padding-left: 4px; gap: 4px; }
         .binder-tab {
@@ -76,7 +98,7 @@
         .input-group { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
         .input-group label { font-size: 12px; color: #475569; font-weight: 500; }
         .input-group input, .row input, .summary input { padding: 6px 8px; border: 1px solid #cbd5e1; border-radius: 6px; outline: none; font-size: 13px; text-align: right; background: #f8fafc; transition: all 0.2s; }
-        .input-group input { width: 85px; } /* Semua input di tab forecast kini konsisten 85px */
+        .input-group input { width: 85px; }
         .input-group input[type="text"] { text-align: right; }
         .input-group input#planBy { width: 140px; text-align: left; }
         .input-group input[readonly] { background-color: #e2e8f0; color: #475569; font-weight: 600; }
@@ -114,7 +136,7 @@
         .ra-details { font-size: 10px; color: #475569; line-height: 1.3; background: #ffffff; padding: 6px; border-radius: 6px; border: 1px dashed #cbd5e1; }
         .special-project-badge { margin-top: 2px; font-size: 10px; font-weight: 600; color: #b45309; background: #fef3c7; padding: 2px 6px; border-radius: 4px; display: inline-block; }
         
-        /* ACTION BUTTONS (1 BARIS KANAN KIRI) */
+        /* ACTION BUTTONS */
         .btn-action-group { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; }
         
         #printBtn { width: 100%; padding: 10px; background-color: #059669; color: white; border: none; border-radius: 8px; font-size: 11px; font-weight: 700; cursor: pointer; transition: all 0.2s ease; display: flex; align-items: center; justify-content: center; gap: 6px; box-shadow: 0 2px 4px rgba(5, 150, 105, 0.2); }
@@ -125,14 +147,7 @@
         #submitBtn:disabled { background-color: #94a3b8; cursor: not-allowed; }
 
         /* MODAL CUSTOM STYLES */
-        .swal-tab-body {
-            background: #ffffff;
-            border: 1px solid #cbd5e1;
-            border-radius: 0 8px 8px 8px;
-            padding: 12px;
-            margin-bottom: 12px;
-        }
-
+        .swal-tab-body { background: #ffffff; border: 1px solid #cbd5e1; border-radius: 0 8px 8px 8px; padding: 12px; margin-bottom: 12px; }
         .swal-tab-content { display: none; text-align: left; font-size: 12px; max-height: 55vh; overflow-y: auto; padding-right: 4px; }
         .swal-tab-content.active { display: block; }
 
@@ -153,25 +168,8 @@
         .swal-textarea { width: 100%; height: 46px; font-size: 11px; padding: 6px; border: 1px solid #cbd5e1; border-radius: 6px; outline: none; resize: vertical; background: #f8fafc; }
 
         /* CUSTOM MODAL ACTION BUTTONS (1 BARIS) */
-        .swal-action-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            gap: 6px;
-            margin-top: 8px;
-        }
-        .btn-swal-action {
-            padding: 8px;
-            border: none;
-            border-radius: 6px;
-            font-size: 11px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: background 0.2s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 4px;
-        }
+        .swal-action-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; margin-top: 8px; }
+        .btn-swal-action { padding: 8px; border: none; border-radius: 6px; font-size: 11px; font-weight: 700; cursor: pointer; transition: background 0.2s; display: flex; align-items: center; justify-content: center; gap: 4px; }
         .btn-swal-save { background: #0284c7; color: white; }
         .btn-swal-save:hover { background: #0369a1; }
         .btn-swal-reset { background: #eab308; color: white; }
@@ -224,12 +222,13 @@
 <div class="pos-container">
     <header class="pos-header">
         <div class="brand">
-            <button class="btn-settings" onclick="openSettingsModal()" title="Open Settings">
-                <i class="fa-solid fa-gear"></i>
-            </button>
+            <!-- LOGO GEDUNG PROPORSIONAL -->
+            <div class="brand-icon-box">
+                <i class="fa-solid fa-building"></i>
+            </div>
             <div>
-                <h1>MANNING CALCULATOR</h1>
-                <p>Daily Staffing Planner</p>
+                <h1>HK WORKLOAD PLANNER</h1>
+                <p>Daily Staffing Tool</p>
             </div>
         </div>
         <div class="capacity-display">
@@ -246,7 +245,7 @@
     <div class="pos-grid">
         <!-- LEFT PANEL -->
         <div class="left-panel">
-            <div class="pos-card" style="border-radius: 12px;">
+            <div class="pos-card">
                 <h3><i class="fa-solid fa-user-pen"></i> Planner Info</h3>
                 
                 <div class="last-submit-info" id="lastSubmitBox">
@@ -276,11 +275,10 @@
                 </button>
             </div>
 
-            <div class="pos-card">
+            <div class="pos-card" style="border-radius: 0 12px 12px 12px;">
                 <!-- TAB 1: HOTEL FORECAST -->
                 <div id="tab_content_forecast" class="binder-content active">
                     <h3><i class="fa-solid fa-chart-line"></i> Hotel Forecast</h3>
-                    <!-- Room Occ (%) ditaruh di paling atas dan ukurannya seragam 85px -->
                     <div class="input-group">
                         <label for="roomOccPerc">Room Occ (%)</label>
                         <input type="text" id="roomOccPerc" placeholder="0%" readonly>
@@ -320,19 +318,20 @@
 
         <!-- RIGHT PANEL -->
         <div class="right-panel">
-            <!-- BINDER TABS FOR WORKLOAD SUMMARY -->
+            <!-- BINDER TABS FOR TASKS & ROLE CREDITS -->
             <div class="binder-tab-wrapper">
-                <button class="binder-tab active" id="tab_btn_task" onclick="switchBinderTab('rightGroup', 'task')">
+                <button class="binder-tab active" id="tab_btn_tasks" onclick="switchBinderTab('rightGroup', 'tasks')">
                     <i class="fa-solid fa-list-check"></i> Tasks
                 </button>
-                <button class="binder-tab" id="tab_btn_role" onclick="switchBinderTab('rightGroup', 'role')">
+                <button class="binder-tab" id="tab_btn_roles" onclick="switchBinderTab('rightGroup', 'roles')">
                     <i class="fa-solid fa-sliders"></i> Role Credits
                 </button>
             </div>
 
-            <div class="pos-card receipt-card">
-                <!-- TAB 1: TASK SUMMARY -->
-                <div id="tab_content_task" class="binder-content active">
+            <!-- COMBINED POS CARD FOR WORKLOAD & SETTING ROLE -->
+            <div class="pos-card receipt-card" style="border-radius: 0 12px 12px 12px;">
+                <!-- TAB 1: WORKLOAD SUMMARY (TASKS) -->
+                <div id="tab_content_tasks" class="binder-content active">
                     <h3><i class="fa-solid fa-receipt"></i> Workload Summary</h3>
                     
                     <div class="table-header">
@@ -378,9 +377,14 @@
                     </div>
                 </div>
 
-                <!-- TAB 2: ROLE CREDIT SETTINGS -->
-                <div id="tab_content_role" class="binder-content">
-                    <h3><i class="fa-solid fa-user-gear"></i> Role Credit Targets</h3>
+                <!-- TAB 2: SETTING ROLE (ROLE CREDITS) -->
+                <div id="tab_content_roles" class="binder-content">
+                    <h3>
+                        <span><i class="fa-solid fa-gear"></i> Setting Role</span>
+                        <button class="btn-card-settings" onclick="openSettingsModal()" title="Advanced Settings">
+                            <i class="fa-solid fa-sliders"></i> Advanced
+                        </button>
+                    </h3>
                     
                     <div class="summary">
                         <label for="creditRA">Credit / RA Capacity</label>
@@ -397,7 +401,7 @@
                         <input id="creditTrainee" type="number" class="credit-box" value="5">
                     </div>
 
-                    <div class="summary">
+                    <div class="summary" style="margin-bottom:0;">
                         <label for="spvGoal">Supervisor Goal</label>
                         <input id="spvGoal" type="number" class="credit-box" value="17">
                     </div>
@@ -428,7 +432,7 @@
                 </div>
             </div>
 
-            <div class="pos-card" style="border-radius: 12px;">
+            <div class="pos-card">
                 <h3><i class="fa-solid fa-clipboard-user"></i> Room Attendant Distribution</h3>
                 
                 <div class="print-summary-info">
@@ -533,10 +537,10 @@
             document.getElementById(`tab_btn_${tabName}`).classList.add('active');
             document.getElementById(`tab_content_${tabName}`).classList.add('active');
         } else if (group === 'rightGroup') {
-            document.getElementById('tab_btn_task').classList.remove('active');
-            document.getElementById('tab_btn_role').classList.remove('active');
-            document.getElementById('tab_content_task').classList.remove('active');
-            document.getElementById('tab_content_role').classList.remove('active');
+            document.getElementById('tab_btn_tasks').classList.remove('active');
+            document.getElementById('tab_btn_roles').classList.remove('active');
+            document.getElementById('tab_content_tasks').classList.remove('active');
+            document.getElementById('tab_content_roles').classList.remove('active');
 
             document.getElementById(`tab_btn_${tabName}`).classList.add('active');
             document.getElementById(`tab_content_${tabName}`).classList.add('active');
@@ -572,43 +576,59 @@
     }
 
     window.switchSwalTab = function(tabName) {
-        document.querySelectorAll('.binder-tab-wrapper .binder-tab').forEach(btn => btn.classList.remove('active'));
+        document.querySelectorAll('.swal-tab-body .binder-tab, .swal2-html .binder-tab-wrapper .binder-tab').forEach(btn => btn.classList.remove('active'));
         document.querySelectorAll('.swal-tab-content').forEach(content => content.classList.remove('active'));
 
         document.getElementById(`sw_tab_btn_${tabName}`).classList.add('active');
         document.getElementById(`sw_tab_content_${tabName}`).classList.add('active');
     }
 
+    /* PERBAIKAN FUNGSI RESET SETTINGS DEFAULTS */
     window.resetGeneralTabDefaults = function() {
-        let stayVal = 0.8, depVal = 1, backVal = 1, pickVal = 0.4, raVal = 14, dwVal = 11, traineeVal = 5, maxStayVal = 6, spvVal = 17;
-        
-        if (typeof MANNING_RULES !== "undefined") {
-            stayVal = MANNING_RULES.credits.stayover;
-            depVal = MANNING_RULES.credits.departure;
-            backVal = MANNING_RULES.credits.dropped;
-            pickVal = MANNING_RULES.credits.pickup;
-            raVal = MANNING_RULES.targetCreditPerRA;
-            dwVal = MANNING_RULES.creditDW || 11;
-            traineeVal = MANNING_RULES.creditTrainee || 5;
-            spvVal = MANNING_RULES.targetArrivalPerSupervisor || 17;
-        }
+        // Cek tab mana yang sedang aktif di Modal Settings
+        const isDailyTabActive = document.getElementById('sw_tab_content_daily')?.classList.contains('active');
 
-        if (document.getElementById('sw_stay')) document.getElementById('sw_stay').value = stayVal;
-        if (document.getElementById('sw_dep')) document.getElementById('sw_dep').value = depVal;
-        if (document.getElementById('sw_back')) document.getElementById('sw_back').value = backVal;
-        if (document.getElementById('sw_pick')) document.getElementById('sw_pick').value = pickVal;
-        if (document.getElementById('sw_creditRA')) document.getElementById('sw_creditRA').value = raVal;
-        if (document.getElementById('sw_creditDW')) document.getElementById('sw_creditDW').value = dwVal;
-        if (document.getElementById('sw_creditTrainee')) document.getElementById('sw_creditTrainee').value = traineeVal;
-        if (document.getElementById('sw_maxStayRooms')) document.getElementById('sw_maxStayRooms').value = maxStayVal;
-        if (document.getElementById('sw_spv')) document.getElementById('sw_spv').value = spvVal;
+        if (isDailyTabActive) {
+            // JIKA TAB DAILY INFORMATION AKTIF: KOSONGKAN INPUT TEXT AREA
+            if (document.getElementById('sw_project')) document.getElementById('sw_project').value = "";
+            if (document.getElementById('sw_reminder')) document.getElementById('sw_reminder').value = "";
+            if (document.getElementById('sw_vip')) document.getElementById('sw_vip').value = "";
+            if (document.getElementById('sw_preference')) document.getElementById('sw_preference').value = "";
 
-        raCustomNames = {};
-        localStorage.removeItem("raCustomNames");
-        let raNeeded = Number(document.getElementById("requiredRA")?.innerText) || 10;
-        for (let i = 1; i <= raNeeded; i++) {
-            let el = document.getElementById(`sw_ra_name_${i}`);
-            if (el) el.value = "";
+            dailyInfo = { project: "", reminder: "", vip: "", preference: "" };
+            localStorage.removeItem("dailyInfo");
+        } else {
+            // JIKA TAB GENERAL AKTIF: RESET NILAI REGULER BERSAMA LIST NAMA RA
+            let stayVal = 0.8, depVal = 1, backVal = 1, pickVal = 0.4, raVal = 14, dwVal = 11, traineeVal = 5, maxStayVal = 6, spvVal = 17;
+            
+            if (typeof MANNING_RULES !== "undefined") {
+                stayVal = MANNING_RULES.credits.stayover;
+                depVal = MANNING_RULES.credits.departure;
+                backVal = MANNING_RULES.credits.dropped;
+                pickVal = MANNING_RULES.credits.pickup;
+                raVal = MANNING_RULES.targetCreditPerRA;
+                dwVal = MANNING_RULES.creditDW || 11;
+                traineeVal = MANNING_RULES.creditTrainee || 5;
+                spvVal = MANNING_RULES.targetArrivalPerSupervisor || 17;
+            }
+
+            if (document.getElementById('sw_stay')) document.getElementById('sw_stay').value = stayVal;
+            if (document.getElementById('sw_dep')) document.getElementById('sw_dep').value = depVal;
+            if (document.getElementById('sw_back')) document.getElementById('sw_back').value = backVal;
+            if (document.getElementById('sw_pick')) document.getElementById('sw_pick').value = pickVal;
+            if (document.getElementById('sw_creditRA')) document.getElementById('sw_creditRA').value = raVal;
+            if (document.getElementById('sw_creditDW')) document.getElementById('sw_creditDW').value = dwVal;
+            if (document.getElementById('sw_creditTrainee')) document.getElementById('sw_creditTrainee').value = traineeVal;
+            if (document.getElementById('sw_maxStayRooms')) document.getElementById('sw_maxStayRooms').value = maxStayVal;
+            if (document.getElementById('sw_spv')) document.getElementById('sw_spv').value = spvVal;
+
+            raCustomNames = {};
+            localStorage.removeItem("raCustomNames");
+            let raNeeded = Number(document.getElementById("requiredRA")?.innerText) || 10;
+            for (let i = 1; i <= raNeeded; i++) {
+                let el = document.getElementById(`sw_ra_name_${i}`);
+                if (el) el.value = "";
+            }
         }
     }
 
@@ -835,7 +855,6 @@
             tonightOcc = 0;
         }
 
-        // PERHITUNGAN ROOM OCCUPANCY PERCENTAGE
         let occPerc = tonightOcc > 0 ? ((tonightOcc / DEFAULT_CAPACITY) * 100).toFixed(1) : 0;
         document.getElementById("roomOccPerc").value = occPerc + "%";
 
