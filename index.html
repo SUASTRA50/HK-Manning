@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WORKLOAD PLANNER</title>
+    <title>HK WORKLOAD PLANNER</title>
     <!-- FontAwesome Icon -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- SweetAlert2 CSS & JS -->
@@ -33,11 +33,11 @@
             font-size: 22px; 
             box-shadow: 0 2px 4px rgba(2, 132, 199, 0.15);
         }
-        .brand h1 { font-size: 15px; font-weight: 700; color: #0f172a; letter-spacing: 0.3px; }
-        .brand p { font-size: 10px; color: #64748b; }
+        .brand h1 { font-size: 16px; font-weight: 800; color: #0f172a; letter-spacing: 0.3px; text-transform: uppercase; }
+        .brand p { font-size: 11px; color: #64748b; }
 
         .capacity-display { text-align: right; font-size: 11px; color: #64748b; line-height: 1.2; }
-        .capacity-display b { display: block; font-size: 13px; color: #0f172a; font-weight: 700; }
+        .capacity-display b { display: block; font-size: 14px; color: #0f172a; font-weight: 800; }
 
         /* GRID LAYOUT */
         .pos-grid { display: grid; grid-template-columns: 1fr 1.1fr; gap: 12px; }
@@ -58,9 +58,9 @@
         .pos-card h3 button.btn-card-settings:hover { background: #bae6fd; }
 
         /* BINDER FILE DIVIDER TABS STYLING */
-        .binder-tab-wrapper { display: flex; margin-bottom: -1px; position: relative; z-index: 2; padding-left: 4px; gap: 4px; }
+        .binder-tab-wrapper { display: flex; margin-bottom: -1px; position: relative; z-index: 2; padding-left: 4px; gap: 4px; overflow-x: auto; }
         .binder-tab {
-            padding: 6px 14px;
+            padding: 6px 12px;
             font-size: 11px;
             font-weight: 700;
             color: #64748b;
@@ -73,6 +73,7 @@
             top: 1px;
             transition: all 0.2s ease;
             box-shadow: inset 0 -2px 3px rgba(0,0,0,0.05);
+            white-space: nowrap;
         }
         .binder-tab.active {
             background: #ffffff;
@@ -136,6 +137,48 @@
         .ra-details { font-size: 10px; color: #475569; line-height: 1.3; background: #ffffff; padding: 6px; border-radius: 6px; border: 1px dashed #cbd5e1; }
         .special-project-badge { margin-top: 2px; font-size: 10px; font-weight: 600; color: #b45309; background: #fef3c7; padding: 2px 6px; border-radius: 4px; display: inline-block; }
         
+        /* DROPPED ROOM TODAY CARD (WARN STYLE) */
+        .dropped-card-banner {
+            background: #fffbeb;
+            border: 1px solid #fde68a;
+            border-left: 4px solid #f59e0b;
+            border-radius: 8px;
+            padding: 8px 12px;
+            margin-top: 10px;
+            margin-bottom: 2px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .dropped-card-banner .dropped-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #92400e;
+        }
+        .dropped-card-banner .dropped-info i {
+            font-size: 16px;
+            color: #d97706;
+        }
+        .dropped-card-banner .dropped-title {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+        .dropped-card-banner .dropped-sub {
+            font-size: 10px;
+            color: #b45309;
+        }
+        .dropped-card-banner .dropped-badge {
+            font-size: 13px;
+            font-weight: 800;
+            color: #b45309;
+            background: #fef3c7;
+            padding: 2px 10px;
+            border-radius: 6px;
+            border: 1px solid #fde68a;
+        }
+
         /* ACTION BUTTONS */
         .btn-action-group { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; }
         
@@ -209,6 +252,23 @@
             .print-table td.center { text-align: center; }
             .print-table td.bold { font-weight: bold; }
 
+            /* CETAK DROPPED ROOM BANNER DI CETAKAN */
+            .dropped-card-banner {
+                display: flex !important;
+                border: 1px solid #000 !important;
+                background: #fff !important;
+                color: #000 !important;
+                margin-top: 8px !important;
+            }
+            .dropped-card-banner .dropped-info { color: #000 !important; }
+            .dropped-card-banner .dropped-info i { color: #000 !important; }
+            .dropped-card-banner .dropped-sub { color: #333 !important; }
+            .dropped-card-banner .dropped-badge {
+                color: #000 !important;
+                background: #f2f2f2 !important;
+                border: 1px solid #000 !important;
+            }
+
             .print-daily-info { display: block !important; margin-top: 12px; border: 1px solid #000; padding: 8px; font-size: 10px; }
             .print-daily-info h4 { font-size: 10px; font-weight: 800; border-bottom: 1px solid #000; padding-bottom: 2px; margin-bottom: 4px; text-transform: uppercase; }
             .print-daily-grid { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 6px; }
@@ -220,9 +280,9 @@
 <body>
 
 <div class="pos-container">
+    <!-- HEADER BRANDING -->
     <header class="pos-header">
         <div class="brand">
-            <!-- LOGO GEDUNG PROPORSIONAL -->
             <div class="brand-icon-box">
                 <i class="fa-solid fa-building"></i>
             </div>
@@ -265,13 +325,16 @@
                 </div>
             </div>
 
-            <!-- BINDER TABS FOR FORECAST & SPECIAL SERVICE -->
+            <!-- BINDER TABS PANEL KIRI: FORECAST, SPECIAL SERVICE, ROLE CREDITS -->
             <div class="binder-tab-wrapper">
-                <button class="binder-tab active" id="tab_btn_forecast" onclick="switchBinderTab('leftGroup', 'forecast')">
+                <button class="binder-tab active" id="tab_btn_forecast" onclick="switchBinderTab('forecast')">
                     <i class="fa-solid fa-chart-line"></i> Forecast
                 </button>
-                <button class="binder-tab" id="tab_btn_special" onclick="switchBinderTab('leftGroup', 'special')">
+                <button class="binder-tab" id="tab_btn_special" onclick="switchBinderTab('special')">
                     <i class="fa-solid fa-star"></i> Special Service
+                </button>
+                <button class="binder-tab" id="tab_btn_roles" onclick="switchBinderTab('roles')">
+                    <i class="fa-solid fa-sliders"></i> Role Credits
                 </button>
             </div>
 
@@ -305,7 +368,7 @@
                         <input type="number" id="backlog" placeholder="0" min="0">
                     </div>
                     <div class="input-group">
-                        <label for="pickup">Pick-up Room</label>
+                        <label for="pickup">Pick up/Moved Room</label>
                         <input type="number" id="pickup" placeholder="0" min="0">
                     </div>
                     <div class="input-group">
@@ -313,71 +376,8 @@
                         <input type="number" id="turndown" placeholder="0" min="0">
                     </div>
                 </div>
-            </div>
-        </div>
 
-        <!-- RIGHT PANEL -->
-        <div class="right-panel">
-            <!-- BINDER TABS FOR TASKS & ROLE CREDITS -->
-            <div class="binder-tab-wrapper">
-                <button class="binder-tab active" id="tab_btn_tasks" onclick="switchBinderTab('rightGroup', 'tasks')">
-                    <i class="fa-solid fa-list-check"></i> Tasks
-                </button>
-                <button class="binder-tab" id="tab_btn_roles" onclick="switchBinderTab('rightGroup', 'roles')">
-                    <i class="fa-solid fa-sliders"></i> Role Credits
-                </button>
-            </div>
-
-            <!-- COMBINED POS CARD FOR WORKLOAD & SETTING ROLE -->
-            <div class="pos-card receipt-card" style="border-radius: 0 12px 12px 12px;">
-                <!-- TAB 1: WORKLOAD SUMMARY (TASKS) -->
-                <div id="tab_content_tasks" class="binder-content active">
-                    <h3><i class="fa-solid fa-receipt"></i> Workload Summary</h3>
-                    
-                    <div class="table-header">
-                        <span>Task</span>
-                        <span>Qty</span>
-                        <span>Weight</span>
-                        <span>Total</span>
-                    </div>
-
-                    <div class="row">
-                        <span class="task-name">Stayover</span>
-                        <input id="stayQty" type="number" readonly placeholder="0">
-                        <input id="stayCredit" type="number" step="0.01" value="0.8">
-                        <span id="stayTotal" class="subtotal">0.0</span>
-                    </div>
-
-                    <div class="row">
-                        <span class="task-name">Departure</span>
-                        <input id="depQty" type="number" readonly placeholder="0">
-                        <input id="depCredit" type="number" step="0.01" value="1">
-                        <span id="depTotal" class="subtotal">0.0</span>
-                    </div>
-
-                    <div class="row">
-                        <span class="task-name">Dropped Room</span>
-                        <input id="backQty" type="number" readonly placeholder="0">
-                        <input id="backCredit" type="number" step="0.01" value="1">
-                        <span id="backTotal" class="subtotal">0.0</span>
-                    </div>
-
-                    <div class="row">
-                        <span class="task-name">Pick-up</span>
-                        <input id="pickQty" type="number" readonly placeholder="0">
-                        <input id="pickCredit" type="number" step="0.01" value="0.4">
-                        <span id="pickTotal" class="subtotal">0.0</span>
-                    </div>
-
-                    <div class="receipt-divider"></div>
-
-                    <div class="summary">
-                        <label>Total Cleaning Credit</label>
-                        <span id="totalCleaning" class="total-badge">0.0</span>
-                    </div>
-                </div>
-
-                <!-- TAB 2: SETTING ROLE (ROLE CREDITS) -->
+                <!-- TAB 3: SETTING ROLE -->
                 <div id="tab_content_roles" class="binder-content">
                     <h3>
                         <span><i class="fa-solid fa-gear"></i> Setting Role</span>
@@ -407,7 +407,58 @@
                     </div>
                 </div>
             </div>
+        </div>
 
+        <!-- RIGHT PANEL -->
+        <div class="right-panel">
+            <!-- WORKLOAD SUMMARY CARD -->
+            <div class="pos-card receipt-card">
+                <h3><i class="fa-solid fa-receipt"></i> Workload Summary</h3>
+                
+                <div class="table-header">
+                    <span>Task</span>
+                    <span>Qty</span>
+                    <span>Weight</span>
+                    <span>Total</span>
+                </div>
+
+                <div class="row">
+                    <span class="task-name">Stayover</span>
+                    <input id="stayQty" type="number" readonly placeholder="0">
+                    <input id="stayCredit" type="number" step="0.01" value="0.8">
+                    <span id="stayTotal" class="subtotal">0.0</span>
+                </div>
+
+                <div class="row">
+                    <span class="task-name">Departure</span>
+                    <input id="depQty" type="number" readonly placeholder="0">
+                    <input id="depCredit" type="number" step="0.01" value="1">
+                    <span id="depTotal" class="subtotal">0.0</span>
+                </div>
+
+                <div class="row">
+                    <span class="task-name">Dropped Room</span>
+                    <input id="backQty" type="number" readonly placeholder="0">
+                    <input id="backCredit" type="number" step="0.01" value="1">
+                    <span id="backTotal" class="subtotal">0.0</span>
+                </div>
+
+                <div class="row">
+                    <span class="task-name">Pick up/Moved Room</span>
+                    <input id="pickQty" type="number" readonly placeholder="0">
+                    <input id="pickCredit" type="number" step="0.01" value="0.4">
+                    <span id="pickTotal" class="subtotal">0.0</span>
+                </div>
+
+                <div class="receipt-divider"></div>
+
+                <div class="summary">
+                    <label>Total Cleaning Credit</label>
+                    <span id="totalCleaning" class="total-badge">0.0</span>
+                </div>
+            </div>
+
+            <!-- STAFF REQUIREMENT CARD -->
             <div class="staff-summary-combined">
                 <div class="staff-item-box">
                     <div class="staff-item-info">
@@ -432,6 +483,7 @@
                 </div>
             </div>
 
+            <!-- ROOM ATTENDANT DISTRIBUTION CARD -->
             <div class="pos-card">
                 <h3><i class="fa-solid fa-clipboard-user"></i> Room Attendant Distribution</h3>
                 
@@ -458,7 +510,7 @@
                             <b id="printBacklogVal">0</b>
                         </div>
                         <div class="print-summary-item">
-                            <span>Pick Up</span>
+                            <span>Pick up/Moved</span>
                             <b id="printPickupVal">0</b>
                         </div>
                     </div>
@@ -477,6 +529,18 @@
                     </thead>
                     <tbody id="raPrintTableBody"></tbody>
                 </table>
+
+                <!-- CARD MEMANJANG: DROPPED ROOM TODAY (IKUT DICETAK SAAT PRINT DISTRIBUTION) -->
+                <div id="droppedRoomBanner" class="dropped-card-banner" style="display: none;">
+                    <div class="dropped-info">
+                        <i class="fa-solid fa-triangle-exclamation"></i>
+                        <div>
+                            <div class="dropped-title">Dropped Room Today</div>
+                            <div class="dropped-sub" id="droppedDetailText">Unallocated Credit Difference</div>
+                        </div>
+                    </div>
+                    <div class="dropped-badge" id="droppedCreditBadge">0.0 Credit</div>
+                </div>
 
                 <div class="print-daily-info" id="printDailyInfoSection">
                     <h4>Daily Information</h4>
@@ -527,24 +591,18 @@
         preference: ""
     };
 
-    function switchBinderTab(group, tabName) {
-        if (group === 'leftGroup') {
-            document.getElementById('tab_btn_forecast').classList.remove('active');
-            document.getElementById('tab_btn_special').classList.remove('active');
-            document.getElementById('tab_content_forecast').classList.remove('active');
-            document.getElementById('tab_content_special').classList.remove('active');
+    /* SWITCH TAB PANEL KIRI */
+    function switchBinderTab(tabName) {
+        document.getElementById('tab_btn_forecast').classList.remove('active');
+        document.getElementById('tab_btn_special').classList.remove('active');
+        document.getElementById('tab_btn_roles').classList.remove('active');
 
-            document.getElementById(`tab_btn_${tabName}`).classList.add('active');
-            document.getElementById(`tab_content_${tabName}`).classList.add('active');
-        } else if (group === 'rightGroup') {
-            document.getElementById('tab_btn_tasks').classList.remove('active');
-            document.getElementById('tab_btn_roles').classList.remove('active');
-            document.getElementById('tab_content_tasks').classList.remove('active');
-            document.getElementById('tab_content_roles').classList.remove('active');
+        document.getElementById('tab_content_forecast').classList.remove('active');
+        document.getElementById('tab_content_special').classList.remove('active');
+        document.getElementById('tab_content_roles').classList.remove('active');
 
-            document.getElementById(`tab_btn_${tabName}`).classList.add('active');
-            document.getElementById(`tab_content_${tabName}`).classList.add('active');
-        }
+        document.getElementById(`tab_btn_${tabName}`).classList.add('active');
+        document.getElementById(`tab_content_${tabName}`).classList.add('active');
     }
 
     function loadRulesToUI() {
@@ -583,13 +641,11 @@
         document.getElementById(`sw_tab_content_${tabName}`).classList.add('active');
     }
 
-    /* PERBAIKAN FUNGSI RESET SETTINGS DEFAULTS */
+    /* RESET SETTINGS DEFAULTS */
     window.resetGeneralTabDefaults = function() {
-        // Cek tab mana yang sedang aktif di Modal Settings
         const isDailyTabActive = document.getElementById('sw_tab_content_daily')?.classList.contains('active');
 
         if (isDailyTabActive) {
-            // JIKA TAB DAILY INFORMATION AKTIF: KOSONGKAN INPUT TEXT AREA
             if (document.getElementById('sw_project')) document.getElementById('sw_project').value = "";
             if (document.getElementById('sw_reminder')) document.getElementById('sw_reminder').value = "";
             if (document.getElementById('sw_vip')) document.getElementById('sw_vip').value = "";
@@ -598,7 +654,6 @@
             dailyInfo = { project: "", reminder: "", vip: "", preference: "" };
             localStorage.removeItem("dailyInfo");
         } else {
-            // JIKA TAB GENERAL AKTIF: RESET NILAI REGULER BERSAMA LIST NAMA RA
             let stayVal = 0.8, depVal = 1, backVal = 1, pickVal = 0.4, raVal = 14, dwVal = 11, traineeVal = 5, maxStayVal = 6, spvVal = 17;
             
             if (typeof MANNING_RULES !== "undefined") {
@@ -689,7 +744,6 @@
             showConfirmButton: false,
             showCancelButton: false,
             html: `
-                <!-- BINDER DIVIDER TABS STYLE FOR MODAL -->
                 <div class="binder-tab-wrapper">
                     <button id="sw_tab_btn_general" class="binder-tab active" onclick="switchSwalTab('general')">
                         <i class="fa-solid fa-sliders"></i> General & Weights
@@ -700,7 +754,6 @@
                 </div>
 
                 <div class="swal-tab-body">
-                    <!-- TAB 1: GENERAL & WEIGHTS -->
                     <div id="sw_tab_content_general" class="swal-tab-content active">
                         <h4 style="color:#0284c7; border-bottom:1px solid #e2e8f0; padding-bottom:4px; font-size:12px;"><i class="fa-solid fa-users"></i> STAFF NAME SETTINGS (RA)</h4>
                         <p style="font-size:11px; color:#64748b; margin-bottom:6px;">Enter staff names to replace labels RA1, RA2, etc.:</p>
@@ -723,7 +776,7 @@
                                 <input id="sw_back" type="number" class="swal2-input swal-ra-input" value="${document.getElementById('backCredit').value}" step="0.01">
                             </div>
                             <div>
-                                <label><b>Pick-up Weight:</b></label>
+                                <label><b>Pick up/Moved Weight:</b></label>
                                 <input id="sw_pick" type="number" class="swal2-input swal-ra-input" value="${document.getElementById('pickCredit').value}" step="0.01">
                             </div>
                             <div>
@@ -753,7 +806,6 @@
                         </div>
                     </div>
 
-                    <!-- TAB 2: DAILY INFORMATION -->
                     <div id="sw_tab_content_daily" class="swal-tab-content">
                         <div style="display:flex; flex-direction:column; gap:8px;">
                             <div>
@@ -776,7 +828,6 @@
                     </div>
                 </div>
 
-                <!-- 1 BARIS TOMBOL: SAVE, RESET, CANCEL -->
                 <div class="swal-action-row">
                     <button type="button" class="btn-swal-action btn-swal-save" onclick="saveSettingsModal()">
                         <i class="fa-solid fa-check"></i> Save
@@ -922,6 +973,7 @@
     function generateRADistribution(raNeeded, totalCredit, capacityMap, qtyMap, weightMap) {
         const listContainer = document.getElementById("raAllocationList");
         const printTableBody = document.getElementById("raPrintTableBody");
+        const droppedBanner = document.getElementById("droppedRoomBanner");
 
         if (!listContainer || !printTableBody) return;
         listContainer.innerHTML = "";
@@ -930,6 +982,7 @@
         if (raNeeded <= 0 || totalCredit <= 0) {
             listContainer.innerHTML = `<div style="text-align:center; font-size:11px; color:#94a3b8; padding:8px;">No task allocation yet.</div>`;
             printTableBody.innerHTML = `<tr><td colspan="4" class="center">No task allocation yet.</td></tr>`;
+            if (droppedBanner) droppedBanner.style.display = "none";
             return;
         }
 
@@ -976,7 +1029,7 @@
             { key: "stayover", name: "Stayover", weight: weightMap.stayCredit, isStayover: true },
             { key: "departure", name: "Departure", weight: weightMap.depCredit, isStayover: false },
             { key: "backlog", name: "Dropped", weight: weightMap.backCredit, isStayover: false },
-            { key: "pickup", name: "Pick-up", weight: weightMap.pickCredit, isStayover: false }
+            { key: "pickup", name: "Pick up/Moved", weight: weightMap.pickCredit, isStayover: false }
         ];
 
         for (let i = 0; i < raNeeded; i++) {
@@ -1015,12 +1068,14 @@
             }
         }
 
+        let totalAllocatedCredit = 0;
         let displayedIndex = 0;
 
         raAllocations.forEach((ra) => {
             if (ra.credit <= 0) return;
 
             displayedIndex++;
+            totalAllocatedCredit += ra.credit;
 
             let taskTextArr = [];
             for (let [tName, tQty] of Object.entries(ra.tasks)) {
@@ -1064,6 +1119,20 @@
         if (displayedIndex === 0) {
             listContainer.innerHTML = `<div style="text-align:center; font-size:11px; color:#94a3b8; padding:8px;">No task allocation yet.</div>`;
             printTableBody.innerHTML = `<tr><td colspan="4" class="center">No task allocation yet.</td></tr>`;
+        }
+
+        /* LOGIKA HITUNG SISA KREDIT / DROPPED ROOM TODAY */
+        let unallocatedCredit = totalCredit - totalAllocatedCredit;
+        if (unallocatedCredit > 0.05) {
+            let droppedCreditFormatted = unallocatedCredit.toFixed(1);
+            let depWeight = weightMap.depCredit || 1;
+            let estRooms = (unallocatedCredit / depWeight).toFixed(1);
+
+            document.getElementById("droppedCreditBadge").innerText = `${droppedCreditFormatted} Credit`;
+            document.getElementById("droppedDetailText").innerText = `Selisih beban kerja (~${estRooms} Kamar) belum dialokasikan ke RA/DW/Trainee`;
+            if (droppedBanner) droppedBanner.style.display = "flex";
+        } else {
+            if (droppedBanner) droppedBanner.style.display = "none";
         }
     }
 
