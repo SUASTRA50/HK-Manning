@@ -18,7 +18,18 @@
         .pos-container { width: 100%; max-width: 1100px; }
         
         /* HEADER & BRANDING */
-        .pos-header { background: #ffffff; padding: 12px 16px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); margin-bottom: 12px; }
+        .pos-header { 
+            background: #ffffff; 
+            padding: 12px 16px; 
+            border-radius: 12px; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); 
+            margin-bottom: 12px; 
+            position: relative;
+            overflow: hidden;
+        }
         .brand { display: flex; align-items: center; gap: 12px; }
         
         .brand-icon-box { 
@@ -35,6 +46,60 @@
         }
         .brand h1 { font-size: 16px; font-weight: 800; color: #0f172a; letter-spacing: 0.3px; text-transform: uppercase; }
         .brand p { font-size: 11px; color: #64748b; }
+
+        /* CAPACITY BOX & LIPATAN KUNING */
+        .capacity-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            position: relative;
+        }
+
+        .yellow-ribbon {
+            background-color: #facc15; /* Warna Kuning */
+            width: 22px;
+            height: 38px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px 0 0 4px;
+            clip-path: polygon(0 0, 100% 0, 100% 100%, 0 85%);
+            box-shadow: inset -1px 0 2px rgba(0,0,0,0.1);
+        }
+
+        .info-btn {
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+            outline: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .info-btn i {
+            display: inline-block;
+            width: 13px;
+            height: 13px;
+            border-radius: 50%;
+            background-color: #0f172a; /* Ring Hitam */
+            color: #facc15; /* Huruf 'i' Kuning */
+            font-family: serif;
+            font-style: italic;
+            font-weight: bold;
+            font-size: 9px;
+            line-height: 13px;
+            text-align: center;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+            transition: transform 0.2s ease, background-color 0.2s;
+        }
+
+        .info-btn:hover i {
+            transform: scale(1.15);
+            background-color: #0284c7;
+            color: #ffffff;
+        }
 
         .capacity-display { text-align: right; font-size: 11px; color: #64748b; line-height: 1.2; }
         .capacity-display b { display: block; font-size: 14px; color: #0f172a; font-weight: 800; }
@@ -236,9 +301,23 @@
             .pos-header, .left-panel, .receipt-card, .staff-summary-combined, .btn-action-group, .btn-settings, .pos-card h3, .binder-tab-wrapper { display: none !important; }
             .pos-container, .pos-grid, .right-panel, .pos-card { width: 100% !important; max-width: 100% !important; padding: 0 !important; margin: 0 !important; box-shadow: none !important; border: none !important; background: transparent !important; }
             
-            .print-only-header { display: block !important; text-align: center; margin-bottom: 10px; }
-            .print-only-header h2 { font-size: 16px; font-weight: 800; text-transform: uppercase; color: #000; letter-spacing: 0.5px; margin-bottom: 2px; }
-            .print-only-header p { font-size: 11px; color: #444; margin: 0; }
+            .print-only-header { display: block !important; margin-bottom: 12px; }
+            .print-only-header h2 { font-size: 16px; font-weight: 800; text-transform: uppercase; color: #000; letter-spacing: 0.5px; margin-bottom: 4px; text-align: center; }
+            
+            /* PRINT HEADER SUB (TANGGAL DI KIRI & PLANNER DI KANAN SEJAJAR) */
+            .print-header-sub { 
+                display: flex !important; 
+                justify-content: space-between; 
+                align-items: center; 
+                font-size: 11px; 
+                color: #000; 
+                font-weight: 600;
+                padding: 0 2px;
+            }
+            .print-planner-text {
+                font-weight: 700;
+                text-transform: uppercase;
+            }
 
             .print-summary-info { display: block !important; margin-bottom: 10px; border: 1px solid #000; padding: 6px 10px; font-size: 10px; }
             .print-summary-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 4px; text-align: center; }
@@ -291,15 +370,28 @@
                 <p>Daily Staffing Tool</p>
             </div>
         </div>
-        <div class="capacity-display">
-            Capacity
-            <b>272 Rooms</b>
+        
+        <!-- CAPACITY WITH YELLOW RIBBON & 'i' ICON -->
+        <div class="capacity-wrapper">
+            <div class="yellow-ribbon">
+                <button type="button" class="info-btn" onclick="editCapacity()" title="Edit Capacity">
+                    <i>i</i>
+                </button>
+            </div>
+            <div class="capacity-display">
+                Capacity
+                <b id="capacityDisplay">272 Rooms</b>
+            </div>
         </div>
     </header>
 
+    <!-- PRINT HEADER (SEJAJAR TANGGAL & PLANNER) -->
     <div class="print-only-header">
         <h2>ROOM ATTENDANT DISTRIBUTION</h2>
-        <p id="printDate">-</p>
+        <div class="print-header-sub">
+            <span id="printDate" class="print-date-text">-</span>
+            <span id="printPlanner" class="print-planner-text">Planner: -</span>
+        </div>
     </div>
 
     <div class="pos-grid">
@@ -325,7 +417,7 @@
                 </div>
             </div>
 
-            <!-- BINDER TABS PANEL KIRI: FORECAST, SPECIAL SERVICE, ROLE CREDITS -->
+            <!-- BINDER TABS PANEL KIRI -->
             <div class="binder-tab-wrapper">
                 <button class="binder-tab active" id="tab_btn_forecast" onclick="switchBinderTab('forecast')">
                     <i class="fa-solid fa-chart-line"></i> Forecast
@@ -582,7 +674,7 @@
 
     let raCustomNames = {};
     let maxStayoverRooms = 6; 
-    const DEFAULT_CAPACITY = 272;
+    let defaultCapacity = 272;
 
     let dailyInfo = {
         project: "",
@@ -590,6 +682,94 @@
         vip: "",
         preference: ""
     };
+
+    /* PROMPT EDIT CAPACITY */
+    function editCapacity() {
+        Swal.fire({
+            title: 'Edit Total Capacity',
+            input: 'number',
+            inputValue: defaultCapacity,
+            inputAttributes: {
+                min: 1,
+                step: 1
+            },
+            showCancelButton: true,
+            confirmButtonText: 'Save',
+            confirmButtonColor: '#0284c7',
+            cancelButtonColor: '#64748b'
+        }).then((result) => {
+            if (result.isConfirmed && result.value) {
+                let newCap = parseInt(result.value, 10);
+                if (newCap > 0) {
+                    defaultCapacity = newCap;
+                    localStorage.setItem("hotelCapacity", defaultCapacity);
+                    
+                    document.getElementById("capacityDisplay").innerHTML = `${defaultCapacity} Rooms`;
+                    document.getElementById("tonightOcc").setAttribute("max", defaultCapacity);
+                    document.getElementById("tonightOcc").setAttribute("placeholder", `1-${defaultCapacity}`);
+                    
+                    calculate();
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Updated!',
+                        text: `Hotel Capacity updated to ${defaultCapacity} rooms.`,
+                        timer: 1500,
+                        showConfirmButton: false
+                    });
+                }
+            }
+        });
+    }
+
+    /* FORMAT TIMESTAMP UNTUK NAMA FILE PRINT */
+    function getFormattedTimestamp() {
+        const now = new Date();
+        const year = now.getFullYear();
+        const month = String(now.getMonth() + 1).padStart(2, '0');
+        const day = String(now.getDate()).padStart(2, '0');
+        const hours = String(now.getHours()).padStart(2, '0');
+        const minutes = String(now.getMinutes()).padStart(2, '0');
+        const seconds = String(now.getSeconds()).padStart(2, '0');
+
+        return `${year}${month}${day}_${hours}${minutes}${seconds}`;
+    }
+
+    /* PRINT DISTRIBUTION DENGAN PLANNER & TIMESTAMP */
+    function printDistribution() {
+        const now = new Date();
+        const formattedDate = now.toLocaleDateString('en-US', { 
+            weekday: 'long', day: '2-digit', month: 'long', year: 'numeric' 
+        });
+        document.getElementById("printDate").innerText = formattedDate;
+
+        // Ambil input nama Planner dari form
+        const plannerInput = document.getElementById("planBy")?.value.trim();
+        document.getElementById("printPlanner").innerText = `Planner: ${plannerInput || '-'}`;
+
+        document.getElementById("printSoldVal").innerText = document.getElementById("tonightOcc")?.value || "0";
+        document.getElementById("printArrivalVal").innerText = document.getElementById("arrival")?.value || "0";
+        document.getElementById("printDepartureVal").innerText = document.getElementById("departure")?.value || "0";
+        document.getElementById("printTurndownVal").innerText = document.getElementById("turndown")?.value || "0";
+        document.getElementById("printBacklogVal").innerText = document.getElementById("backlog")?.value || "0";
+        document.getElementById("printPickupVal").innerText = document.getElementById("pickup")?.value || "0";
+
+        document.getElementById("printProjectVal").innerText = dailyInfo.project?.trim() ? dailyInfo.project : "-";
+        document.getElementById("printReminderVal").innerText = dailyInfo.reminder?.trim() ? dailyInfo.reminder : "-";
+        document.getElementById("printVipVal").innerText = dailyInfo.vip?.trim() ? dailyInfo.vip : "-";
+        document.getElementById("printPrefVal").innerText = dailyInfo.preference?.trim() ? dailyInfo.preference : "-";
+
+        // Ubah Judul Dokumen Sementara Untuk Default Filename PDF
+        const originalTitle = document.title;
+        const timestamp = getFormattedTimestamp();
+        document.title = `HK WORKLOAD PLANNER - ${timestamp}`;
+
+        window.print();
+
+        // Kembalikan Judul Dokumen
+        setTimeout(() => {
+            document.title = originalTitle;
+        }, 1000);
+    }
 
     /* SWITCH TAB PANEL KIRI */
     function switchBinderTab(tabName) {
@@ -615,6 +795,14 @@
             document.getElementById("creditDW").value = MANNING_RULES.creditDW || 11;
             document.getElementById("creditTrainee").value = MANNING_RULES.creditTrainee || 5;
             document.getElementById("spvGoal").value = MANNING_RULES.targetArrivalPerSupervisor || 17;
+        }
+
+        const savedCap = localStorage.getItem("hotelCapacity");
+        if (savedCap) {
+            defaultCapacity = parseInt(savedCap, 10);
+            document.getElementById("capacityDisplay").innerHTML = `${defaultCapacity} Rooms`;
+            document.getElementById("tonightOcc").setAttribute("max", defaultCapacity);
+            document.getElementById("tonightOcc").setAttribute("placeholder", `1-${defaultCapacity}`);
         }
 
         const savedNames = localStorage.getItem("raCustomNames");
@@ -895,18 +1083,18 @@
         let rawOcc = tonightOccInput?.value;
         let tonightOcc = Number(rawOcc) || 0;
 
-        if (rawOcc !== "" && (tonightOcc < 1 || tonightOcc > DEFAULT_CAPACITY)) {
+        if (rawOcc !== "" && (tonightOcc < 1 || tonightOcc > defaultCapacity)) {
             Swal.fire({
                 icon: 'warning',
                 title: 'Invalid Input',
-                text: `Room Sold must be between 1 and ${DEFAULT_CAPACITY} rooms.`,
+                text: `Room Sold must be between 1 and ${defaultCapacity} rooms.`,
                 confirmButtonColor: '#0284c7'
             });
             tonightOccInput.value = "";
             tonightOcc = 0;
         }
 
-        let occPerc = tonightOcc > 0 ? ((tonightOcc / DEFAULT_CAPACITY) * 100).toFixed(1) : 0;
+        let occPerc = tonightOcc > 0 ? ((tonightOcc / defaultCapacity) * 100).toFixed(1) : 0;
         document.getElementById("roomOccPerc").value = occPerc + "%";
 
         let arrival = Number(document.getElementById("arrival")?.value) || 0;
@@ -1136,28 +1324,6 @@
         }
     }
 
-    function printDistribution() {
-        const now = new Date();
-        const formattedDate = now.toLocaleDateString('en-US', { 
-            weekday: 'long', day: '2-digit', month: 'long', year: 'numeric' 
-        });
-        document.getElementById("printDate").innerText = formattedDate;
-
-        document.getElementById("printSoldVal").innerText = document.getElementById("tonightOcc")?.value || "0";
-        document.getElementById("printArrivalVal").innerText = document.getElementById("arrival")?.value || "0";
-        document.getElementById("printDepartureVal").innerText = document.getElementById("departure")?.value || "0";
-        document.getElementById("printTurndownVal").innerText = document.getElementById("turndown")?.value || "0";
-        document.getElementById("printBacklogVal").innerText = document.getElementById("backlog")?.value || "0";
-        document.getElementById("printPickupVal").innerText = document.getElementById("pickup")?.value || "0";
-
-        document.getElementById("printProjectVal").innerText = dailyInfo.project?.trim() ? dailyInfo.project : "-";
-        document.getElementById("printReminderVal").innerText = dailyInfo.reminder?.trim() ? dailyInfo.reminder : "-";
-        document.getElementById("printVipVal").innerText = dailyInfo.vip?.trim() ? dailyInfo.vip : "-";
-        document.getElementById("printPrefVal").innerText = dailyInfo.preference?.trim() ? dailyInfo.preference : "-";
-
-        window.print();
-    }
-
     function resetForm() {
         const fieldsToReset = ["planBy", "tonightOcc", "arrival", "departure", "backlog", "pickup", "turndown"];
         fieldsToReset.forEach(id => {
@@ -1191,11 +1357,11 @@
         }
 
         const tonightOcc = Number(document.getElementById("tonightOcc")?.value) || 0;
-        if (tonightOcc < 1 || tonightOcc > DEFAULT_CAPACITY) {
+        if (tonightOcc < 1 || tonightOcc > defaultCapacity) {
             Swal.fire({
                 icon: 'error',
                 title: 'Invalid Input',
-                text: `Room Sold must be between 1 and ${DEFAULT_CAPACITY}.`,
+                text: `Room Sold must be between 1 and ${defaultCapacity}.`,
                 confirmButtonColor: '#0284c7'
             });
             return;
