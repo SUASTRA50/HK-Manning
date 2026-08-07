@@ -933,6 +933,7 @@
             { key: "pickup", name: "Pick up/Moved", weight: weightMap.pickCredit, isStayover: false }
         ];
 
+        // Alokasi Tugas ke Seluruh RA yang dibutuhkan
         for (let i = 0; i < raNeeded; i++) {
             let ra = raAllocations[i];
 
@@ -987,7 +988,7 @@
             
             let specialBadge = "";
             let specialPrintText = "";
-            if (ra.credit < (ra.targetCap - 1.0)) {
+            if (ra.credit < (ra.targetCap - 0.01)) {
                 let deficit = (ra.targetCap - ra.credit).toFixed(1);
                 specialBadge = `<div class="special-project-badge"><i class="fa-solid fa-screwdriver-wrench"></i> Credit ${ra.credit.toFixed(1)} (Less ${deficit}) Special Project / Deep Cleaning</div>`;
                 specialPrintText = ` | (Less ${deficit} - Special Project / Deep Cleaning)`;
@@ -1022,7 +1023,12 @@
             printTableBody.innerHTML = `<tr><td colspan="4" class="center">No task allocation yet.</td></tr>`;
         }
 
-        let unallocatedCredit = totalCredit - totalAllocatedCredit;
+        // Hitung sisa unallocated credit dari sisa tugas aktual yang benar-benar belum terbagi
+        let unallocatedCredit = (remainingTasks.stayover * weightMap.stayCredit) + 
+                                (remainingTasks.departure * weightMap.depCredit) + 
+                                (remainingTasks.backlog * weightMap.backCredit) + 
+                                (remainingTasks.pickup * weightMap.pickCredit);
+
         if (unallocatedCredit > 0.05) {
             let droppedCreditFormatted = unallocatedCredit.toFixed(1);
             let depWeight = weightMap.depCredit || 1;
