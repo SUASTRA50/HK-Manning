@@ -16,151 +16,35 @@
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         body { background-color: #f1f5f9; color: #1e293b; padding: 12px; display: flex; justify-content: center; }
         .pos-container { width: 100%; max-width: 1100px; }
-        
-        /* HEADER & BRANDING */
-        .pos-header { 
-            background: #ffffff; 
-            padding: 12px 16px; 
-            border-radius: 12px; 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); 
-            margin-bottom: 12px; 
-            position: relative;
-            overflow: hidden;
-        }
+        .pos-header { background: #ffffff; padding: 12px 16px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); margin-bottom: 12px; position: relative; overflow: hidden; }
         .brand { display: flex; align-items: center; gap: 12px; }
-        
-        .brand-icon-box { 
-            background: #e0f2fe; 
-            color: #0284c7; 
-            width: 42px; 
-            height: 42px; 
-            border-radius: 10px; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            font-size: 22px; 
-            box-shadow: 0 2px 4px rgba(2, 132, 199, 0.15);
-        }
+        .brand-icon-box { background: #e0f2fe; color: #0284c7; width: 42px; height: 42px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 22px; box-shadow: 0 2px 4px rgba(2, 132, 199, 0.15); }
         .brand h1 { font-size: 16px; font-weight: 800; color: #0f172a; letter-spacing: 0.3px; text-transform: uppercase; }
         .brand p { font-size: 11px; color: #64748b; }
-
-        /* CAPACITY BOX & LIPATAN KUNING */
-        .capacity-wrapper {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            position: relative;
-        }
-
-        .yellow-ribbon {
-            background-color: #facc15; /* Warna Kuning */
-            width: 22px;
-            height: 38px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 4px 0 0 4px;
-            clip-path: polygon(0 0, 100% 0, 100% 100%, 0 85%);
-            box-shadow: inset -1px 0 2px rgba(0,0,0,0.1);
-        }
-
-        .info-btn {
-            background: transparent;
-            border: none;
-            cursor: pointer;
-            padding: 0;
-            outline: none;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .info-btn i {
-            display: inline-block;
-            width: 13px;
-            height: 13px;
-            border-radius: 50%;
-            background-color: #0f172a; /* Ring Hitam */
-            color: #facc15; /* Huruf 'i' Kuning */
-            font-family: serif;
-            font-style: italic;
-            font-weight: bold;
-            font-size: 9px;
-            line-height: 13px;
-            text-align: center;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.2);
-            transition: transform 0.2s ease, background-color 0.2s;
-        }
-
-        .info-btn:hover i {
-            transform: scale(1.15);
-            background-color: #0284c7;
-            color: #ffffff;
-        }
-
+        .capacity-wrapper { display: flex; align-items: center; gap: 8px; position: relative; }
+        .yellow-ribbon { background-color: #facc15; width: 22px; height: 38px; display: flex; align-items: center; justify-content: center; border-radius: 4px 0 0 4px; clip-path: polygon(0 0, 100% 0, 100% 100%, 0 85%); box-shadow: inset -1px 0 2px rgba(0,0,0,0.1); }
+        .info-btn { background: transparent; border: none; cursor: pointer; padding: 0; outline: none; display: flex; align-items: center; justify-content: center; }
+        .info-btn i { display: inline-block; width: 13px; height: 13px; border-radius: 50%; background-color: #0f172a; color: #facc15; font-family: serif; font-style: italic; font-weight: bold; font-size: 9px; line-height: 13px; text-align: center; box-shadow: 0 1px 2px rgba(0,0,0,0.2); transition: transform 0.2s ease, background-color 0.2s; }
+        .info-btn:hover i { transform: scale(1.15); background-color: #0284c7; color: #ffffff; }
         .capacity-display { text-align: right; font-size: 11px; color: #64748b; line-height: 1.2; }
         .capacity-display b { display: block; font-size: 14px; color: #0f172a; font-weight: 800; }
-
-        /* GRID LAYOUT */
         .pos-grid { display: grid; grid-template-columns: 1fr 1.1fr; gap: 12px; }
         @media (max-width: 860px) { .pos-grid { grid-template-columns: 1fr; } }
         .pos-card { background: #ffffff; border-radius: 12px; padding: 14px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); margin-bottom: 12px; border: 1px solid #cbd5e1; }
         .pos-card h3 { font-size: 12px; color: #0284c7; margin-bottom: 10px; display: flex; align-items: center; gap: 6px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
-        .pos-card h3 button.btn-card-settings {
-            margin-left: auto;
-            background: #e0f2fe;
-            color: #0284c7;
-            border: none;
-            padding: 4px 8px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 11px;
-            transition: all 0.2s;
-        }
+        .pos-card h3 button.btn-card-settings { margin-left: auto; background: #e0f2fe; color: #0284c7; border: none; padding: 4px 8px; border-radius: 6px; cursor: pointer; font-size: 11px; transition: all 0.2s; }
         .pos-card h3 button.btn-card-settings:hover { background: #bae6fd; }
-
-        /* BINDER FILE DIVIDER TABS STYLING */
         .binder-tab-wrapper { display: flex; margin-bottom: -1px; position: relative; z-index: 2; padding-left: 4px; gap: 4px; overflow-x: auto; }
-        .binder-tab {
-            padding: 6px 12px;
-            font-size: 11px;
-            font-weight: 700;
-            color: #64748b;
-            background: #e2e8f0;
-            border: 1px solid #cbd5e1;
-            border-bottom: none;
-            border-radius: 8px 8px 0 0;
-            cursor: pointer;
-            position: relative;
-            top: 1px;
-            transition: all 0.2s ease;
-            box-shadow: inset 0 -2px 3px rgba(0,0,0,0.05);
-            white-space: nowrap;
-        }
-        .binder-tab.active {
-            background: #ffffff;
-            color: #0284c7;
-            border-color: #cbd5e1;
-            border-bottom: 1px solid #ffffff;
-            top: 0px;
-            padding-top: 7px;
-            box-shadow: 0 -2px 4px rgba(0,0,0,0.03);
-        }
+        .binder-tab { padding: 6px 12px; font-size: 11px; font-weight: 700; color: #64748b; background: #e2e8f0; border: 1px solid #cbd5e1; border-bottom: none; border-radius: 8px 8px 0 0; cursor: pointer; position: relative; top: 1px; transition: all 0.2s ease; box-shadow: inset 0 -2px 3px rgba(0,0,0,0.05); white-space: nowrap; }
+        .binder-tab.active { background: #ffffff; color: #0284c7; border-color: #cbd5e1; border-bottom: 1px solid #ffffff; top: 0px; padding-top: 7px; box-shadow: 0 -2px 4px rgba(0,0,0,0.03); }
         .binder-tab i { margin-right: 4px; }
         .binder-content { display: none; }
         .binder-content.active { display: block; }
-
-        /* LAST SUBMITTED BOX */
         .last-submit-info { display: flex; justify-content: space-between; align-items: flex-start; font-size: 10px; color: #64748b; background: #f8fafc; border: 1px solid #e2e8f0; padding: 6px 10px; border-radius: 8px; margin-bottom: 10px; }
         .last-submit-left, .last-submit-right { display: flex; flex-direction: column; }
         .last-submit-right { text-align: right; }
         .last-submit-label { font-weight: 600; text-transform: uppercase; font-size: 8px; letter-spacing: 0.5px; opacity: 0.85; }
         .last-submit-value { font-weight: 700; margin-top: 1px; color: #1e293b; }
-
-        /* INPUT & TABLES */
         .input-group { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
         .input-group label { font-size: 12px; color: #475569; font-weight: 500; }
         .input-group input, .row input, .summary input { padding: 6px 8px; border: 1px solid #cbd5e1; border-radius: 6px; outline: none; font-size: 13px; text-align: right; background: #f8fafc; transition: all 0.2s; }
@@ -169,22 +53,19 @@
         .input-group input#planBy { width: 140px; text-align: left; }
         .input-group input[readonly] { background-color: #e2e8f0; color: #475569; font-weight: 600; }
         .input-group input:focus, .row input:focus, .summary input:focus { border-color: #0284c7; background: #fff; box-shadow: 0 0 0 2px rgba(2, 132, 199, 0.15); }
-        
         .table-header { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; font-size: 10px; font-weight: 700; color: #94a3b8; margin-bottom: 6px; text-align: center; text-transform: uppercase; }
         .table-header span:first-child { text-align: left; }
         .row { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; align-items: center; gap: 4px; margin-bottom: 6px; }
         .row .task-name { font-size: 12px; color: #334155; font-weight: 500; }
         .row input { width: 100%; }
         .row input[readonly] { background-color: #f1f5f9; color: #64748b; border-color: #e2e8f0; }
-        
         .subtotal { font-size: 12px; font-weight: 600; text-align: right; color: #0f172a; }
         .receipt-divider { height: 1px; background: #e2e8f0; margin: 10px 0; }
         .summary { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
         .summary label { font-size: 12px; font-weight: 600; color: #334155; }
         .total-badge { font-size: 16px; font-weight: bold; color: #0284c7; }
         .credit-box { width: 65px; font-weight: bold; }
-
-        /* COMBINED STAFF SUMMARY CARD */
+        .highlight-yellow { background-color: #fffde7; border-left: 4px solid #fbc02d; padding: 6px 10px; border-radius: 4px; margin-bottom: 8px; }
         .staff-summary-combined { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; background: #ffffff; border-radius: 12px; padding: 10px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); margin-bottom: 12px; border: 1px solid #cbd5e1; }
         .staff-item-box { display: flex; align-items: center; justify-content: space-between; background: #f8fafc; padding: 8px 10px; border-radius: 8px; border: 1px solid #e2e8f0; }
         .staff-item-info { display: flex; align-items: center; gap: 8px; }
@@ -192,8 +73,6 @@
         .staff-item-title { font-size: 11px; font-weight: 600; color: #334155; }
         .staff-item-sub { font-size: 9px; color: #64748b; }
         .staff-item-value { font-size: 16px; font-weight: 800; color: #0284c7; background: #ffffff; border: 1px solid #bae6fd; padding: 1px 10px; border-radius: 6px; }
-
-        /* CARDS & DISTRIBUTION */
         .ra-card-list { display: flex; flex-direction: column; gap: 8px; margin-top: 6px; max-height: 260px; overflow-y: auto; padding-right: 2px; }
         .ra-item { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 8px 10px; display: flex; flex-direction: column; gap: 4px; }
         .ra-header { display: flex; justify-content: space-between; align-items: center; }
@@ -201,81 +80,24 @@
         .ra-credit-badge { font-size: 10px; font-weight: 700; background: #e0f2fe; color: #0369a1; padding: 2px 6px; border-radius: 10px; }
         .ra-details { font-size: 10px; color: #475569; line-height: 1.3; background: #ffffff; padding: 6px; border-radius: 6px; border: 1px dashed #cbd5e1; }
         .special-project-badge { margin-top: 2px; font-size: 10px; font-weight: 600; color: #b45309; background: #fef3c7; padding: 2px 6px; border-radius: 4px; display: inline-block; }
-        
-        /* DROPPED ROOM TODAY CARD (WARN STYLE) */
-        .dropped-card-banner {
-            background: #fffbeb;
-            border: 1px solid #fde68a;
-            border-left: 4px solid #f59e0b;
-            border-radius: 8px;
-            padding: 8px 12px;
-            margin-top: 10px;
-            margin-bottom: 2px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-        .dropped-card-banner .dropped-info {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            color: #92400e;
-        }
-        .dropped-card-banner .dropped-info i {
-            font-size: 16px;
-            color: #d97706;
-        }
-        .dropped-card-banner .dropped-title {
-            font-size: 11px;
-            font-weight: 700;
-            text-transform: uppercase;
-        }
-        .dropped-card-banner .dropped-sub {
-            font-size: 10px;
-            color: #b45309;
-        }
-        .dropped-card-banner .dropped-badge {
-            font-size: 13px;
-            font-weight: 800;
-            color: #b45309;
-            background: #fef3c7;
-            padding: 2px 10px;
-            border-radius: 6px;
-            border: 1px solid #fde68a;
-        }
-
-        /* ACTION BUTTONS */
+        .dropped-card-banner { background: #fffbeb; border: 1px solid #fde68a; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 8px 12px; margin-top: 10px; margin-bottom: 2px; display: flex; align-items: center; justify-content: space-between; }
+        .dropped-card-banner .dropped-info { display: flex; align-items: center; gap: 8px; color: #92400e; }
+        .dropped-card-banner .dropped-info i { font-size: 16px; color: #d97706; }
+        .dropped-card-banner .dropped-title { font-size: 11px; font-weight: 700; text-transform: uppercase; }
+        .dropped-card-banner .dropped-sub { font-size: 10px; color: #b45309; }
+        .dropped-card-banner .dropped-badge { font-size: 13px; font-weight: 800; color: #b45309; background: #fef3c7; padding: 2px 10px; border-radius: 6px; border: 1px solid #fde68a; }
         .btn-action-group { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; }
-        
         #printBtn { width: 100%; padding: 10px; background-color: #059669; color: white; border: none; border-radius: 8px; font-size: 11px; font-weight: 700; cursor: pointer; transition: all 0.2s ease; display: flex; align-items: center; justify-content: center; gap: 6px; box-shadow: 0 2px 4px rgba(5, 150, 105, 0.2); }
         #printBtn:hover { background-color: #047857; }
-
         #submitBtn { width: 100%; padding: 10px; background-color: #0284c7; color: white; border: none; border-radius: 8px; font-size: 11px; font-weight: 700; cursor: pointer; transition: all 0.2s ease; display: flex; align-items: center; justify-content: center; gap: 6px; box-shadow: 0 2px 4px rgba(2, 132, 199, 0.2); }
         #submitBtn:hover { background-color: #0369a1; }
         #submitBtn:disabled { background-color: #94a3b8; cursor: not-allowed; }
-
-        /* MODAL CUSTOM STYLES */
         .swal-tab-body { background: #ffffff; border: 1px solid #cbd5e1; border-radius: 0 8px 8px 8px; padding: 12px; margin-bottom: 12px; }
         .swal-tab-content { display: none; text-align: left; font-size: 12px; max-height: 55vh; overflow-y: auto; padding-right: 4px; }
         .swal-tab-content.active { display: block; }
-
-        .swal-ra-grid { 
-            display: grid; 
-            grid-template-columns: 1fr 1fr; 
-            gap: 6px; 
-            max-height: 130px; 
-            overflow-y: auto; 
-            -webkit-overflow-scrolling: touch; 
-            touch-action: pan-y;
-            padding: 6px; 
-            border: 1px solid #e2e8f0; 
-            border-radius: 6px; 
-            background: #f8fafc; 
-        }
+        .swal-ra-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; max-height: 130px; overflow-y: auto; -webkit-overflow-scrolling: touch; touch-action: pan-y; padding: 6px; border: 1px solid #e2e8f0; border-radius: 6px; background: #f8fafc; }
         .swal-ra-input { font-size: 11px !important; padding: 4px 6px !important; margin: 0 !important; height: 28px !important; width: 100% !important; }
         .swal-textarea { width: 100%; height: 46px; font-size: 11px; padding: 6px; border: 1px solid #cbd5e1; border-radius: 6px; outline: none; resize: vertical; background: #f8fafc; }
-
-        /* CUSTOM MODAL ACTION BUTTONS (1 BARIS) */
         .swal-action-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; margin-top: 8px; }
         .btn-swal-action { padding: 8px; border: none; border-radius: 6px; font-size: 11px; font-weight: 700; cursor: pointer; transition: background 0.2s; display: flex; align-items: center; justify-content: center; gap: 4px; }
         .btn-swal-save { background: #0284c7; color: white; }
@@ -284,75 +106,12 @@
         .btn-swal-reset:hover { background: #ca8a04; }
         .btn-swal-cancel { background: #64748b; color: white; }
         .btn-swal-cancel:hover { background: #475569; }
-
-        @media (max-width: 600px) {
-            .swal-ra-grid { grid-template-columns: 1fr; max-height: 120px; }
-            .staff-summary-combined { grid-template-columns: 1fr 1fr; }
-        }
-
-        /* PRINT STYLING */
+        @media (max-width: 600px) { .swal-ra-grid { grid-template-columns: 1fr; max-height: 120px; } .staff-summary-combined { grid-template-columns: 1fr 1fr; } }
         .print-table { display: none; }
         .print-only-header { display: none; }
         .print-daily-info { display: none; }
         .print-summary-info { display: none; }
-
-        @media print {
-            body { background: white !important; color: black !important; padding: 0 !important; }
-            .pos-header, .left-panel, .receipt-card, .staff-summary-combined, .btn-action-group, .btn-settings, .pos-card h3, .binder-tab-wrapper { display: none !important; }
-            .pos-container, .pos-grid, .right-panel, .pos-card { width: 100% !important; max-width: 100% !important; padding: 0 !important; margin: 0 !important; box-shadow: none !important; border: none !important; background: transparent !important; }
-            
-            .print-only-header { display: block !important; margin-bottom: 12px; }
-            .print-only-header h2 { font-size: 16px; font-weight: 800; text-transform: uppercase; color: #000; letter-spacing: 0.5px; margin-bottom: 4px; text-align: center; }
-            
-            /* PRINT HEADER SUB (TANGGAL DI KIRI & PLANNER DI KANAN SEJAJAR) */
-            .print-header-sub { 
-                display: flex !important; 
-                justify-content: space-between; 
-                align-items: center; 
-                font-size: 11px; 
-                color: #000; 
-                font-weight: 600;
-                padding: 0 2px;
-            }
-            .print-planner-text {
-                font-weight: 700;
-                text-transform: uppercase;
-            }
-
-            .print-summary-info { display: block !important; margin-bottom: 10px; border: 1px solid #000; padding: 6px 10px; font-size: 10px; }
-            .print-summary-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 4px; text-align: center; }
-            .print-summary-item span { display: block; font-size: 8px; font-weight: bold; text-transform: uppercase; color: #333; }
-            .print-summary-item b { font-size: 12px; color: #000; }
-
-            .ra-card-list { display: none !important; }
-            .print-table { display: table !important; width: 100%; border-collapse: collapse; margin-top: 4px; font-size: 10px; }
-            .print-table th, .print-table td { border: 1px solid #000 !important; padding: 4px 6px; text-align: left; vertical-align: middle; }
-            .print-table th { background-color: #f2f2f2 !important; font-weight: bold; text-align: center; text-transform: uppercase; font-size: 9px; }
-            .print-table td.center { text-align: center; }
-            .print-table td.bold { font-weight: bold; }
-
-            /* CETAK DROPPED ROOM BANNER DI CETAKAN */
-            .dropped-card-banner {
-                display: flex !important;
-                border: 1px solid #000 !important;
-                background: #fff !important;
-                color: #000 !important;
-                margin-top: 8px !important;
-            }
-            .dropped-card-banner .dropped-info { color: #000 !important; }
-            .dropped-card-banner .dropped-info i { color: #000 !important; }
-            .dropped-card-banner .dropped-sub { color: #333 !important; }
-            .dropped-card-banner .dropped-badge {
-                color: #000 !important;
-                background: #f2f2f2 !important;
-                border: 1px solid #000 !important;
-            }
-
-            .print-daily-info { display: block !important; margin-top: 12px; border: 1px solid #000; padding: 8px; font-size: 10px; }
-            .print-daily-info h4 { font-size: 10px; font-weight: 800; border-bottom: 1px solid #000; padding-bottom: 2px; margin-bottom: 4px; text-transform: uppercase; }
-            .print-daily-grid { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 6px; }
-            .print-daily-item b { display: block; text-transform: uppercase; margin-bottom: 2px; font-size: 8px; }
-        }
+        @media print { body { background: white !important; color: black !important; padding: 0 !important; } .pos-header, .left-panel, .receipt-card, .staff-summary-combined, .btn-action-group, .btn-settings, .pos-card h3, .binder-tab-wrapper { display: none !important; } .pos-container, .pos-grid, .right-panel, .pos-card { width: 100% !important; max-width: 100% !important; padding: 0 !important; margin: 0 !important; box-shadow: none !important; border: none !important; background: transparent !important; } .print-only-header { display: block !important; margin-bottom: 12px; } .print-only-header h2 { font-size: 16px; font-weight: 800; text-transform: uppercase; color: #000; letter-spacing: 0.5px; margin-bottom: 4px; text-align: center; } .print-header-sub { display: flex !important; justify-content: space-between; align-items: center; font-size: 11px; color: #000; font-weight: 600; padding: 0 2px; } .print-planner-text { font-weight: 700; text-transform: uppercase; } .print-summary-info { display: block !important; margin-bottom: 10px; border: 1px solid #000; padding: 6px 10px; font-size: 10px; } .print-summary-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 4px; text-align: center; } .print-summary-item span { display: block; font-size: 8px; font-weight: bold; text-transform: uppercase; color: #333; } .print-summary-item b { font-size: 12px; color: #000; } .ra-card-list { display: none !important; } .print-table { display: table !important; width: 100%; border-collapse: collapse; margin-top: 4px; font-size: 10px; } .print-table th, .print-table td { border: 1px solid #000 !important; padding: 4px 6px; text-align: left; vertical-align: middle; } .print-table th { background-color: #f2f2f2 !important; font-weight: bold; text-align: center; text-transform: uppercase; font-size: 9px; } .print-table td.center { text-align: center; } .print-table td.bold { font-weight: bold; } .dropped-card-banner { display: flex !important; border: 1px solid #000 !important; background: #fff !important; color: #000 !important; margin-top: 8px !important; } .dropped-card-banner .dropped-info { color: #000 !important; } .dropped-card-banner .dropped-info i { color: #000 !important; } .dropped-card-banner .dropped-sub { color: #333 !important; } .dropped-card-banner .dropped-badge { color: #000 !important; background: #f2f2f2 !important; border: 1px solid #000 !important; } .print-daily-info { display: block !important; margin-top: 12px; border: 1px solid #000; padding: 8px; font-size: 10px; } .print-daily-info h4 { font-size: 10px; font-weight: 800; border-bottom: 1px solid #000; padding-bottom: 2px; margin-bottom: 4px; text-transform: uppercase; } .print-daily-grid { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 6px; } .print-daily-item b { display: block; text-transform: uppercase; margin-bottom: 2px; font-size: 8px; } }
     </style>
 </head>
 
@@ -371,7 +130,6 @@
             </div>
         </div>
         
-        <!-- CAPACITY WITH YELLOW RIBBON & 'i' ICON -->
         <div class="capacity-wrapper">
             <div class="yellow-ribbon">
                 <button type="button" class="info-btn" onclick="editCapacity()" title="Edit Capacity">
@@ -385,7 +143,7 @@
         </div>
     </header>
 
-    <!-- PRINT HEADER (SEJAJAR TANGGAL & PLANNER) -->
+    <!-- PRINT HEADER -->
     <div class="print-only-header">
         <h2>ROOM ATTENDANT DISTRIBUTION</h2>
         <div class="print-header-sub">
@@ -422,9 +180,6 @@
                 <button class="binder-tab active" id="tab_btn_forecast" onclick="switchBinderTab('forecast')">
                     <i class="fa-solid fa-chart-line"></i> Forecast
                 </button>
-                <button class="binder-tab" id="tab_btn_special" onclick="switchBinderTab('special')">
-                    <i class="fa-solid fa-star"></i> Special Service
-                </button>
                 <button class="binder-tab" id="tab_btn_roles" onclick="switchBinderTab('roles')">
                     <i class="fa-solid fa-sliders"></i> Role Credits
                 </button>
@@ -450,11 +205,6 @@
                         <label for="departure">Departure</label>
                         <input type="number" id="departure" placeholder="0" min="0" required>
                     </div>
-                </div>
-
-                <!-- TAB 2: SPECIAL SERVICE -->
-                <div id="tab_content_special" class="binder-content">
-                    <h3><i class="fa-solid fa-star"></i> SPECIAL SERVICE</h3>
                     <div class="input-group">
                         <label for="backlog">Left Over / Dropped</label>
                         <input type="number" id="backlog" placeholder="0" min="0">
@@ -469,7 +219,7 @@
                     </div>
                 </div>
 
-                <!-- TAB 3: SETTING ROLE -->
+                <!-- TAB 2: SETTING ROLE -->
                 <div id="tab_content_roles" class="binder-content">
                     <h3>
                         <span><i class="fa-solid fa-gear"></i> Setting Role</span>
@@ -480,7 +230,17 @@
                     
                     <div class="summary">
                         <label for="creditRA">Credit / RA Capacity</label>
-                        <input id="creditRA" type="number" class="credit-box" value="14">
+                        <input id="creditRA" type="number" class="credit-box" value="13">
+                    </div>
+
+                    <div class="summary highlight-yellow">
+                        <label for="creditRaDw">Credit RA + DW</label>
+                        <input id="creditRaDw" type="number" class="credit-box" value="22">
+                    </div>
+
+                    <div class="summary highlight-yellow">
+                        <label for="creditRaTrainee">Credit RA + Trainee</label>
+                        <input id="creditRaTrainee" type="number" class="credit-box" value="16">
                     </div>
 
                     <div class="summary">
@@ -517,7 +277,7 @@
                 <div class="row">
                     <span class="task-name">Stayover</span>
                     <input id="stayQty" type="number" readonly placeholder="0">
-                    <input id="stayCredit" type="number" step="0.01" value="0.8">
+                    <input id="stayCredit" type="number" step="0.01" value="1">
                     <span id="stayTotal" class="subtotal">0.0</span>
                 </div>
 
@@ -538,7 +298,7 @@
                 <div class="row">
                     <span class="task-name">Pick up/Moved Room</span>
                     <input id="pickQty" type="number" readonly placeholder="0">
-                    <input id="pickCredit" type="number" step="0.01" value="0.4">
+                    <input id="pickCredit" type="number" step="0.01" value="0.5">
                     <span id="pickTotal" class="subtotal">0.0</span>
                 </div>
 
@@ -622,7 +382,6 @@
                     <tbody id="raPrintTableBody"></tbody>
                 </table>
 
-                <!-- CARD MEMANJANG: DROPPED ROOM TODAY (IKUT DICETAK SAAT PRINT DISTRIBUTION) -->
                 <div id="droppedRoomBanner" class="dropped-card-banner" style="display: none;">
                     <div class="dropped-info">
                         <i class="fa-solid fa-triangle-exclamation"></i>
@@ -674,6 +433,8 @@
 
     let raCustomNames = {};
     let maxStayoverRooms = 6; 
+    let maxStayOverRaDw = 0;
+    let maxStayOverRaTrainee = 0;
     let defaultCapacity = 272;
 
     let dailyInfo = {
@@ -683,7 +444,6 @@
         preference: ""
     };
 
-    /* PROMPT EDIT CAPACITY */
     function editCapacity() {
         Swal.fire({
             title: 'Edit Total Capacity',
@@ -721,7 +481,6 @@
         });
     }
 
-    /* FORMAT TIMESTAMP UNTUK NAMA FILE PRINT */
     function getFormattedTimestamp() {
         const now = new Date();
         const year = now.getFullYear();
@@ -734,7 +493,6 @@
         return `${year}${month}${day}_${hours}${minutes}${seconds}`;
     }
 
-    /* PRINT DISTRIBUTION DENGAN PLANNER & TIMESTAMP */
     function printDistribution() {
         const now = new Date();
         const formattedDate = now.toLocaleDateString('en-US', { 
@@ -742,7 +500,6 @@
         });
         document.getElementById("printDate").innerText = formattedDate;
 
-        // Ambil input nama Planner dari form
         const plannerInput = document.getElementById("planBy")?.value.trim();
         document.getElementById("printPlanner").innerText = `Planner: ${plannerInput || '-'}`;
 
@@ -758,27 +515,22 @@
         document.getElementById("printVipVal").innerText = dailyInfo.vip?.trim() ? dailyInfo.vip : "-";
         document.getElementById("printPrefVal").innerText = dailyInfo.preference?.trim() ? dailyInfo.preference : "-";
 
-        // Ubah Judul Dokumen Sementara Untuk Default Filename PDF
         const originalTitle = document.title;
         const timestamp = getFormattedTimestamp();
         document.title = `HK WORKLOAD PLANNER - ${timestamp}`;
 
         window.print();
 
-        // Kembalikan Judul Dokumen
         setTimeout(() => {
             document.title = originalTitle;
         }, 1000);
     }
 
-    /* SWITCH TAB PANEL KIRI */
     function switchBinderTab(tabName) {
         document.getElementById('tab_btn_forecast').classList.remove('active');
-        document.getElementById('tab_btn_special').classList.remove('active');
         document.getElementById('tab_btn_roles').classList.remove('active');
 
         document.getElementById('tab_content_forecast').classList.remove('active');
-        document.getElementById('tab_content_special').classList.remove('active');
         document.getElementById('tab_content_roles').classList.remove('active');
 
         document.getElementById(`tab_btn_${tabName}`).classList.add('active');
@@ -811,9 +563,13 @@
         }
 
         const savedMaxStayRooms = localStorage.getItem("maxStayoverRooms");
-        if (savedMaxStayRooms !== null) {
-            maxStayoverRooms = Number(savedMaxStayRooms);
-        }
+        if (savedMaxStayRooms !== null) maxStayoverRooms = Number(savedMaxStayRooms);
+
+        const savedMaxStayDw = localStorage.getItem("maxStayOverRaDw");
+        if (savedMaxStayDw !== null) maxStayOverRaDw = Number(savedMaxStayDw);
+
+        const savedMaxStayTrainee = localStorage.getItem("maxStayOverRaTrainee");
+        if (savedMaxStayTrainee !== null) maxStayOverRaTrainee = Number(savedMaxStayTrainee);
 
         const savedDailyInfo = localStorage.getItem("dailyInfo");
         if (savedDailyInfo) {
@@ -829,7 +585,6 @@
         document.getElementById(`sw_tab_content_${tabName}`).classList.add('active');
     }
 
-    /* RESET SETTINGS DEFAULTS */
     window.resetGeneralTabDefaults = function() {
         const isDailyTabActive = document.getElementById('sw_tab_content_daily')?.classList.contains('active');
 
@@ -842,28 +597,11 @@
             dailyInfo = { project: "", reminder: "", vip: "", preference: "" };
             localStorage.removeItem("dailyInfo");
         } else {
-            let stayVal = 0.8, depVal = 1, backVal = 1, pickVal = 0.4, raVal = 14, dwVal = 11, traineeVal = 5, maxStayVal = 6, spvVal = 17;
-            
-            if (typeof MANNING_RULES !== "undefined") {
-                stayVal = MANNING_RULES.credits.stayover;
-                depVal = MANNING_RULES.credits.departure;
-                backVal = MANNING_RULES.credits.dropped;
-                pickVal = MANNING_RULES.credits.pickup;
-                raVal = MANNING_RULES.targetCreditPerRA;
-                dwVal = MANNING_RULES.creditDW || 11;
-                traineeVal = MANNING_RULES.creditTrainee || 5;
-                spvVal = MANNING_RULES.targetArrivalPerSupervisor || 17;
-            }
+            let maxStayVal = 6;
 
-            if (document.getElementById('sw_stay')) document.getElementById('sw_stay').value = stayVal;
-            if (document.getElementById('sw_dep')) document.getElementById('sw_dep').value = depVal;
-            if (document.getElementById('sw_back')) document.getElementById('sw_back').value = backVal;
-            if (document.getElementById('sw_pick')) document.getElementById('sw_pick').value = pickVal;
-            if (document.getElementById('sw_creditRA')) document.getElementById('sw_creditRA').value = raVal;
-            if (document.getElementById('sw_creditDW')) document.getElementById('sw_creditDW').value = dwVal;
-            if (document.getElementById('sw_creditTrainee')) document.getElementById('sw_creditTrainee').value = traineeVal;
             if (document.getElementById('sw_maxStayRooms')) document.getElementById('sw_maxStayRooms').value = maxStayVal;
-            if (document.getElementById('sw_spv')) document.getElementById('sw_spv').value = spvVal;
+            if (document.getElementById('sw_maxStayOverRaDw')) document.getElementById('sw_maxStayOverRaDw').value = "";
+            if (document.getElementById('sw_maxStayOverRaTrainee')) document.getElementById('sw_maxStayOverRaTrainee').value = "";
 
             raCustomNames = {};
             localStorage.removeItem("raCustomNames");
@@ -889,6 +627,12 @@
         maxStayoverRooms = Number(document.getElementById('sw_maxStayRooms')?.value) || 0;
         localStorage.setItem("maxStayoverRooms", maxStayoverRooms);
 
+        maxStayOverRaDw = Number(document.getElementById('sw_maxStayOverRaDw')?.value) || 0;
+        localStorage.setItem("maxStayOverRaDw", maxStayOverRaDw);
+
+        maxStayOverRaTrainee = Number(document.getElementById('sw_maxStayOverRaTrainee')?.value) || 0;
+        localStorage.setItem("maxStayOverRaTrainee", maxStayOverRaTrainee);
+
         dailyInfo = {
             project: document.getElementById('sw_project')?.value || "",
             reminder: document.getElementById('sw_reminder')?.value || "",
@@ -896,15 +640,6 @@
             preference: document.getElementById('sw_preference')?.value || ""
         };
         localStorage.setItem("dailyInfo", JSON.stringify(dailyInfo));
-
-        document.getElementById('stayCredit').value = document.getElementById('sw_stay')?.value || 0.8;
-        document.getElementById('depCredit').value = document.getElementById('sw_dep')?.value || 1;
-        document.getElementById('backCredit').value = document.getElementById('sw_back')?.value || 1;
-        document.getElementById('pickCredit').value = document.getElementById('sw_pick')?.value || 0.4;
-        document.getElementById('creditRA').value = document.getElementById('sw_creditRA')?.value || 14;
-        document.getElementById('creditDW').value = document.getElementById('sw_creditDW')?.value || 11;
-        document.getElementById('creditTrainee').value = document.getElementById('sw_creditTrainee')?.value || 5;
-        document.getElementById('spvGoal').value = document.getElementById('sw_spv')?.value || 17;
 
         calculate();
         Swal.close();
@@ -934,7 +669,7 @@
             html: `
                 <div class="binder-tab-wrapper">
                     <button id="sw_tab_btn_general" class="binder-tab active" onclick="switchSwalTab('general')">
-                        <i class="fa-solid fa-sliders"></i> General & Weights
+                        <i class="fa-solid fa-sliders"></i> General Settings
                     </button>
                     <button id="sw_tab_btn_daily" class="binder-tab" onclick="switchSwalTab('daily')">
                         <i class="fa-solid fa-calendar-day"></i> Daily Information
@@ -949,47 +684,19 @@
                             ${raInputsHTML}
                         </div>
 
-                        <h4 style="color:#0284c7; border-bottom:1px solid #e2e8f0; padding-bottom:4px; font-size:12px; margin-top:12px;"><i class="fa-solid fa-weight-hanging"></i> WEIGHT & TARGET SETTINGS</h4>
-                        <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
-                            <div>
-                                <label><b>Stayover Weight:</b></label>
-                                <input id="sw_stay" type="number" class="swal2-input swal-ra-input" value="${document.getElementById('stayCredit').value}" step="0.01">
-                            </div>
-                            <div>
-                                <label><b>Departure Weight:</b></label>
-                                <input id="sw_dep" type="number" class="swal2-input swal-ra-input" value="${document.getElementById('depCredit').value}" step="0.01">
-                            </div>
-                            <div>
-                                <label><b>Dropped Room Weight:</b></label>
-                                <input id="sw_back" type="number" class="swal2-input swal-ra-input" value="${document.getElementById('backCredit').value}" step="0.01">
-                            </div>
-                            <div>
-                                <label><b>Pick up/Moved Weight:</b></label>
-                                <input id="sw_pick" type="number" class="swal2-input swal-ra-input" value="${document.getElementById('pickCredit').value}" step="0.01">
-                            </div>
-                            <div>
-                                <label><b>Credit / RA Capacity:</b></label>
-                                <input id="sw_creditRA" type="number" class="swal2-input swal-ra-input" value="${document.getElementById('creditRA').value}" step="0.1">
-                            </div>
-                            <div>
-                                <label><b>Credit DW:</b></label>
-                                <input id="sw_creditDW" type="number" class="swal2-input swal-ra-input" value="${document.getElementById('creditDW').value}" step="0.1">
-                            </div>
-                            <div>
-                                <label><b>Credit Trainee:</b></label>
-                                <input id="sw_creditTrainee" type="number" class="swal2-input swal-ra-input" value="${document.getElementById('creditTrainee').value}" step="0.1">
-                            </div>
-                        </div>
-
-                        <h4 style="color:#0284c7; border-bottom:1px solid #e2e8f0; padding-bottom:4px; font-size:12px; margin-top:12px;"><i class="fa-solid fa-chart-pie"></i> ALLOCATION RULES</h4>
-                        <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+                        <h4 style="color:#0284c7; border-bottom:1px solid #e2e8f0; padding-bottom:4px; font-size:12px; margin-top:12px;"><i class="fa-solid fa-chart-pie"></i> ALLOCATION ROLES & MAX STAYOVER</h4>
+                        <div style="display:flex; flex-direction:column; gap:8px;">
                             <div>
                                 <label><b>Max Stayover Room:</b></label>
                                 <input id="sw_maxStayRooms" type="number" class="swal2-input swal-ra-input" value="${maxStayoverRooms}" min="0" placeholder="e.g. 6">
                             </div>
                             <div>
-                                <label><b>Supervisor Goal:</b></label>
-                                <input id="sw_spv" type="number" class="swal2-input swal-ra-input" value="${document.getElementById('spvGoal').value}">
+                                <label><b>Max Stayover (RA + DW):</b></label>
+                                <input id="sw_maxStayOverRaDw" type="number" class="swal2-input swal-ra-input" value="${maxStayOverRaDw || ''}" min="0" placeholder="Max stay over for RA + DW">
+                            </div>
+                            <div>
+                                <label><b>Max Stayover (RA + Trainee):</b></label>
+                                <input id="sw_maxStayOverRaTrainee" type="number" class="swal2-input swal-ra-input" value="${maxStayOverRaTrainee || ''}" min="0" placeholder="Max stay over for RA + Trainee">
                             </div>
                         </div>
                     </div>
@@ -1065,7 +772,7 @@
     }
 
     const inputs = document.querySelectorAll(
-        "#tonightOcc, #arrival, #departure, #backlog, #pickup, #turndown, #stayCredit, #depCredit, #backCredit, #pickCredit, #creditRA, #creditDW, #creditTrainee, #spvGoal"
+        "#tonightOcc, #arrival, #departure, #backlog, #pickup, #turndown, #stayCredit, #depCredit, #backCredit, #pickCredit, #creditRA, #creditRaDw, #creditRaTrainee, #creditDW, #creditTrainee, #spvGoal"
     );
 
     inputs.forEach(input => {
@@ -1108,7 +815,9 @@
         let backCredit = Number(document.getElementById("backCredit")?.value) || 0;
         let pickCredit = Number(document.getElementById("pickCredit")?.value) || 0;
 
-        let creditRA = Number(document.getElementById("creditRA")?.value) || 14;
+        let creditRA = Number(document.getElementById("creditRA")?.value) || 13;
+        let creditRaDw = Number(document.getElementById("creditRaDw")?.value) || 22;
+        let creditRaTrainee = Number(document.getElementById("creditRaTrainee")?.value) || 16;
         let creditDW = Number(document.getElementById("creditDW")?.value) || 11;
         let creditTrainee = Number(document.getElementById("creditTrainee")?.value) || 5;
         let spvGoal = Number(document.getElementById("spvGoal")?.value) || 17;
@@ -1151,7 +860,7 @@
         }
         document.getElementById("requiredSpv").innerText = spvNeeded;
 
-        generateRADistribution(raNeeded, total, { creditRA, creditDW, creditTrainee }, {
+        generateRADistribution(raNeeded, total, { creditRA, creditRaDw, creditRaTrainee, creditDW, creditTrainee }, {
             stayover, departure, backlog, pickup, turndown
         }, {
             stayCredit, depCredit, backCredit, pickCredit
@@ -1182,17 +891,20 @@
 
             let targetCap = capacityMap.creditRA;
             let allowStayover = true;
+            let customMaxStay = maxStayoverRooms;
 
-            if (nameUpper.includes("DW")) {
+            if (nameUpper.includes("+ DW") || nameUpper.includes("+DW")) {
+                targetCap = capacityMap.creditRaDw;
+                if (maxStayOverRaDw > 0) customMaxStay = maxStayOverRaDw;
+            } else if (nameUpper.includes("+ TRAINEE") || nameUpper.includes("+TRAINEE")) {
+                targetCap = capacityMap.creditRaTrainee;
+                if (maxStayOverRaTrainee > 0) customMaxStay = maxStayOverRaTrainee;
+            } else if (nameUpper.startsWith("DW")) {
                 targetCap = Math.min(capacityMap.creditDW, 12);
                 allowStayover = false;
-            } else if (nameUpper.includes("TRAINEE")) {
+            } else if (nameUpper.startsWith("TRAINEE")) {
                 targetCap = Math.min(capacityMap.creditTrainee, 12);
                 allowStayover = false;
-            }
-
-            if (!allowStayover) {
-                targetCap = Math.min(targetCap, 12);
             }
 
             raAllocations.push({ 
@@ -1200,6 +912,7 @@
                 name, 
                 targetCap, 
                 allowStayover, 
+                customMaxStay,
                 credit: 0, 
                 stayRoomsAssigned: 0, 
                 tasks: {} 
@@ -1234,8 +947,8 @@
 
                 let maxRoomsAllowed = Math.floor((remainingGeneralCap + 0.0001) / task.weight);
 
-                if (task.isStayover && maxStayoverRooms > 0) {
-                    let roomCapLeft = maxStayoverRooms - ra.stayRoomsAssigned;
+                if (task.isStayover && ra.customMaxStay > 0) {
+                    let roomCapLeft = ra.customMaxStay - ra.stayRoomsAssigned;
                     if (roomCapLeft <= 0) continue;
                     maxRoomsAllowed = Math.min(maxRoomsAllowed, roomCapLeft);
                 }
@@ -1309,7 +1022,6 @@
             printTableBody.innerHTML = `<tr><td colspan="4" class="center">No task allocation yet.</td></tr>`;
         }
 
-        /* LOGIKA HITUNG SISA KREDIT / DROPPED ROOM TODAY */
         let unallocatedCredit = totalCredit - totalAllocatedCredit;
         if (unallocatedCredit > 0.05) {
             let droppedCreditFormatted = unallocatedCredit.toFixed(1);
@@ -1394,6 +1106,8 @@
             stayQty: getValue("stayQty"),
             totalCleaning: getText("totalCleaning"),
             creditRA: getValue("creditRA"),
+            creditRaDw: getValue("creditRaDw"),
+            creditRaTrainee: getValue("creditRaTrainee"),
             creditDW: getValue("creditDW"),
             creditTrainee: getValue("creditTrainee"),
             requiredRA: getText("requiredRA"),
