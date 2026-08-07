@@ -9,21 +9,8 @@
     <!-- SweetAlert2 CSS & JS -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     
-    <!-- KONFIGURASI / RULES INLINE -->
-    <script>
-        const MANNING_RULES = {
-            credits: {
-                stayover: 1,
-                departure: 1,
-                dropped: 1,
-                pickup: 0.5
-            },
-            targetCreditPerRA: 13,
-            creditDW: 11,
-            creditTrainee: 5,
-            targetArrivalPerSupervisor: 17
-        };
-    </script>
+    <!-- IMPOR FILE RULES/KONFIGURASI -->
+    <script src="rules.js"></script>
     
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
@@ -124,6 +111,10 @@
         .print-only-header { display: none; }
         .print-daily-info { display: none; }
         .print-summary-info { display: none; }
+        
+        /* ATURAN LAYAR & CETAK (PRINT) UNTUK DROPPED ROOM */
+        .hidden-print { display: none !important; }
+
         @media print { 
             body { background: white !important; color: black !important; padding: 0 !important; } 
             .pos-header, .left-panel, .receipt-card, .staff-summary-combined, .btn-action-group, .btn-settings, .pos-card h3, .binder-tab-wrapper { display: none !important; } 
@@ -423,6 +414,7 @@
                     <tbody id="raPrintTableBody"></tbody>
                 </table>
 
+                <!-- KOTAK DROPPED ROOM BANNER (Diberikan class 'hidden-print' & display 'none' saat default) -->
                 <div id="droppedRoomBanner" class="dropped-card-banner hidden-print" style="display: none;">
                     <div class="dropped-info">
                         <i class="fa-solid fa-triangle-exclamation"></i>
@@ -1067,12 +1059,14 @@
             printTableBody.innerHTML = `<tr><td colspan="4" class="center">No task allocation yet.</td></tr>`;
         }
 
-        // Hitung sisa unallocated credit dari sisa tugas aktual yang benar-benar belum terbagi
+        // PERBAIKAN LOGIKA VISIBILITAS DROPPED ROOM:
+        // Hitung sisa unallocated credit secara presisi dari sisa tugas aktual yang belum terbagi
         let unallocatedCredit = (remainingTasks.stayover * weightMap.stayCredit) + 
                                 (remainingTasks.departure * weightMap.depCredit) + 
                                 (remainingTasks.backlog * weightMap.backCredit) + 
                                 (remainingTasks.pickup * weightMap.pickCredit);
 
+        // Hanya tampilkan banner jika terdapat sisa kredit > 0.05
         if (unallocatedCredit > 0.05) {
             let droppedCreditFormatted = unallocatedCredit.toFixed(1);
             let depWeight = weightMap.depCredit || 1;
@@ -1085,6 +1079,7 @@
                 droppedBanner.classList.remove("hidden-print");
             }
         } else {
+            // Sembunyikan total jika tidak ada dropped room / selisih kredit = 0
             if (droppedBanner) {
                 droppedBanner.style.display = "none";
                 droppedBanner.classList.add("hidden-print");
