@@ -111,10 +111,6 @@
         .print-only-header { display: none; }
         .print-daily-info { display: none; }
         .print-summary-info { display: none; }
-        
-        /* ATURAN LAYAR & CETAK (PRINT) UNTUK DROPPED ROOM */
-        .hidden-print { display: none !important; }
-
         @media print { 
             body { background: white !important; color: black !important; padding: 0 !important; } 
             .pos-header, .left-panel, .receipt-card, .staff-summary-combined, .btn-action-group, .btn-settings, .pos-card h3, .binder-tab-wrapper { display: none !important; } 
@@ -414,7 +410,6 @@
                     <tbody id="raPrintTableBody"></tbody>
                 </table>
 
-                <!-- KOTAK DROPPED ROOM BANNER (Diberikan class 'hidden-print' & display 'none' saat default) -->
                 <div id="droppedRoomBanner" class="dropped-card-banner hidden-print" style="display: none;">
                     <div class="dropped-info">
                         <i class="fa-solid fa-triangle-exclamation"></i>
@@ -442,7 +437,7 @@
                             <span id="printVipVal">-</span>
                         </div>
                         <div class="print-daily-item">
-                            <b>Guest Preferences:</b>
+                            <b>Notes:</b>
                             <span id="printPrefVal">-</span>
                         </div>
                     </div>
@@ -749,8 +744,8 @@
                                 <textarea id="sw_vip" class="swal-textarea" placeholder="Input VIP in House...">${dailyInfo.vip || ''}</textarea>
                             </div>
                             <div>
-                                <label><b>Guest Preferences:</b></label>
-                                <textarea id="sw_preference" class="swal-textarea" placeholder="Input Guest Preferences...">${dailyInfo.preference || ''}</textarea>
+                                <label><b>Notes:</b></label>
+                                <textarea id="sw_preference" class="swal-textarea" placeholder="Input Notes...">${dailyInfo.preference || ''}</textarea>
                             </div>
                         </div>
                     </div>
@@ -1059,14 +1054,12 @@
             printTableBody.innerHTML = `<tr><td colspan="4" class="center">No task allocation yet.</td></tr>`;
         }
 
-        // PERBAIKAN LOGIKA VISIBILITAS DROPPED ROOM:
-        // Hitung sisa unallocated credit secara presisi dari sisa tugas aktual yang belum terbagi
+        // Hitung sisa unallocated credit dari sisa tugas aktual yang benar-benar belum terbagi
         let unallocatedCredit = (remainingTasks.stayover * weightMap.stayCredit) + 
                                 (remainingTasks.departure * weightMap.depCredit) + 
                                 (remainingTasks.backlog * weightMap.backCredit) + 
                                 (remainingTasks.pickup * weightMap.pickCredit);
 
-        // Hanya tampilkan banner jika terdapat sisa kredit > 0.05
         if (unallocatedCredit > 0.05) {
             let droppedCreditFormatted = unallocatedCredit.toFixed(1);
             let depWeight = weightMap.depCredit || 1;
@@ -1079,7 +1072,6 @@
                 droppedBanner.classList.remove("hidden-print");
             }
         } else {
-            // Sembunyikan total jika tidak ada dropped room / selisih kredit = 0
             if (droppedBanner) {
                 droppedBanner.style.display = "none";
                 droppedBanner.classList.add("hidden-print");
