@@ -9,8 +9,21 @@
     <!-- SweetAlert2 CSS & JS -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     
-    <!-- IMPOR FILE RULES/KONFIGURASI -->
-    <script src="rules.js"></script>
+    <!-- KONFIGURASI / RULES INLINE -->
+    <script>
+        const MANNING_RULES = {
+            credits: {
+                stayover: 1,
+                departure: 1,
+                dropped: 1,
+                pickup: 0.5
+            },
+            targetCreditPerRA: 13,
+            creditDW: 11,
+            creditTrainee: 5,
+            targetArrivalPerSupervisor: 17
+        };
+    </script>
     
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
