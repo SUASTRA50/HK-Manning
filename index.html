@@ -106,6 +106,10 @@
         .btn-swal-reset:hover { background: #ca8a04; }
         .btn-swal-cancel { background: #64748b; color: white; }
         .btn-swal-cancel:hover { background: #475569; }
+        
+        /* STYLE JUDUL MODAL SWEETALERT DISET LEBIH KECIL */
+        .swal2-title-small { font-size: 16px !important; font-weight: 700 !important; color: #0f172a !important; padding-top: 12px !important; }
+
         @media (max-width: 600px) { .swal-ra-grid { grid-template-columns: 1fr; max-height: 120px; } .staff-summary-combined { grid-template-columns: 1fr 1fr; } }
         .print-table { display: none; }
         .print-only-header { display: none; }
@@ -211,6 +215,9 @@
                 <button class="binder-tab" id="tab_btn_roles" onclick="switchBinderTab('roles')">
                     <i class="fa-solid fa-sliders"></i> Role Credits
                 </button>
+                <button class="binder-tab" id="tab_btn_tutorial" onclick="switchBinderTab('tutorial')">
+                    <i class="fa-solid fa-book-open"></i> Tutorial
+                </button>
             </div>
 
             <div class="pos-card" style="border-radius: 0 12px 12px 12px;">
@@ -284,6 +291,16 @@
                     <div class="summary" style="margin-bottom:0;">
                         <label for="spvGoal">Supervisor Goal</label>
                         <input id="spvGoal" type="number" class="credit-box" value="17">
+                    </div>
+                </div>
+
+                <!-- TAB 3: TUTORIAL (PDF USER GUIDE) -->
+                <div id="tab_content_tutorial" class="binder-content">
+                    <h3><i class="fa-solid fa-book-open"></i> User Guide & Tutorial</h3>
+                    <div style="width: 100%; height: 350px; border-radius: 8px; overflow: hidden; border: 1px solid #cbd5e1;">
+                        <iframe src="Project proposal (1).pdf" style="width: 100%; height: 100%; border: none;">
+                            Browser Anda tidak mendukung pratinjau PDF. Silakan unduh file PDF secara langsung.
+                        </iframe>
                     </div>
                 </div>
             </div>
@@ -475,6 +492,9 @@
     function editCapacity() {
         Swal.fire({
             title: 'Edit Total Capacity',
+            customClass: {
+                title: 'swal2-title-small'
+            },
             html: `
                 <div style="font-size: 11px; color: #64748b; margin-bottom: 12px; border-bottom: 1px solid #e2e8f0; padding-bottom: 8px;">
                     <div style="font-weight: 700; color: #0284c7;">Version 2.0</div>
@@ -565,9 +585,11 @@
     function switchBinderTab(tabName) {
         document.getElementById('tab_btn_forecast').classList.remove('active');
         document.getElementById('tab_btn_roles').classList.remove('active');
+        document.getElementById('tab_btn_tutorial').classList.remove('active');
 
         document.getElementById('tab_content_forecast').classList.remove('active');
         document.getElementById('tab_content_roles').classList.remove('active');
+        document.getElementById('tab_content_tutorial').classList.remove('active');
 
         document.getElementById(`tab_btn_${tabName}`).classList.add('active');
         document.getElementById(`tab_content_${tabName}`).classList.add('active');
