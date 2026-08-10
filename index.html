@@ -1096,7 +1096,7 @@
             let estRooms = (unallocatedCredit / depWeight).toFixed(1);
 
             document.getElementById("droppedCreditBadge").innerText = `${droppedCreditFormatted} Credit`;
-            document.getElementById("droppedDetailText").innerText = `Selisih beban kerja (~${estRooms} Kamar) belum dialokasikan ke RA/DW/Trainee`;
+            document.getElementById("droppedDetailText").innerText = `Workload Gap (~${estRooms} Room) Not yet allocated to RA/DW/Trainee`;
             if (droppedBanner) {
                 droppedBanner.style.display = "flex";
                 droppedBanner.classList.remove("hidden-print");
