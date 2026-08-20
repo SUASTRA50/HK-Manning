@@ -279,11 +279,11 @@
                         </div>
                     </div>
                     <div class="input-group">
-                        <label for="turndown">Turn Down</label>
+                        <label for="turndown">Expected TD Rooms</label>
                         <input type="number" id="turndown" placeholder="0" min="0">
                     </div>
                     <div style="font-size:10px; color:#64748b; background:#f8fafc; border:1px dashed #cbd5e1; padding:6px 8px; border-radius:6px; margin-top:8px;">
-                        <i class="fa-solid fa-circle-info"></i> Logic: <b>TD RA1 = Credit TD1</b>, sisa (TurnDown - TD RA1) dibagi rata ke <b>TD RA2, RA3, ...</b> sebanyak (Available TD RA - 1). Max per orang = Credit TD2.
+                        <i class="fa-solid fa-circle-info"></i> Logic: <b>TD RA1 = Credit TD1</b>, sisa (Expected TD Rooms - TD RA1) dibagi rata ke <b>TD RA2, RA3, ...</b> sebanyak (Available TD RA - 2) untuk RA3+. Max per orang = Credit TD2.
                     </div>
                 </div>
 
@@ -410,16 +410,16 @@
                 </div>
 
                 <div class="row">
-                    <span class="task-name">Turn Down</span>
+                    <span class="task-name">Expected TD Rooms</span>
                     <input id="tdQty" type="number" readonly placeholder="0">
-                    <input id="tdCreditWeight" type="number" step="0.01" value="0.3">
+                    <input id="tdCreditWeight" type="number" step="0.01" value="1">
                     <span id="tdTotal" class="subtotal">0.0</span>
                 </div>
 
                 <div class="receipt-divider"></div>
 
                 <div class="summary">
-                    <label>Total Turn Down Credit</label>
+                    <label>Total Expected TD Credit</label>
                     <span id="totalTurndownCredit" class="total-badge">0.0</span>
                 </div>
                 <div class="summary">
@@ -427,7 +427,7 @@
                     <span id="displayAvailTDRA" class="total-badge" style="color:#7c3aed;">0</span>
                 </div>
                 <div style="margin-top:8px;">
-                    <div style="font-size:10px; font-weight:800; color:#7c3aed; text-transform:uppercase; margin-bottom:4px;">Turn Down Distribution</div>
+                    <div style="font-size:10px; font-weight:800; color:#7c3aed; text-transform:uppercase; margin-bottom:4px;">Expected TD Rooms Distribution</div>
                     <div id="tdDistributionList" style="display:flex; flex-direction:column; gap:4px;"></div>
                 </div>
                 <div class="receipt-divider"></div>
@@ -485,7 +485,7 @@
                             <b id="printDepartureVal">0</b>
                         </div>
                         <div class="print-summary-item">
-                            <span>Turn Down</span>
+                            <span>Expected TD Rooms</span>
                             <b id="printTurndownVal">0</b>
                         </div>
                         <div class="print-summary-item">
@@ -1017,50 +1017,57 @@
         // PM SHIFT CALCULATION - NEW RULE
         let creditTD1 = Number(document.getElementById("creditTD1")?.value) || 35;
         let creditTD2 = Number(document.getElementById("creditTD2")?.value) || 20;
-        let tdWeight = Number(document.getElementById("tdCreditWeight")?.value) || 0.3;
+        let tdWeight = Number(document.getElementById("tdCreditWeight")?.value) || 1;
         let availTDRA = Number(document.getElementById("availTDRA")?.value) || 0;
+        // Sync Expected TD Rooms from PM tab to PM card
         if (document.getElementById("tdQty")) document.getElementById("tdQty").value = turndown;
-        let tdTotal = turndown * tdWeight;
+        // Total Expected TD Credit diambil dari Total di Pos Card PM SHIFT SUMMARY (tdQty * weight)
+        let tdQtyCard = Number(document.getElementById("tdQty")?.value) || turndown;
+        let tdTotal = tdQtyCard * tdWeight;
         if (document.getElementById("tdTotal")) document.getElementById("tdTotal").innerText = tdTotal.toFixed(1);
         if (document.getElementById("totalTurndownCredit")) document.getElementById("totalTurndownCredit").innerText = tdTotal.toFixed(1);
         if (document.getElementById("displayAvailTDRA")) document.getElementById("displayAvailTDRA").innerText = availTDRA;
 
         // NEW LOGIC v4: TD RA1 = Credit TD1, TD RA2 = Credit TD2, sisa dibagi ke RA3,4,...
+        // DISTRIBUTION DARI TOTAL EXPECTED TD CREDIT (KUNING) DI POS CARD PM SHIFT SUMMARY
         let tdList = [];
-        let perRemainingRooms = 0;
-        if (turndown > 0 && availTDRA > 0) {
-            let tdRA1Rooms = Math.min(turndown, creditTD1);
-            let afterRA1 = Math.max(0, turndown - tdRA1Rooms);
+        let totalExpectedTDRooms = Number(document.getElementById("tdQty")?.value) || turndown;
+        let totalExpectedTDCredit = Number(document.getElementById("tdTotal")?.innerText) || (totalExpectedTDRooms * tdWeight);
+        let totalToDistribute = totalExpectedTDCredit;
+        if (totalToDistribute > 0 && availTDRA > 0) {
+            // REVISI FINAL: RA1 harus = Credit TD1, RA2 = Credit TD2 (fixed), sisanya dibagi RA3+
+            let tdRA1Credit = creditTD1;
+            let tdRA1Rooms = tdWeight > 0 ? tdRA1Credit / tdWeight : tdRA1Credit;
+            let tdRA2Credit = 0;
             let tdRA2Rooms = 0;
             if (availTDRA >= 2) {
-                tdRA2Rooms = Math.min(afterRA1, creditTD2);
+                tdRA2Credit = creditTD2;
+                tdRA2Rooms = tdWeight > 0 ? tdRA2Credit / tdWeight : tdRA2Credit;
             }
-            let afterRA2 = Math.max(0, turndown - tdRA1Rooms - tdRA2Rooms);
+            let afterRA2Credit = totalToDistribute - tdRA1Credit - tdRA2Credit;
             let remainingStaff = Math.max(0, availTDRA - 2);
+            let perRemainingCredit = 0;
+            let perRemainingRooms = 0;
             if (remainingStaff > 0) {
-                perRemainingRooms = afterRA2 > 0 ? Math.ceil(afterRA2 / remainingStaff) : 0;
+                perRemainingCredit = afterRA2Credit / remainingStaff;
+                perRemainingRooms = tdWeight > 0 ? perRemainingCredit / tdWeight : perRemainingCredit;
             }
-
-            tdList.push({ name: 'TD RA1', rooms: tdRA1Rooms, credit: creditTD1, isLead: true, role: 'TD RA1' });
+            tdList.push({ name: 'TD RA1', rooms: tdRA1Rooms, credit: tdRA1Credit, isLead: true });
             if (availTDRA >= 2) {
-                tdList.push({ name: 'TD RA2', rooms: tdRA2Rooms, credit: creditTD2, isLead: false, role: 'TD RA2' });
+                tdList.push({ name: 'TD RA2', rooms: tdRA2Rooms, credit: tdRA2Credit, isLead: false });
             }
-            let left = afterRA2;
+            let leftCredit = afterRA2Credit;
             for (let i=3; i<=availTDRA; i++) {
-                let alloc = left;
+                let allocCredit = leftCredit;
                 if (remainingStaff > 0) {
-                    // distribute equally, last gets remainder
-                    if (i < availTDRA) {
-                        alloc = Math.min(left, perRemainingRooms);
-                    } else {
-                        alloc = left; // last
-                    }
+                    allocCredit = (i < availTDRA) ? perRemainingCredit : leftCredit;
                 }
-                tdList.push({ name: `TD RA${i}`, rooms: alloc, credit: perRemainingRooms, isLead: false, role: `TD RA${i}` });
-                left -= alloc;
-                if (left <= 0 && i < availTDRA) {
+                let allocRooms = tdWeight > 0 ? allocCredit / tdWeight : allocCredit;
+                tdList.push({ name: 'TD RA' + i, rooms: allocRooms, credit: allocCredit, isLead: false });
+                leftCredit -= allocCredit;
+                if (leftCredit <= 0.001 && i < availTDRA) {
                     for (let j=i+1; j<=availTDRA; j++) {
-                        tdList.push({ name: `TD RA${j}`, rooms: 0, credit: perRemainingRooms, isLead: false, role: `TD RA${j}` });
+                        tdList.push({ name: 'TD RA' + j, rooms: 0, credit: 0, isLead: false });
                     }
                     break;
                 }
@@ -1072,23 +1079,22 @@
         if (distContainer) {
             distContainer.innerHTML = "";
             if (tdList.length === 0) {
-                distContainer.innerHTML = `<div style="font-size:11px; color:#94a3b8; text-align:center; padding:4px;">No Turn Down allocation</div>`;
+                distContainer.innerHTML = `<div style="font-size:11px; color:#94a3b8; text-align:center; padding:4px;">No Expected TD Rooms allocation</div>`;
             } else {
                 tdList.forEach(item => {
                     let div = document.createElement("div");
                     div.style.cssText = "display:flex; justify-content:space-between; align-items:center; background:#f5f3ff; border:1px solid #ddd6fe; border-radius:6px; padding:5px 8px; font-size:11px;";
-                    let creditLabel = item.name === 'TD RA1' ? `${item.credit}` : (item.name === 'TD RA2' ? `${item.credit}` : `${item.credit}`);
-                    div.innerHTML = `<span style="font-weight:700; color:${item.isLead ? '#7c3aed' : '#475569'}"><i class="fa-solid fa-user-check"></i> ${item.name}</span><span style="font-weight:600;">${item.rooms} rooms / ${creditLabel} credit</span>`;
+                    div.innerHTML = `<span style="font-weight:700; color:${item.isLead ? '#7c3aed' : '#475569'}"><i class="fa-solid fa-user-check"></i> ${item.name}</span><span style="font-weight:600;">${item.rooms.toFixed(1)} rooms / ${item.credit.toFixed(1)} credit</span>`;
                     distContainer.appendChild(div);
                 });
             }
         }
 
-        if (document.getElementById("requiredTD1")) document.getElementById("requiredTD1").innerText = tdList[0] ? `${tdList[0].rooms} rooms` : "0";
+        if (document.getElementById("requiredTD1")) document.getElementById("requiredTD1").innerText = tdList[0] ? `${tdList[0].rooms.toFixed(1)} rooms / ${tdList[0].credit.toFixed(1)} credit` : "0";
         if (document.getElementById("requiredTD2")) {
             if (tdList.length > 1) {
-                let avg = tdList.slice(1).reduce((s,x)=>s+x.rooms,0) / Math.max(1, tdList.length-1);
-                document.getElementById("requiredTD2").innerText = `${perRemainingRooms} rooms / person`;
+                let remC = tdList.length > 2 ? (totalToDistribute - tdList[0].credit - tdList[1].credit) / Math.max(1, tdList.length-2) : 0;
+                document.getElementById("requiredTD2").innerText = `${remC.toFixed(1)} credit / person`;
             } else {
                 document.getElementById("requiredTD2").innerText = "0";
             }
