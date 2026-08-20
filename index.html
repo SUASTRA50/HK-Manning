@@ -245,15 +245,19 @@
                         <div style="font-size:10px; font-weight:800; color:#0284c7; text-transform:uppercase; margin-bottom:6px;"><i class="fa-solid fa-users"></i> Available Manning AM</div>
                         <div class="input-group">
                             <label for="availRA">Available RA</label>
-                            <input type="number" id="availRA" placeholder="0" min="0" value="8">
+                            <input type="number" id="availRA" placeholder="0" min="0" value="0">
                         </div>
                         <div class="input-group">
                             <label for="availDW">Available DW</label>
-                            <input type="number" id="availDW" placeholder="0" min="0" value="2">
+                            <input type="number" id="availDW" placeholder="0" min="0" value="0">
                         </div>
                         <div class="input-group">
                             <label for="availTR">Available TR (Trainee)</label>
-                            <input type="number" id="availTR" placeholder="0" min="0" value="1">
+                            <input type="number" id="availTR" placeholder="0" min="0" value="0">
+                        </div>
+                        <div class="input-group">
+                            <label for="availPMShift">Available PM Shift</label>
+                            <input type="number" id="availPMShift" placeholder="Available PM Shift" min="0" value="0">
                         </div>
                     </div>
                     <div class="input-group">
@@ -289,7 +293,7 @@
                         <div style="font-size:10px; font-weight:800; color:#7c3aed; text-transform:uppercase; margin-bottom:6px;"><i class="fa-solid fa-user-group"></i> Available Manning PM</div>
                         <div class="input-group">
                             <label for="availTDRA">Available TD RA</label>
-                            <input type="number" id="availTDRA" placeholder="0" min="0" value="3">
+                            <input type="number" id="availTDRA" placeholder="0" min="0" value="0">
                         </div>
                     </div>
                     <div class="input-group">
@@ -297,7 +301,7 @@
                         <input type="number" id="turndown" placeholder="0" min="0">
                     </div>
                     <div style="font-size:10px; color:#64748b; background:#f8fafc; border:1px dashed #cbd5e1; padding:6px 8px; border-radius:6px; margin-top:8px;">
-                        <i class="fa-solid fa-circle-info"></i> Logic: <b>TD RA1 = Credit TD1</b>, sisa (Expected TD Rooms - TD RA1) dibagi rata ke <b>TD RA2, RA3, ...</b> sebanyak (Available TD RA - 2) untuk RA3+. Max per orang = Credit TD2.
+                        <i class="fa-solid fa-circle-info"></i> Logic: <b>TD RA1 = Credit TD1</b>, sisa (Expected TD Rooms - TD RA1) dibagi rata ke <b>TD RA2, RA3, ...</b> sebanyak (Available TD RA - 2) untuk RA3+. Max per orang = Credit TD2 (default 0).
                     </div>
                 </div>
 
@@ -342,7 +346,12 @@
 
                     <div class="summary">
                         <label for="creditTD2">Credit TD2</label>
-                        <input id="creditTD2" type="number" class="credit-box" value="20">
+                        <input id="creditTD2" type="number" class="credit-box" placeholder="Credit TD2" value="0">
+                    </div>
+
+                    <div class="summary">
+                        <label for="creditPMShift">Credit PM Shift</label>
+                        <input id="creditPMShift" type="number" class="credit-box" placeholder="Credit PM Shift" value="5">
                     </div>
 
                     <div class="summary">
@@ -694,7 +703,9 @@
             document.getElementById("creditDW").value = MANNING_RULES.creditDW || 11;
             document.getElementById("creditTrainee").value = MANNING_RULES.creditTrainee || 5;
             document.getElementById("creditTD1").value = MANNING_RULES.creditTD1 || 35;
-            document.getElementById("creditTD2").value = MANNING_RULES.creditTD2 || 20;
+            document.getElementById("creditTD2").value = MANNING_RULES.creditTD2 !== undefined ? MANNING_RULES.creditTD2 : 0;
+            const creditPMEl = document.getElementById("creditPMShift");
+            if (creditPMEl) creditPMEl.value = MANNING_RULES.creditPMShift || 5;
             document.getElementById("spvGoal").value = MANNING_RULES.targetArrivalPerSupervisor || 17;
         }
 
@@ -757,7 +768,8 @@
             let availRA2 = Number(document.getElementById("availRA")?.value) || 0;
             let availDW2 = Number(document.getElementById("availDW")?.value) || 0;
             let availTR2 = Number(document.getElementById("availTR")?.value) || 0;
-            let totalAvail2 = availRA2 + availDW2 + availTR2;
+            let availPM2 = Number(document.getElementById("availPMShift")?.value) || 0;
+            let totalAvail2 = availRA2 + availDW2 + availTR2 + availPM2;
             let raNeeded = totalAvail2;
             for (let i = 1; i <= raNeeded; i++) {
                 let el = document.getElementById(`sw_ra_name_${i}`);
@@ -770,7 +782,8 @@
         let availRA = Number(document.getElementById("availRA")?.value) || 0;
         let availDW = Number(document.getElementById("availDW")?.value) || 0;
         let availTR = Number(document.getElementById("availTR")?.value) || 0;
-        let totalAvail = availRA + availDW + availTR;
+        let availPM = Number(document.getElementById("availPMShift")?.value) || 0;
+        let totalAvail = availRA + availDW + availTR + availPM;
         let raNeeded = totalAvail;
         let tempNames = {};
         for (let i = 1; i <= raNeeded; i++) {
@@ -807,7 +820,8 @@
         let availRA = Number(document.getElementById("availRA")?.value) || 0;
         let availDW = Number(document.getElementById("availDW")?.value) || 0;
         let availTR = Number(document.getElementById("availTR")?.value) || 0;
-        let totalAvail = availRA + availDW + availTR;
+        let availPM = Number(document.getElementById("availPMShift")?.value) || 0;
+        let totalAvail = availRA + availDW + availTR + availPM;
         let raNeeded = totalAvail;
         if (raNeeded <= 0) raNeeded = 0;
 
@@ -933,7 +947,7 @@
     }
 
     const inputs = document.querySelectorAll(
-        "#tonightOcc, #arrival, #departure, #backlog, #pickup, #turndown, #availRA, #availDW, #availTR, #availTDRA, #stayCredit, #depCredit, #backCredit, #pickCredit, #tdCreditWeight, #creditRA, #creditRaDw, #creditRaTrainee, #creditDW, #creditTrainee, #creditTD1, #creditTD2, #spvGoal"
+        "#tonightOcc, #arrival, #departure, #backlog, #pickup, #turndown, #availRA, #availDW, #availTR, #availTDRA, #stayCredit, #depCredit, #backCredit, #pickCredit, #tdCreditWeight, #creditRA, #creditRaDw, #creditRaTrainee, #creditDW, #creditTrainee, #creditTD1, #creditTD2, #creditPMShift, #spvGoal, #availPMShift"
     );
 
     inputs.forEach(input => {
@@ -1023,7 +1037,8 @@
 
         // PM SHIFT CALCULATION - NEW RULE
         let creditTD1 = Number(document.getElementById("creditTD1")?.value) || 35;
-        let creditTD2 = Number(document.getElementById("creditTD2")?.value) || 20;
+        let creditTD2 = Number(document.getElementById("creditTD2")?.value);
+        if (isNaN(creditTD2)) creditTD2 = 0;
         let tdWeight = Number(document.getElementById("tdCreditWeight")?.value) || 1;
         let availTDRA = Number(document.getElementById("availTDRA")?.value) || 0;
         // Sync Expected TD Rooms from PM tab to PM card
