@@ -1,13 +1,15 @@
-cconst MANNING_RULES = {
+const MANNING_RULES = {
     credits: {
-        stayover: 0.8,
+        stayover: 1,
         departure: 1.0,
         dropped: 1.0,
         pickup: 0.4,
-        turndown: 0.2
+        turndown: 1
     },
-    targetCreditPerRA: 14,
-    creditDW: 11,        // Target Credit untuk Daily Worker
-    creditTrainee: 5,   // Target Credit untuk Trainee
+    targetCreditPerRA: 13,
+    creditDW: 11,
+    creditTrainee: 5,
+    creditTD1: 35,
+    creditTD2: 20,
     targetArrivalPerSupervisor: 17
 };
