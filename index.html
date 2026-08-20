@@ -431,14 +431,7 @@
                     <div id="tdDistributionList" style="display:flex; flex-direction:column; gap:4px;"></div>
                 </div>
                 <div class="receipt-divider"></div>
-                <div class="summary">
-                    <label>TD RA1 (Credit TD1)</label>
-                    <span id="requiredTD1" class="total-badge" style="color:#7c3aed;">0</span>
-                </div>
-                <div class="summary">
-                    <label>TD RA2+ (Credit TD2 / person)</label>
-                    <span id="requiredTD2" class="total-badge" style="color:#7c3aed;">0</span>
-                </div>
+                
             </div>
 
             <!-- STAFF REQUIREMENT CARD -->
@@ -1090,13 +1083,13 @@
             }
         }
 
-        if (document.getElementById("requiredTD1")) document.getElementById("requiredTD1").innerText = tdList[0] ? `${tdList[0].rooms.toFixed(1)} rooms / ${tdList[0].credit.toFixed(1)} credit` : "0";
+        if (document.getElementById("requiredTD1")) if(document.getElementById("requiredTD1")) document.getElementById("requiredTD1").innerText = tdList[0] ? `${tdList[0].rooms.toFixed(1)} rooms / ${tdList[0].credit.toFixed(1)} credit` : "0";
         if (document.getElementById("requiredTD2")) {
             if (tdList.length > 1) {
                 let remC = tdList.length > 2 ? (totalToDistribute - tdList[0].credit - tdList[1].credit) / Math.max(1, tdList.length-2) : 0;
-                document.getElementById("requiredTD2").innerText = `${remC.toFixed(1)} credit / person`;
+                if(document.getElementById("requiredTD2")) document.getElementById("requiredTD2").innerText = `${remC.toFixed(1)} credit / person`;
             } else {
-                document.getElementById("requiredTD2").innerText = "0";
+                if(document.getElementById("requiredTD2")) document.getElementById("requiredTD2").innerText = "0";
             }
         }
 
