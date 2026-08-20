@@ -9,7 +9,7 @@ const MANNING_RULES = {
     targetCreditPerRA: 13,
     creditDW: 11,
     creditTrainee: 5,
-    creditTD1: 35,
-    creditTD2: 20,
+    creditTD1: 30,
+    creditTD2: 0,
     targetArrivalPerSupervisor: 17
 };
