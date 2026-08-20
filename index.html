@@ -567,8 +567,7 @@
 </div>
 <!-- LINK GOOGLESHEET -->
 <script>
-let state = {
-  const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxFeDsa37qoKrL9gRrja4eIRkdmv-xNYewd9ZMpr10aDWyIG0BRAEzOnurnr0Dycy4g/exec";
+    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxFeDsa37qoKrL9gRrja4eIRkdmv-xNYewd9ZMpr10aDWyIG0BRAEzOnurnr0Dycy4g/exec";
 
     let raCustomNames = {};
     let maxStayoverRooms = 6; 
@@ -1082,11 +1081,6 @@ let state = {
             }
         }
 
-        // Simpan global untuk submit ke Sheet
-        window._lastTDList = tdList;
-        window._lastExpectedTDRooms = totalExpectedTDRooms;
-        window._lastExpectedTDCredit = totalExpectedTDCredit;
-
         // Render distribution
         const distContainer = document.getElementById("tdDistributionList");
         if (distContainer) {
@@ -1398,17 +1392,13 @@ let state = {
         const getValue = (id) => document.getElementById(id)?.value || "0";
         const getText = (id) => document.getElementById(id)?.innerText || "0";
 
-        // REVISI: Expected TD Rooms taruh di Kolom G (Turndown)
-        // Kolom G Turndown sudah tidak ada input, jadi kita pakai untuk Expected TD Rooms
         let expectedTDRoomsVal = document.getElementById("tdQty")?.value || document.getElementById("turndown")?.value || "0";
-
         const payload = {
             tonightOcc: getValue("tonightOcc"),
             arrival: getValue("arrival"),
             departure: getValue("departure"),
             backlog: getValue("backlog"),
             pickup: getValue("pickup"),
-            // Kolom G = Expected TD Rooms (Final) - menggantikan Turndown lama
             turndown: expectedTDRoomsVal,
             expectedTDRooms: expectedTDRoomsVal,
             stayQty: getValue("stayQty"),
