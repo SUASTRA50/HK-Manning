@@ -297,7 +297,7 @@
                         <input type="number" id="turndown" placeholder="0" min="0">
                     </div>
                     <div style="font-size:10px; color:#64748b; background:#f8fafc; border:1px dashed #cbd5e1; padding:6px 8px; border-radius:6px; margin-top:8px;">
-                        <i class="fa-solid fa-circle-info"></i> Logic: <b>TD RA1 = Credit TD1, TD RA2 = Credit TD2</b>, sisa (Total Expected TD Credit - TD RA1 - RA2) dibagi rata ke <b>TD RA3, RA4, ...</b> sebanyak (Available TD RA - 2) untuk RA3+. Max per orang = Credit TD2.
+                        <i class="fa-solid fa-circle-info"></i> Logic: <b>TD RA1 = Credit TD1</b>, sisa (Expected TD Rooms - TD RA1) dibagi rata ke <b>TD RA2, RA3, ...</b> sebanyak (Available TD RA - 2) untuk RA3+. Max per orang = Credit TD2.
                     </div>
                 </div>
 
@@ -567,7 +567,7 @@
 </div>
 <!-- LINK GOOGLESHEET -->
 <script>
-    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/library/d/1Z2zEBIFFS6j8T-j7AnRYCGWz8um-4Tu_gF6An6cFoCrIPuHpeUHOGnp8/4";
+    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxtAtECDb088zNMgk8SLPe4woJ28FujKbqcjPAAdC9vSVimHDBIBdFZZBTsaEks_oU6/exec";
 
     let raCustomNames = {};
     let maxStayoverRooms = 6; 
@@ -1035,74 +1035,56 @@
         if (document.getElementById("totalTurndownCredit")) document.getElementById("totalTurndownCredit").innerText = tdTotal.toFixed(1);
         if (document.getElementById("displayAvailTDRA")) document.getElementById("displayAvailTDRA").innerText = availTDRA;
 
-        // NEW LOGIC v5 - SESUAI REQUEST USER:
-        // TD RA1 = Credit TD1, TD RA2 = Credit TD2, sisa (Total Expected TD Credit - RA1 - RA2) dibagi rata ke RA3+ sebanyak (Available TD RA - 2). Max per orang = Credit TD2
+        // NEW LOGIC v4: TD RA1 = Credit TD1, TD RA2 = Credit TD2, sisa dibagi ke RA3,4,...
+        // DISTRIBUTION DARI TOTAL EXPECTED TD CREDIT (KUNING) DI POS CARD PM SHIFT SUMMARY
         let tdList = [];
         let totalExpectedTDRooms = Number(document.getElementById("tdQty")?.value) || turndown;
         let totalExpectedTDCredit = Number(document.getElementById("tdTotal")?.innerText) || (totalExpectedTDRooms * tdWeight);
         let totalToDistribute = totalExpectedTDCredit;
         if (totalToDistribute > 0 && availTDRA > 0) {
-            let remainingCredit = totalToDistribute;
-
-            // RA1 = Credit TD1 (jika total lebih kecil, ambil total)
-            let tdRA1Credit = Math.min(creditTD1, remainingCredit);
-            remainingCredit -= tdRA1Credit;
+            // REVISI FINAL: RA1 harus = Credit TD1, RA2 = Credit TD2 (fixed), sisanya dibagi RA3+
+            let tdRA1Credit = creditTD1;
             let tdRA1Rooms = tdWeight > 0 ? tdRA1Credit / tdWeight : tdRA1Credit;
-            tdList.push({ name: 'TD RA1', rooms: tdRA1Rooms, credit: tdRA1Credit, isLead: true });
-
-            // RA2 = Credit TD2
+            let tdRA2Credit = 0;
+            let tdRA2Rooms = 0;
             if (availTDRA >= 2) {
-                let tdRA2Credit = Math.min(creditTD2, Math.max(0, remainingCredit));
-                // Jika total masih cukup, paksa sesuai spec = Credit TD2
-                if (totalToDistribute >= (creditTD1 + creditTD2)) {
-                    tdRA2Credit = creditTD2;
-                }
-                remainingCredit = totalToDistribute - tdRA1Credit - tdRA2Credit;
-                let tdRA2Rooms = tdWeight > 0 ? tdRA2Credit / tdWeight : tdRA2Credit;
+                tdRA2Credit = creditTD2;
+                tdRA2Rooms = tdWeight > 0 ? tdRA2Credit / tdWeight : tdRA2Credit;
+            }
+            let afterRA2Credit = totalToDistribute - tdRA1Credit - tdRA2Credit;
+            let remainingStaff = Math.max(0, availTDRA - 2);
+            let perRemainingCredit = 0;
+            let perRemainingRooms = 0;
+            if (remainingStaff > 0) {
+                perRemainingCredit = afterRA2Credit / remainingStaff;
+                perRemainingRooms = tdWeight > 0 ? perRemainingCredit / tdWeight : perRemainingCredit;
+            }
+            tdList.push({ name: 'TD RA1', rooms: tdRA1Rooms, credit: tdRA1Credit, isLead: true });
+            if (availTDRA >= 2) {
                 tdList.push({ name: 'TD RA2', rooms: tdRA2Rooms, credit: tdRA2Credit, isLead: false });
             }
-
-            // RA3+ : sisa dibagi rata, max per orang = Credit TD2
-            let remainingStaff = Math.max(0, availTDRA - 2);
-            if (remainingStaff > 0) {
-                let perRemainingCredit = remainingCredit / remainingStaff;
-                // Max per orang = Credit TD2
-                perRemainingCredit = Math.min(perRemainingCredit, creditTD2);
-
-                let leftCredit = remainingCredit;
-                for (let i = 3; i <= availTDRA; i++) {
-                    // Untuk orang terakhir, ambil sisa tapi tetap di-cap max TD2
-                    let allocCredit;
-                    if (i < availTDRA) {
-                        allocCredit = perRemainingCredit;
-                    } else {
-                        allocCredit = Math.min(leftCredit, creditTD2);
-                        // jika masih ada sisa karena cap, biarin kelebihan tetap di RA terakhir dengan cap? 
-                        // sesuai logic: max = TD2, jadi kita cap
-                        if (allocCredit < 0) allocCredit = 0;
+            let leftCredit = afterRA2Credit;
+            for (let i=3; i<=availTDRA; i++) {
+                let allocCredit = leftCredit;
+                if (remainingStaff > 0) {
+                    allocCredit = (i < availTDRA) ? perRemainingCredit : leftCredit;
+                }
+                let allocRooms = tdWeight > 0 ? allocCredit / tdWeight : allocCredit;
+                tdList.push({ name: 'TD RA' + i, rooms: allocRooms, credit: allocCredit, isLead: false });
+                leftCredit -= allocCredit;
+                if (leftCredit <= 0.001 && i < availTDRA) {
+                    for (let j=i+1; j<=availTDRA; j++) {
+                        tdList.push({ name: 'TD RA' + j, rooms: 0, credit: 0, isLead: false });
                     }
-                    // Safety: jangan negatif
-                    if (allocCredit < 0) allocCredit = 0;
-                    // Jika total sisa lebih kecil dari cap, last person dapat sisa
-                    if (i === availTDRA) {
-                        // last person gets whatever left but capped
-                        allocCredit = Math.min(leftCredit, creditTD2);
-                    }
-
-                    let allocRooms = tdWeight > 0 ? allocCredit / tdWeight : allocCredit;
-                    tdList.push({ name: 'TD RA' + i, rooms: allocRooms, credit: allocCredit, isLead: false });
-                    leftCredit -= allocCredit;
-
-                    if (leftCredit <= 0.001) {
-                        // isi 0 untuk sisa staff jika sudah habis
-                        for (let j = i + 1; j <= availTDRA; j++) {
-                            tdList.push({ name: 'TD RA' + j, rooms: 0, credit: 0, isLead: false });
-                        }
-                        break;
-                    }
+                    break;
                 }
             }
         }
+
+        // Simpan global untuk submit ke Sheet
+        window._lastTDList = tdList;
+        window._lastExpectedTDRooms = totalExpectedTDRooms;
+        window._lastExpectedTDCredit = totalExpectedTDCredit;
 
         // Render distribution
         const distContainer = document.getElementById("tdDistributionList");
@@ -1415,13 +1397,19 @@
         const getValue = (id) => document.getElementById(id)?.value || "0";
         const getText = (id) => document.getElementById(id)?.innerText || "0";
 
+        // REVISI: Expected TD Rooms taruh di Kolom G (Turndown)
+        // Kolom G Turndown sudah tidak ada input, jadi kita pakai untuk Expected TD Rooms
+        let expectedTDRoomsVal = document.getElementById("tdQty")?.value || document.getElementById("turndown")?.value || "0";
+
         const payload = {
             tonightOcc: getValue("tonightOcc"),
             arrival: getValue("arrival"),
             departure: getValue("departure"),
             backlog: getValue("backlog"),
             pickup: getValue("pickup"),
-            turndown: getValue("turndown"),
+            // Kolom G = Expected TD Rooms (Final) - menggantikan Turndown lama
+            turndown: expectedTDRoomsVal,
+            expectedTDRooms: expectedTDRoomsVal,
             stayQty: getValue("stayQty"),
             totalCleaning: getText("totalCleaning"),
             creditRA: getValue("creditRA"),
