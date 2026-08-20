@@ -210,7 +210,10 @@
             <!-- BINDER TABS PANEL KIRI -->
             <div class="binder-tab-wrapper">
                 <button class="binder-tab active" id="tab_btn_forecast" onclick="switchBinderTab('forecast')">
-                    <i class="fa-solid fa-chart-line"></i> Planning
+                    <i class="fa-solid fa-sun"></i> AM Shift
+                </button>
+                <button class="binder-tab" id="tab_btn_pmshift" onclick="switchBinderTab('pmshift')">
+                    <i class="fa-solid fa-moon"></i> PM Shift
                 </button>
                 <button class="binder-tab" id="tab_btn_roles" onclick="switchBinderTab('roles')">
                     <i class="fa-solid fa-sliders"></i> Role Credits
@@ -221,9 +224,24 @@
             </div>
 
             <div class="pos-card" style="border-radius: 0 12px 12px 12px;">
-                <!-- TAB 1: HOTEL FORECAST -->
+                <!-- TAB 1: AM SHIFT -->
                 <div id="tab_content_forecast" class="binder-content active">
-                    <h3><i class="fa-solid fa-chart-line"></i> Workload Input</h3>
+                    <h3><i class="fa-solid fa-sun"></i> AM Shift Workload Input</h3>
+                    <div style="background:#e0f2fe; border:1px solid #bae6fd; border-radius:8px; padding:8px; margin-bottom:10px;">
+                        <div style="font-size:10px; font-weight:800; color:#0284c7; text-transform:uppercase; margin-bottom:6px;"><i class="fa-solid fa-users"></i> Available Manning AM</div>
+                        <div class="input-group">
+                            <label for="availRA">Available RA</label>
+                            <input type="number" id="availRA" placeholder="0" min="0" value="8">
+                        </div>
+                        <div class="input-group">
+                            <label for="availDW">Available DW</label>
+                            <input type="number" id="availDW" placeholder="0" min="0" value="2">
+                        </div>
+                        <div class="input-group">
+                            <label for="availTR">Available TR (Trainee)</label>
+                            <input type="number" id="availTR" placeholder="0" min="0" value="1">
+                        </div>
+                    </div>
                     <div class="input-group">
                         <label for="roomOccPerc">Room Occ (%)</label>
                         <input type="text" id="roomOccPerc" placeholder="0%" readonly>
@@ -248,9 +266,24 @@
                         <label for="pickup">Pick up/Moved Room</label>
                         <input type="number" id="pickup" placeholder="0" min="0">
                     </div>
+                </div>
+
+                <!-- TAB 2: PM SHIFT -->
+                <div id="tab_content_pmshift" class="binder-content">
+                    <h3><i class="fa-solid fa-moon"></i> PM Shift Workload Input</h3>
+                    <div style="background:#ede9fe; border:1px solid #ddd6fe; border-radius:8px; padding:8px; margin-bottom:10px;">
+                        <div style="font-size:10px; font-weight:800; color:#7c3aed; text-transform:uppercase; margin-bottom:6px;"><i class="fa-solid fa-user-group"></i> Available Manning PM</div>
+                        <div class="input-group">
+                            <label for="availTDRA">Available TD RA</label>
+                            <input type="number" id="availTDRA" placeholder="0" min="0" value="3">
+                        </div>
+                    </div>
                     <div class="input-group">
                         <label for="turndown">Turn Down</label>
                         <input type="number" id="turndown" placeholder="0" min="0">
+                    </div>
+                    <div style="font-size:10px; color:#64748b; background:#f8fafc; border:1px dashed #cbd5e1; padding:6px 8px; border-radius:6px; margin-top:8px;">
+                        <i class="fa-solid fa-circle-info"></i> Logic: <b>TD RA1 = Credit TD1</b>, sisa (TurnDown - TD RA1) dibagi rata ke <b>TD RA2, RA3, ...</b> sebanyak (Available TD RA - 1). Max per orang = Credit TD2.
                     </div>
                 </div>
 
@@ -288,7 +321,17 @@
                         <input id="creditTrainee" type="number" class="credit-box" value="5">
                     </div>
 
-                    <div class="summary" style="margin-bottom:0;">
+                    <div class="summary" style="border-top:1px dashed #cbd5e1; padding-top:8px; margin-top:4px;">
+                        <label for="creditTD1">Credit TD1</label>
+                        <input id="creditTD1" type="number" class="credit-box" value="35">
+                    </div>
+
+                    <div class="summary">
+                        <label for="creditTD2">Credit TD2</label>
+                        <input id="creditTD2" type="number" class="credit-box" value="20">
+                    </div>
+
+                    <div class="summary">
                         <label for="spvGoal">Supervisor Goal</label>
                         <input id="spvGoal" type="number" class="credit-box" value="17">
                     </div>
@@ -310,7 +353,7 @@
         <div class="right-panel">
             <!-- WORKLOAD SUMMARY CARD -->
             <div class="pos-card receipt-card">
-                <h3><i class="fa-solid fa-receipt"></i> Workload Summary</h3>
+                <h3><i class="fa-solid fa-sun"></i> AM SHIFT SUMMARY</h3>
                 
                 <div class="table-header">
                     <span>Task</span>
@@ -352,6 +395,49 @@
                 <div class="summary">
                     <label>Total Cleaning Credit</label>
                     <span id="totalCleaning" class="total-badge">0.0</span>
+                </div>
+            </div>
+
+            <!-- PM SHIFT SUMMARY CARD -->
+            <div class="pos-card receipt-card" style="border-left:4px solid #7c3aed;">
+                <h3><i class="fa-solid fa-moon"></i> PM SHIFT SUMMARY</h3>
+                
+                <div class="table-header">
+                    <span>Task</span>
+                    <span>Qty</span>
+                    <span>Weight</span>
+                    <span>Total</span>
+                </div>
+
+                <div class="row">
+                    <span class="task-name">Turn Down</span>
+                    <input id="tdQty" type="number" readonly placeholder="0">
+                    <input id="tdCreditWeight" type="number" step="0.01" value="0.3">
+                    <span id="tdTotal" class="subtotal">0.0</span>
+                </div>
+
+                <div class="receipt-divider"></div>
+
+                <div class="summary">
+                    <label>Total Turn Down Credit</label>
+                    <span id="totalTurndownCredit" class="total-badge">0.0</span>
+                </div>
+                <div class="summary">
+                    <label>Available TD RA</label>
+                    <span id="displayAvailTDRA" class="total-badge" style="color:#7c3aed;">0</span>
+                </div>
+                <div style="margin-top:8px;">
+                    <div style="font-size:10px; font-weight:800; color:#7c3aed; text-transform:uppercase; margin-bottom:4px;">Turn Down Distribution</div>
+                    <div id="tdDistributionList" style="display:flex; flex-direction:column; gap:4px;"></div>
+                </div>
+                <div class="receipt-divider"></div>
+                <div class="summary">
+                    <label>TD RA1 (Credit TD1)</label>
+                    <span id="requiredTD1" class="total-badge" style="color:#7c3aed;">0</span>
+                </div>
+                <div class="summary">
+                    <label>TD RA2+ (Credit TD2 / person)</label>
+                    <span id="requiredTD2" class="total-badge" style="color:#7c3aed;">0</span>
                 </div>
             </div>
 
@@ -472,9 +558,9 @@
         </div>
     </div>
 </div>
-
+<!-- LINK GOOGLESHEET -->
 <script>
-    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx0EOOMwRPMwuAAE3LHH8EbJkR9U-tin4_EMX10q8yRnTEK1o13dO329y6PEYNs8L7F/exec";
+    const GOOGLE_SCRIPT_URL = "";
 
     let raCustomNames = {};
     let maxStayoverRooms = 6; 
@@ -583,14 +669,10 @@
     }
 
     function switchBinderTab(tabName) {
-        document.getElementById('tab_btn_forecast').classList.remove('active');
-        document.getElementById('tab_btn_roles').classList.remove('active');
-        document.getElementById('tab_btn_tutorial').classList.remove('active');
-
-        document.getElementById('tab_content_forecast').classList.remove('active');
-        document.getElementById('tab_content_roles').classList.remove('active');
-        document.getElementById('tab_content_tutorial').classList.remove('active');
-
+        ['forecast','pmshift','roles','tutorial'].forEach(t=>{
+            document.getElementById('tab_btn_'+t)?.classList.remove('active');
+            document.getElementById('tab_content_'+t)?.classList.remove('active');
+        });
         document.getElementById(`tab_btn_${tabName}`).classList.add('active');
         document.getElementById(`tab_content_${tabName}`).classList.add('active');
     }
@@ -604,6 +686,8 @@
             document.getElementById("creditRA").value = MANNING_RULES.targetCreditPerRA;
             document.getElementById("creditDW").value = MANNING_RULES.creditDW || 11;
             document.getElementById("creditTrainee").value = MANNING_RULES.creditTrainee || 5;
+            document.getElementById("creditTD1").value = MANNING_RULES.creditTD1 || 35;
+            document.getElementById("creditTD2").value = MANNING_RULES.creditTD2 || 20;
             document.getElementById("spvGoal").value = MANNING_RULES.targetArrivalPerSupervisor || 17;
         }
 
@@ -663,7 +747,11 @@
 
             raCustomNames = {};
             localStorage.removeItem("raCustomNames");
-            let raNeeded = Number(document.getElementById("requiredRA")?.innerText) || 10;
+            let availRA2 = Number(document.getElementById("availRA")?.value) || 0;
+            let availDW2 = Number(document.getElementById("availDW")?.value) || 0;
+            let availTR2 = Number(document.getElementById("availTR")?.value) || 0;
+            let totalAvail2 = availRA2 + availDW2 + availTR2;
+            let raNeeded = totalAvail2;
             for (let i = 1; i <= raNeeded; i++) {
                 let el = document.getElementById(`sw_ra_name_${i}`);
                 if (el) el.value = "";
@@ -672,7 +760,11 @@
     }
 
     window.saveSettingsModal = function() {
-        let raNeeded = Number(document.getElementById("requiredRA")?.innerText) || 10;
+        let availRA = Number(document.getElementById("availRA")?.value) || 0;
+        let availDW = Number(document.getElementById("availDW")?.value) || 0;
+        let availTR = Number(document.getElementById("availTR")?.value) || 0;
+        let totalAvail = availRA + availDW + availTR;
+        let raNeeded = totalAvail;
         let tempNames = {};
         for (let i = 1; i <= raNeeded; i++) {
             let val = document.getElementById(`sw_ra_name_${i}`)?.value.trim();
@@ -705,8 +797,12 @@
     }
 
     function openSettingsModal() {
-        let raNeeded = Number(document.getElementById("requiredRA")?.innerText) || 10;
-        if (raNeeded <= 0) raNeeded = 10;
+        let availRA = Number(document.getElementById("availRA")?.value) || 0;
+        let availDW = Number(document.getElementById("availDW")?.value) || 0;
+        let availTR = Number(document.getElementById("availTR")?.value) || 0;
+        let totalAvail = availRA + availDW + availTR;
+        let raNeeded = totalAvail;
+        if (raNeeded <= 0) raNeeded = 0;
 
         let raInputsHTML = "";
         for (let i = 1; i <= raNeeded; i++) {
@@ -737,7 +833,7 @@
                 <div class="swal-tab-body">
                     <div id="sw_tab_content_general" class="swal-tab-content active">
                         <h4 style="color:#0284c7; border-bottom:1px solid #e2e8f0; padding-bottom:4px; font-size:12px;"><i class="fa-solid fa-users"></i> STAFF NAME SETTINGS (RA)</h4>
-                        <p style="font-size:11px; color:#64748b; margin-bottom:6px;">Enter staff names to replace labels RA1, RA2, etc.:</p>
+                        <p style="font-size:11px; color:#64748b; margin-bottom:6px;">Total placeholder = Available RA + DW + TR (Trainee). Contoh: RA=8, DW=2, TR=1 = 11 box. Gunakan +DW / +Trainee untuk set role:</p>
                         <div class="swal-ra-grid" id="swalRaGrid">
                             ${raInputsHTML}
                         </div>
@@ -830,7 +926,7 @@
     }
 
     const inputs = document.querySelectorAll(
-        "#tonightOcc, #arrival, #departure, #backlog, #pickup, #turndown, #stayCredit, #depCredit, #backCredit, #pickCredit, #creditRA, #creditRaDw, #creditRaTrainee, #creditDW, #creditTrainee, #spvGoal"
+        "#tonightOcc, #arrival, #departure, #backlog, #pickup, #turndown, #availRA, #availDW, #availTR, #availTDRA, #stayCredit, #depCredit, #backCredit, #pickCredit, #tdCreditWeight, #creditRA, #creditRaDw, #creditRaTrainee, #creditDW, #creditTrainee, #creditTD1, #creditTD2, #spvGoal"
     );
 
     inputs.forEach(input => {
@@ -918,6 +1014,86 @@
         }
         document.getElementById("requiredSpv").innerText = spvNeeded;
 
+        // PM SHIFT CALCULATION - NEW RULE
+        let creditTD1 = Number(document.getElementById("creditTD1")?.value) || 35;
+        let creditTD2 = Number(document.getElementById("creditTD2")?.value) || 20;
+        let tdWeight = Number(document.getElementById("tdCreditWeight")?.value) || 0.3;
+        let availTDRA = Number(document.getElementById("availTDRA")?.value) || 0;
+        if (document.getElementById("tdQty")) document.getElementById("tdQty").value = turndown;
+        let tdTotal = turndown * tdWeight;
+        if (document.getElementById("tdTotal")) document.getElementById("tdTotal").innerText = tdTotal.toFixed(1);
+        if (document.getElementById("totalTurndownCredit")) document.getElementById("totalTurndownCredit").innerText = tdTotal.toFixed(1);
+        if (document.getElementById("displayAvailTDRA")) document.getElementById("displayAvailTDRA").innerText = availTDRA;
+
+        // NEW LOGIC v4: TD RA1 = Credit TD1, TD RA2 = Credit TD2, sisa dibagi ke RA3,4,...
+        let tdList = [];
+        let perRemainingRooms = 0;
+        if (turndown > 0 && availTDRA > 0) {
+            let tdRA1Rooms = Math.min(turndown, creditTD1);
+            let afterRA1 = Math.max(0, turndown - tdRA1Rooms);
+            let tdRA2Rooms = 0;
+            if (availTDRA >= 2) {
+                tdRA2Rooms = Math.min(afterRA1, creditTD2);
+            }
+            let afterRA2 = Math.max(0, turndown - tdRA1Rooms - tdRA2Rooms);
+            let remainingStaff = Math.max(0, availTDRA - 2);
+            if (remainingStaff > 0) {
+                perRemainingRooms = afterRA2 > 0 ? Math.ceil(afterRA2 / remainingStaff) : 0;
+            }
+
+            tdList.push({ name: 'TD RA1', rooms: tdRA1Rooms, credit: creditTD1, isLead: true, role: 'TD RA1' });
+            if (availTDRA >= 2) {
+                tdList.push({ name: 'TD RA2', rooms: tdRA2Rooms, credit: creditTD2, isLead: false, role: 'TD RA2' });
+            }
+            let left = afterRA2;
+            for (let i=3; i<=availTDRA; i++) {
+                let alloc = left;
+                if (remainingStaff > 0) {
+                    // distribute equally, last gets remainder
+                    if (i < availTDRA) {
+                        alloc = Math.min(left, perRemainingRooms);
+                    } else {
+                        alloc = left; // last
+                    }
+                }
+                tdList.push({ name: `TD RA${i}`, rooms: alloc, credit: perRemainingRooms, isLead: false, role: `TD RA${i}` });
+                left -= alloc;
+                if (left <= 0 && i < availTDRA) {
+                    for (let j=i+1; j<=availTDRA; j++) {
+                        tdList.push({ name: `TD RA${j}`, rooms: 0, credit: perRemainingRooms, isLead: false, role: `TD RA${j}` });
+                    }
+                    break;
+                }
+            }
+        }
+
+        // Render distribution
+        const distContainer = document.getElementById("tdDistributionList");
+        if (distContainer) {
+            distContainer.innerHTML = "";
+            if (tdList.length === 0) {
+                distContainer.innerHTML = `<div style="font-size:11px; color:#94a3b8; text-align:center; padding:4px;">No Turn Down allocation</div>`;
+            } else {
+                tdList.forEach(item => {
+                    let div = document.createElement("div");
+                    div.style.cssText = "display:flex; justify-content:space-between; align-items:center; background:#f5f3ff; border:1px solid #ddd6fe; border-radius:6px; padding:5px 8px; font-size:11px;";
+                    let creditLabel = item.name === 'TD RA1' ? `${item.credit}` : (item.name === 'TD RA2' ? `${item.credit}` : `${item.credit}`);
+                    div.innerHTML = `<span style="font-weight:700; color:${item.isLead ? '#7c3aed' : '#475569'}"><i class="fa-solid fa-user-check"></i> ${item.name}</span><span style="font-weight:600;">${item.rooms} rooms / ${creditLabel} credit</span>`;
+                    distContainer.appendChild(div);
+                });
+            }
+        }
+
+        if (document.getElementById("requiredTD1")) document.getElementById("requiredTD1").innerText = tdList[0] ? `${tdList[0].rooms} rooms` : "0";
+        if (document.getElementById("requiredTD2")) {
+            if (tdList.length > 1) {
+                let avg = tdList.slice(1).reduce((s,x)=>s+x.rooms,0) / Math.max(1, tdList.length-1);
+                document.getElementById("requiredTD2").innerText = `${perRemainingRooms} rooms / person`;
+            } else {
+                document.getElementById("requiredTD2").innerText = "0";
+            }
+        }
+
         generateRADistribution(raNeeded, total, { creditRA, creditRaDw, creditRaTrainee, creditDW, creditTrainee }, {
             stayover, departure, backlog, pickup, turndown
         }, {
@@ -954,18 +1130,52 @@
             let allowStayover = true;
             let customMaxStay = maxStayoverRooms;
 
-            if (nameUpper.includes("+ DW") || nameUpper.includes("+DW")) {
+            // --- FIX DW DETECTION: whole word only, Dwi != DW ---
+            const hasDWToken = /\bDW\b/.test(nameUpper);
+            const hasTraineeToken = /\bTRAINEE\b/.test(nameUpper) || /\bTR\b/.test(nameUpper);
+            const hasPlusDW = /\+\s*DW\b/.test(nameUpper);
+            const hasPlusTrainee = /\+\s*TRAINEE\b/.test(nameUpper) || /\+\s*TR\b/.test(nameUpper);
+            const startsWithDW = /^DW\b/.test(nameUpper);
+            const startsWithTrainee = /^(TRAINEE|TR)\b/.test(nameUpper);
+
+            if (hasPlusDW) {
                 targetCap = capacityMap.creditRaDw;
                 if (maxStayOverRaDw > 0) customMaxStay = maxStayOverRaDw;
-            } else if (nameUpper.includes("+ TRAINEE") || nameUpper.includes("+TRAINEE")) {
+            } else if (hasPlusTrainee) {
                 targetCap = capacityMap.creditRaTrainee;
                 if (maxStayOverRaTrainee > 0) customMaxStay = maxStayOverRaTrainee;
-            } else if (nameUpper.startsWith("DW")) {
+            } else if (startsWithDW && hasDWToken) {
                 targetCap = Math.min(capacityMap.creditDW, 12);
                 allowStayover = false;
-            } else if (nameUpper.startsWith("TRAINEE")) {
+            } else if (startsWithTrainee && hasTraineeToken) {
                 targetCap = Math.min(capacityMap.creditTrainee, 12);
                 allowStayover = false;
+            } else if (hasDWToken && !hasTraineeToken) {
+                // Case: Name contains DW as separate word somewhere (e.g., "AGUS DW")
+                // Count as DW role only if DW is standalone and not part of other word
+                // But if it also has RA number, treat as RA+DW? Check if it looks like DW role
+                if (/\bDW\b/.test(nameUpper) && nameUpper.split(' ').length <=2) {
+                    // optional: keep as DW if explicit
+                }
+            }
+            // Additional safety: if name is exactly DW token, ensure credit DW = 11 (from rules)
+            if (hasDWToken && !hasPlusDW && !hasPlusTrainee) {
+                // If nameUpper is exactly "DW" or "DW <name>" or "<name> DW", treat as DW role
+                if (startsWithDW || /\bDW\b/.test(nameUpper)) {
+                    // Only override if not already assigned as RA+DW (which has higher capacity)
+                    if (targetCap === capacityMap.creditRA) {
+                        // Check if it's pure DW role (no RA prefix)
+                        if (/^DW\b/.test(nameUpper) || (hasDWToken && !/RA\d*/.test(nameUpper))) {
+                            targetCap = Math.min(capacityMap.creditDW, 12);
+                            allowStayover = false;
+                        }
+                    }
+                }
+            }
+            // Credit 11 for DW role enforcement
+            if (hasDWToken && targetCap === capacityMap.creditDW) {
+                // Ensure DW gets 11 credit as requested
+                targetCap = 11;
             }
 
             raAllocations.push({ 
