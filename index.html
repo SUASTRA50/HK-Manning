@@ -522,8 +522,8 @@
                         <tr>
                             <th style="width: 8%;">No</th>
                             <th style="width: 25%;">Staff Name</th>
-                            <th style="width: 17%;">Total Credit</th>
-                            <th style="width: 50%;">Task Allocation</th>
+                            <th style="width: 25%;">Task Allocation</th>
+			                <th style="width: 25%;">Floor</th>
                         </tr>
                     </thead>
                     <tbody id="raPrintTableBody"></tbody>
@@ -559,6 +559,14 @@
                             <b>Notes:</b>
                             <span id="printPrefVal">-</span>
                         </div>
+                        <div class="print-daily-item">
+                            <b>Houseman Incharge:</b>
+                            <span id="printHousemanVal">-</span>
+                        </div>
+                        <div class="print-daily-item">
+                            <b>Supervisor Incharge:</b>
+                            <span id="printSupervisorVal">-</span>
+                        </div>
                     </div>
                 </div>
 
@@ -585,11 +593,13 @@
     let defaultCapacity = 272;
 
     let dailyInfo = {
-        project: "",
-        reminder: "",
-        vip: "",
-        preference: ""
-    };
+    project: "",
+    reminder: "",
+    vip: "",
+    preference: "",
+    houseman: "",
+    supervisor: ""
+};
 
     function editCapacity() {
         Swal.fire({
@@ -672,6 +682,9 @@
         document.getElementById("printReminderVal").innerText = dailyInfo.reminder?.trim() ? dailyInfo.reminder : "-";
         document.getElementById("printVipVal").innerText = dailyInfo.vip?.trim() ? dailyInfo.vip : "-";
         document.getElementById("printPrefVal").innerText = dailyInfo.preference?.trim() ? dailyInfo.preference : "-";
+        document.getElementById("printHousemanVal").innerText = dailyInfo.houseman?.trim() ? dailyInfo.houseman : "-";
+        document.getElementById("printSupervisorVal").innerText = dailyInfo.supervisor?.trim() ? dailyInfo.supervisor : "-";
+
 
         const originalTitle = document.title;
         const timestamp = getFormattedTimestamp();
@@ -753,8 +766,9 @@
             if (document.getElementById('sw_reminder')) document.getElementById('sw_reminder').value = "";
             if (document.getElementById('sw_vip')) document.getElementById('sw_vip').value = "";
             if (document.getElementById('sw_preference')) document.getElementById('sw_preference').value = "";
-
-            dailyInfo = { project: "", reminder: "", vip: "", preference: "" };
+            if (document.getElementById('sw_houseman')) document.getElementById('sw_houseman').value = "";
+            if (document.getElementById('sw_supervisor')) document.getElementById('sw_supervisor').value = "";
+            dailyInfo = { project: "", reminder: "", vip: "", preference: "", houseman: "" , supervisor: "" };
             localStorage.removeItem("dailyInfo");
         } else {
             let maxStayVal = 6;
@@ -804,11 +818,13 @@
         localStorage.setItem("maxStayOverRaTrainee", maxStayOverRaTrainee);
 
         dailyInfo = {
-            project: document.getElementById('sw_project')?.value || "",
-            reminder: document.getElementById('sw_reminder')?.value || "",
-            vip: document.getElementById('sw_vip')?.value || "",
-            preference: document.getElementById('sw_preference')?.value || ""
-        };
+    project: document.getElementById('sw_project')?.value || "",
+    reminder: document.getElementById('sw_reminder')?.value || "",
+    vip: document.getElementById('sw_vip')?.value || "",
+    preference: document.getElementById('sw_preference')?.value || "",
+    houseman: document.getElementById('sw_houseman')?.value || "",
+    supervisor: document.getElementById('sw_supervisor')?.value || ""
+    };
         localStorage.setItem("dailyInfo", JSON.stringify(dailyInfo));
 
         calculate();
@@ -893,6 +909,14 @@
                             <div>
                                 <label><b>Notes:</b></label>
                                 <textarea id="sw_preference" class="swal-textarea" placeholder="Input Notes...">${dailyInfo.preference || ''}</textarea>
+                            </div>
+                            <div>
+                                <label><b>Houseman Incharge:</b></label>
+                                <textarea id="sw_houseman" class="swal-textarea" placeholder="Input Houseman Incharge...">${dailyInfo.housemen || ''}</textarea>
+                            </div>
+                            <div>
+                                <label><b>Supervisor Incharge:</b></label>
+                                <textarea id="sw_supervisor" class="swal-textarea" placeholder="Input Supervisor Incharge...">${dailyInfo.supervisor || ''}</textarea>
                             </div>
                         </div>
                     </div>
