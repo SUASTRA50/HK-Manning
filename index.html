@@ -1165,7 +1165,7 @@
 
         if (raNeeded <= 0 || totalCredit <= 0) {
             listContainer.innerHTML = `<div style="text-align:center; font-size:11px; color:#94a3b8; padding:8px;">No task allocation yet.</div>`;
-            printTableBody.innerHTML = `<tr><td colspan="4" class="center">No task allocation yet.</td></tr>`;
+            printTableBody.innerHTML = `<tr><td colspan="5" class="center">No task allocation yet.</td></tr>`;
             if (droppedBanner) {
                 droppedBanner.style.display = "none";
                 droppedBanner.classList.add("hidden-print");
@@ -1335,9 +1335,10 @@
             let tr = document.createElement("tr");
             tr.innerHTML = `
                 <td class="center">${displayedIndex}</td>
-                <td class="bold">${ra.name}</td>
-                <td class="center">${ra.credit.toFixed(1)} / ${ra.targetCap}</td>
-                <td>${taskText}${specialPrintText}</td>
+    <td class="bold">${ra.name}</td>
+    <td class="center">${ra.credit.toFixed(1)} / ${ra.targetCap}</td>
+    <td>${taskText}${specialPrintText}</td>
+    <td></td> 
             `;
             printTableBody.appendChild(tr);
         });
