@@ -568,6 +568,10 @@
                             <b>Supervisor Incharge:</b>
                             <span id="printSupervisorVal">-</span>
                         </div>
+						<div class="print-daily-item">
+                            <b>POMED Incharge:</b>
+                            <span id="printPOMEDVal">-</span>
+                        </div>
                     </div>
                 </div>
 
@@ -599,7 +603,8 @@
     vip: "",
     preference: "",
     houseman: "",
-    supervisor: ""
+    supervisor: "",
+	pomed: ""
 };
 
     function editCapacity() {
@@ -685,8 +690,8 @@
         document.getElementById("printPrefVal").innerText = dailyInfo.preference?.trim() ? dailyInfo.preference : "-";
         document.getElementById("printHousemanVal").innerText = dailyInfo.houseman?.trim() ? dailyInfo.houseman : "-";
         document.getElementById("printSupervisorVal").innerText = dailyInfo.supervisor?.trim() ? dailyInfo.supervisor : "-";
-
-
+        document.getElementById("printPOMEDVal").innerText = dailyInfo.pomed?.trim() ? dailyInfo.pomed : "-";
+		
         const originalTitle = document.title;
         const timestamp = getFormattedTimestamp();
         document.title = `HK WORKLOAD PLANNER - ${timestamp}`;
@@ -769,7 +774,8 @@
             if (document.getElementById('sw_preference')) document.getElementById('sw_preference').value = "";
             if (document.getElementById('sw_houseman')) document.getElementById('sw_houseman').value = "";
             if (document.getElementById('sw_supervisor')) document.getElementById('sw_supervisor').value = "";
-            dailyInfo = { project: "", reminder: "", vip: "", preference: "", houseman: "" , supervisor: "" };
+			if (document.getElementById('sw_pomed')) document.getElementById('sw_pomed').value = "";
+            dailyInfo = { project: "", reminder: "", vip: "", preference: "", houseman: "" , supervisor: "" , pomed: "" };
             localStorage.removeItem("dailyInfo");
         } else {
             let maxStayVal = 6;
@@ -824,7 +830,8 @@
     vip: document.getElementById('sw_vip')?.value || "",
     preference: document.getElementById('sw_preference')?.value || "",
     houseman: document.getElementById('sw_houseman')?.value || "",
-    supervisor: document.getElementById('sw_supervisor')?.value || ""
+    supervisor: document.getElementById('sw_supervisor')?.value || "",
+	pomed: document.getElementById('sw_pomed')?.value || ""		
     };
         localStorage.setItem("dailyInfo", JSON.stringify(dailyInfo));
 
@@ -918,6 +925,10 @@
                             <div>
                                 <label><b>Supervisor Incharge:</b></label>
                                 <textarea id="sw_supervisor" class="swal-textarea" placeholder="Input Supervisor Incharge...">${dailyInfo.supervisor || ''}</textarea>
+                            </div>
+							<div>
+                                <label><b>POMED Incharge:</b></label>
+                                <textarea id="sw_pomed" class="swal-textarea" placeholder="Input POMED Incharge...">${dailyInfo.pomed || ''}</textarea>
                             </div>
                         </div>
                     </div>
