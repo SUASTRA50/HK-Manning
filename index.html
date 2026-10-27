@@ -1208,8 +1208,8 @@
     if (hasPlusDW) {
         targetCap = capacityMap.creditRaDw;
         if (maxStayOverRaDw > 0) customMaxStay = maxStayOverRaDw;
-    } else if (hasPlusTrainee || hasPlusPM) {
-        targetCap = 5; // TR dan PM disamakan mendapat credit 5
+    } else if (hasPlusTrainee) {
+          targetCap = targetCap = capacityMap.creditRaTrainee;
         if (maxStayOverRaTrainee > 0) customMaxStay = maxStayOverRaTrainee;
     } else if (startsWithDW && hasDWToken) {
         targetCap = Math.min(capacityMap.creditDW, 12);
