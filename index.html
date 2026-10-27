@@ -1208,8 +1208,8 @@
     if (hasPlusDW) {
         targetCap = capacityMap.creditRaDw;
         if (maxStayOverRaDw > 0) customMaxStay = maxStayOverRaDw;
-    } else if (hasPlusTrainee) {
-          targetCap = targetCap = capacityMap.creditRaTrainee;
+     } else if (hasPlusTrainee) {
+        targetCap = targetCap = capacityMap.creditRaTrainee;
         if (maxStayOverRaTrainee > 0) customMaxStay = maxStayOverRaTrainee;
     } else if (startsWithDW && hasDWToken) {
         targetCap = Math.min(capacityMap.creditDW, 12);
