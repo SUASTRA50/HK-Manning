@@ -1208,7 +1208,7 @@
     if (hasPlusDW) {
         targetCap = capacityMap.creditRaDw;
         if (maxStayOverRaDw > 0) customMaxStay = maxStayOverRaDw;
-     } else if (hasPlusTrainee) {
+    } else if (hasPlusTrainee) {
         targetCap = targetCap = capacityMap.creditRaTrainee;
         if (maxStayOverRaTrainee > 0) customMaxStay = maxStayOverRaTrainee;
     } else if (startsWithDW && hasDWToken) {
@@ -1222,14 +1222,7 @@
         if (/\bDW\b/.test(nameUpper) && nameUpper.split(' ').length <= 2) {
             // optional: keep as DW if explicit
         }
-    }
-    
-    // Additional safety untuk TR dan PM agar targetCap tetap 5
-    if ((hasTraineeToken || hasPMToken) && !hasPlusDW) {
-        targetCap = 5;
-        allowStayover = false;
-    }
-            // Additional safety: if name is exactly DW token, ensure credit DW = 11 (from rules)
+    }            // Additional safety: if name is exactly DW token, ensure credit DW = 11 (from rules)
             if (hasDWToken && !hasPlusDW && !hasPlusTrainee) {
                 // If nameUpper is exactly "DW" or "DW <name>" or "<name> DW", treat as DW role
                 if (startsWithDW || /\bDW\b/.test(nameUpper)) {
