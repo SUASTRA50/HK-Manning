@@ -1195,33 +1195,40 @@
             let customMaxStay = maxStayoverRooms;
 
             // --- FIX DW DETECTION: whole word only, Dwi != DW ---
-            const hasDWToken = /\bDW\b/.test(nameUpper);
-            const hasTraineeToken = /\bTRAINEE\b/.test(nameUpper) || /\bTR\b/.test(nameUpper);
-            const hasPlusDW = /\+\s*DW\b/.test(nameUpper);
-            const hasPlusTrainee = /\+\s*TRAINEE\b/.test(nameUpper) || /\+\s*TR\b/.test(nameUpper);
-            const startsWithDW = /^DW\b/.test(nameUpper);
-            const startsWithTrainee = /^(TRAINEE|TR)\b/.test(nameUpper);
+             const hasDWToken = /\bDW\b/.test(nameUpper);
+    const hasTraineeToken = /\bTRAINEE\b/.test(nameUpper) || /\bTR\b/.test(nameUpper);
+    const hasPMToken = /\bPM\b/.test(nameUpper); // Tambahan deteksi PM
+    const hasPlusDW = /\+\s*DW\b/.test(nameUpper);
+    const hasPlusTrainee = /\+\s*(TRAINEE|TR)\b/.test(nameUpper);
+    const hasPlusPM = /\+\s*PM\b/.test(nameUpper); // Tambahan jika ada format + PM
+    const startsWithDW = /^DW\b/.test(nameUpper);
+    const startsWithTrainee = /^(TRAINEE|TR)\b/.test(nameUpper);
+    const startsWithPM = /^PM\b/.test(nameUpper); // Tambahan jika diawali PM
 
-            if (hasPlusDW) {
-                targetCap = capacityMap.creditRaDw;
-                if (maxStayOverRaDw > 0) customMaxStay = maxStayOverRaDw;
-            } else if (hasPlusTrainee) {
-                targetCap = capacityMap.creditRaTrainee;
-                if (maxStayOverRaTrainee > 0) customMaxStay = maxStayOverRaTrainee;
-            } else if (startsWithDW && hasDWToken) {
-                targetCap = Math.min(capacityMap.creditDW, 12);
-                allowStayover = false;
-            } else if (startsWithTrainee && hasTraineeToken) {
-                targetCap = Math.min(capacityMap.creditTrainee, 12);
-                allowStayover = false;
-            } else if (hasDWToken && !hasTraineeToken) {
-                // Case: Name contains DW as separate word somewhere (e.g., "AGUS DW")
-                // Count as DW role only if DW is standalone and not part of other word
-                // But if it also has RA number, treat as RA+DW? Check if it looks like DW role
-                if (/\bDW\b/.test(nameUpper) && nameUpper.split(' ').length <=2) {
-                    // optional: keep as DW if explicit
-                }
-            }
+    if (hasPlusDW) {
+        targetCap = capacityMap.creditRaDw;
+        if (maxStayOverRaDw > 0) customMaxStay = maxStayOverRaDw;
+    } else if (hasPlusTrainee || hasPlusPM) {
+        targetCap = 5; // TR dan PM disamakan mendapat credit 5
+        if (maxStayOverRaTrainee > 0) customMaxStay = maxStayOverRaTrainee;
+    } else if (startsWithDW && hasDWToken) {
+        targetCap = Math.min(capacityMap.creditDW, 12);
+        allowStayover = false;
+    } else if ((startsWithTrainee && hasTraineeToken) || (startsWithPM && hasPMToken)) {
+        targetCap = 5; // TR dan PM disamakan mendapat credit 5
+        allowStayover = false;
+    } else if (hasDWToken && !hasTraineeToken && !hasPMToken) {
+        // Case: Name contains DW as separate word
+        if (/\bDW\b/.test(nameUpper) && nameUpper.split(' ').length <= 2) {
+            // optional: keep as DW if explicit
+        }
+    }
+    
+    // Additional safety untuk TR dan PM agar targetCap tetap 5
+    if ((hasTraineeToken || hasPMToken) && !hasPlusDW) {
+        targetCap = 5;
+        allowStayover = false;
+    }
             // Additional safety: if name is exactly DW token, ensure credit DW = 11 (from rules)
             if (hasDWToken && !hasPlusDW && !hasPlusTrainee) {
                 // If nameUpper is exactly "DW" or "DW <name>" or "<name> DW", treat as DW role
