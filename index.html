@@ -1255,6 +1255,18 @@
                 // Ensure DW gets 11 credit as requested
                 targetCap = 11;
             }
+			// === MODIFIKASI P1 / S2: Kurangi credit RA ===
+// Jika nama mengandung P1 (misal Gunawan P1) -> credit -2
+// Jika nama mengandung S2 (misal Putri S2) -> credit -1
+// Deteksi whole word, case-insensitive
+const hasP1Token = /\bP1\b/i.test(name);
+const hasS2Token = /\bS2\b/i.test(name);
+if (hasP1Token) {
+    targetCap = Math.max(0, targetCap - 2);
+}
+if (hasS2Token) {
+    targetCap = Math.max(0, targetCap - 1);
+}
 
             raAllocations.push({ 
                 id, 
