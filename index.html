@@ -673,10 +673,12 @@
     }
 
     function printDistribution() {
-        const now = new Date();
-        const formattedDate = now.toLocaleDateString('en-US', { 
-            weekday: 'long', day: '2-digit', month: 'long', year: 'numeric' 
-        });
+    const now = new Date();
+    now.setDate(now.getDate() + 1); // <-- TAMBAHKAN INI UNTUK H+1
+    const formattedDate = now.toLocaleDateString('en-US', { 
+        weekday: 'long', day: '2-digit', month: 'long', year: 'numeric' 
+    });
+    document.getElementById("printDate").innerText = formattedDate;
         document.getElementById("printDate").innerText = formattedDate;
 
         const plannerInput = document.getElementById("planBy")?.value.trim();
