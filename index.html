@@ -549,8 +549,12 @@
                             <span id="printProjectVal">-</span>
                         </div>
                         <div class="print-daily-item">
-                            <b>Reminder of the Day:</b>
-                            <span id="printReminderVal">-</span>
+                            <b>Drop Room:</b>
+                            <span id="printDropVal">-</span>
+                        </div>
+						<div class="print-daily-item">
+                            <b>Sleep Out Room:</b>
+                            <span id="printSleepoutVal">-</span>
                         </div>
                         <div class="print-daily-item">
                             <b>VIP in House:</b>
@@ -599,7 +603,8 @@
 
     let dailyInfo = {
     project: "",
-    reminder: "",
+    drop: "",
+	sleepout: "",	
     vip: "",
     preference: "",
     houseman: "",
@@ -685,7 +690,8 @@
         document.getElementById("printPickupVal").innerText = document.getElementById("pickup")?.value || "0";
 
         document.getElementById("printProjectVal").innerText = dailyInfo.project?.trim() ? dailyInfo.project : "-";
-        document.getElementById("printReminderVal").innerText = dailyInfo.reminder?.trim() ? dailyInfo.reminder : "-";
+        document.getElementById("printDropVal").innerText = dailyInfo.drop?.trim() ? dailyInfo.drop : "-";
+		document.getElementById("printSleepoutVal").innerText = dailyInfo.sleepout?.trim() ? dailyInfo.sleepout : "-";
         document.getElementById("printVipVal").innerText = dailyInfo.vip?.trim() ? dailyInfo.vip : "-";
         document.getElementById("printPrefVal").innerText = dailyInfo.preference?.trim() ? dailyInfo.preference : "-";
         document.getElementById("printHousemanVal").innerText = dailyInfo.houseman?.trim() ? dailyInfo.houseman : "-";
@@ -769,7 +775,8 @@
 
         if (isDailyTabActive) {
             if (document.getElementById('sw_project')) document.getElementById('sw_project').value = "";
-            if (document.getElementById('sw_reminder')) document.getElementById('sw_reminder').value = "";
+            if (document.getElementById('sw_drop')) document.getElementById('sw_drop').value = "";
+			if (document.getElementById('sw_sleepout')) document.getElementById('sw_sleepout').value = "";
             if (document.getElementById('sw_vip')) document.getElementById('sw_vip').value = "";
             if (document.getElementById('sw_preference')) document.getElementById('sw_preference').value = "";
             if (document.getElementById('sw_houseman')) document.getElementById('sw_houseman').value = "";
@@ -826,7 +833,8 @@
 
         dailyInfo = {
     project: document.getElementById('sw_project')?.value || "",
-    reminder: document.getElementById('sw_reminder')?.value || "",
+    drop: document.getElementById('sw_drop')?.value || "",
+	sleepout: document.getElementById('sw_sleepout')?.value || "",		
     vip: document.getElementById('sw_vip')?.value || "",
     preference: document.getElementById('sw_preference')?.value || "",
     houseman: document.getElementById('sw_houseman')?.value || "",
@@ -907,8 +915,12 @@
                                 <textarea id="sw_project" class="swal-textarea" placeholder="Input Project of the day...">${dailyInfo.project || ''}</textarea>
                             </div>
                             <div>
-                                <label><b>Reminder of the Day:</b></label>
-                                <textarea id="sw_reminder" class="swal-textarea" placeholder="Input Reminder of the day...">${dailyInfo.reminder || ''}</textarea>
+                                <label><b>Drop Room:</b></label>
+                                <textarea id="sw_drop" class="swal-textarea" placeholder="Drop Room...">${dailyInfo.drop || ''}</textarea>
+                            </div>
+							<div>
+                                <label><b>Sleep Out Room:</b></label>
+                                <textarea id="sw_sleepout" class="swal-textarea" placeholder="Sleep Out Room...">${dailyInfo.sleepout || ''}</textarea>
                             </div>
                             <div>
                                 <label><b>VIP in House:</b></label>
